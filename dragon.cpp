@@ -1,0 +1,10 @@
+#include <iostream>
+#include <string>
+#include "character.h"
+#include "enemy.h"
+#include "dragon.h"
+using namespace std;
+
+int dragon::getAssignedNum() {
+	return assignedNum;
+}

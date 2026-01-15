@@ -44,7 +44,7 @@ void enterBattle() {
 
 int main()
 {
-	monsterBug BUG;
-	cout << BUG.getAssignedNum();
+	
 }
+
 

@@ -7,4 +7,13 @@ using namespace std;
 
 int dragon::getAssignedNum() {
 	return assignedNum;
+
+}
+
+void dragon::flee(){
+	~dragon();
+}
+
+dragon::~dragon(){
+	cout << endl << "This is not over yet. I WILL RETURN TO RAIN FIRE UPON YOU.";
 }

@@ -11,7 +11,16 @@ protected :
 public:
 	virtual int getAssignedNum();
 
+	/*
+name: displayStats
+parameters: none
+return none
+displays the statistics for the enemy, currently only health
+*/
+void displayStats();
+
 };
+
 
 
 

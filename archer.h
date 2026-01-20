@@ -25,15 +25,7 @@ calls the destructor and says the archer has fled
 */
 	void flee();
 
-/*
-name: isAttacked
-parameters: none
-return void
-subtracts number from the health, defense and strength
-*/
-	void isAttacked();
 
-};
 
 
 
@@ -45,4 +37,5 @@ subtracts number from the health, defense and strength
 
 
 #endif
+
 

@@ -15,11 +15,13 @@ public:
 
  	void flee();
 
-
+	void die();
+	
 	~wizard();
 };
 
 
 #endif
+
 
 

@@ -11,9 +11,15 @@ int dragon::getAssignedNum() {
 }
 
 void dragon::flee(){
+	cout << endl << "This is not over yet. I WILL RETURN TO RAIN FIRE UPON YOU.";
 	~dragon();
 }
 
 dragon::~dragon(){
-	cout << endl << "This is not over yet. I WILL RETURN TO RAIN FIRE UPON YOU.";
+	
 }
+
+void dragon::die(){
+	cout << endl << "The DRAGON has died. Congragulations on its death!";
+}
+

@@ -18,3 +18,15 @@ void wizard::flee(){
 wizard::~wizard(){
 	cout << endl << "I will have my revenge next time.............";
 }
+
+/*
+name: isAttacked
+parameters: none
+return void
+subtracts number from the health, defense and strength
+*/
+void wizard::isAttacked(){
+	cout << endl << "You have attacked the WIZARD.";
+}
+		
+

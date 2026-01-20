@@ -9,15 +9,29 @@ using namespace std;
 class archer : public enemy {
 protected:
 	string name = "Archer";
-	int assignedNum = 1;
-public:
-	int getAssignedNum();
 
+public:
+
+/*
+destructor
+*/
 	~archer();
 
+/*
+name: flee
+parameters: none
+return void
+calls the destructor and says the archer has fled
+*/
 	void flee();
 
-	void attack();
+/*
+name: isAttacked
+parameters: none
+return void
+subtracts number from the health, defense and strength
+*/
+	void isAttacked();
 
 };
 
@@ -31,3 +45,4 @@ public:
 
 
 #endif
+

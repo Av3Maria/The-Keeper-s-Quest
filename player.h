@@ -10,7 +10,12 @@ protected:
 
 public:
 
+  void die();
+
+  ~player();
+
 
 };
+
 
 #endif

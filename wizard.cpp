@@ -16,11 +16,17 @@ void wizard::flee(){
 	~wizard();
 }
 
+void die(){
+	cout << endl << "The WIZARD has died.";
+	~wizard();
+}
+
 wizard::~wizard(){
 	
 }
 
 	
+
 
 
 

@@ -11,9 +11,15 @@ int monsterBug::getAssignedNum() {
 }
 
 void monsterBug::flee(){
+	cout << endl << "The bug scuttles away. You hear nothing from its motion and wonder how you shall detect its return.";
 	~monsterBug();
 }
 
 monsterBug::~monsterBug(){
-	cout << endl <<  "The bug scuttles away. You hear nothing from its motion and wonder how to detect its return." ;
+	
 }
+
+void monsterBug::die(){
+	~monsterBug();
+}
+

@@ -16,9 +16,12 @@ public:
 	void flee();
 
 	~dragon();
+
+	void die();
 };
 
 
 #endif
+
 
 

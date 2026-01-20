@@ -11,6 +11,11 @@ int archer::getAssignedNum() {
 }
 
 void archer::flee() {
-	cout << endl << "The Archer has fled." << endl;
+	~archer();
+}
+
+archer::~archer(){
+	cout << endl << "ARCHER is fleeing. PLAYER has won this battle." << endl;
 
 }
+

@@ -7,4 +7,10 @@ using namespace std;
 
 int archer::getAssignedNum() {
 	return assignedNum;
+
+}
+
+void archer::flee() {
+	cout << endl << "The Archer has fled." << endl;
+
 }

@@ -1,6 +1,7 @@
 #pragma once
 #ifndef player_h
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include "character.h"
 using namespace std;
@@ -21,4 +22,5 @@ public:
 
 
 #endif
+
 

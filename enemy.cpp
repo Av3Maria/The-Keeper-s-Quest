@@ -33,3 +33,14 @@ void enemy::heal() {
 	health = health + amtHealed;
 	heals = heals - amtHealed;
 }
+
+/*
+name: displayStats
+parameters: none
+return none
+displays the statistics for the enemy, currently only health
+*/
+void enemy::displayStats() {
+	cout << endl << "STATISTICS FOR " << name << endl;
+	cout << setw(10) << "Health" << setw(5) << health << endl;
+}

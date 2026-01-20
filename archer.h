@@ -36,9 +36,10 @@ void die();
 
 
 
-
+};
 
 #endif
+
 
 
 

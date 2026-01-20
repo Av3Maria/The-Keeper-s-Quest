@@ -17,7 +17,11 @@ void archer::flee() {
 
 archer::~archer(){
 	
+}
 
+void archer::die(){
+	cout <<endl <<  "The ARCHER has died.";
+	~archer();
 }
 
 

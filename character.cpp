@@ -31,3 +31,7 @@ void character::gainHealth(int amtHealth) {
 	health = health + amtHealth;
 
 }
+
+ void character::die(){
+}
+

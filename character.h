@@ -11,6 +11,7 @@ protected:
 	int health =50 ;
 	int defense =50;
 	int strength = 50;
+	int heals = 50;
 
 	string name;
 
@@ -24,10 +25,13 @@ public:
 
 	int getStrength();
 
+	int getHeals();
+
 	virtual void loseHealth(int amtHealth);
 
 	virtual void gainHealth(int amtHealth);
 };
+
 
 
 

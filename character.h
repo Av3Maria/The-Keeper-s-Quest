@@ -30,6 +30,8 @@ public:
 	virtual void loseHealth(int amtHealth);
 
 	virtual void gainHealth(int amtHealth);
+
+	virtual void die();
 };
 
 
@@ -40,3 +42,4 @@ public:
 
 
 #endif
+

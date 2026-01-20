@@ -6,21 +6,19 @@
 using namespace std;
 
 class enemy : public character {
-protected :
+protected:
 	int assignedNum;
+	string name;
+
 public:
 	virtual int getAssignedNum();
+	enemy(int health, int strength, int defense);
+	virtual ~enemy() = default;
+	virtual string getName();
+	//virtual  void heal(int heal);
 
-/*
-name: heal
-parameter: none
-return void
-heals the enemy a random amt btw 1 health and 3/4 of the heals remaining
-*/
-	virtual  void heal();
 
 };
-
 
 
 

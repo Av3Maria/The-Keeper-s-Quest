@@ -8,15 +8,18 @@ using namespace std;
 class character {
 protected:
 	//start as 50
-	int health =50 ;
-	int defense =50;
-	int strength = 50;
-
+	int health;
+	int defense;
+	int strength;
 	string name;
-
 public:
 
-	string getName();
+	character(const string& n = " ", int h = 50, int stg = 25, int def = 25);
+	virtual ~character() = default;
+
+	bool isAlive() const;
+
+	virtual string getName();
 
 	int getHealth();
 

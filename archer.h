@@ -8,17 +8,13 @@ using namespace std;
 
 class archer : public enemy {
 protected:
-	string name = "Archer";
+	string name;
 	int assignedNum = 1;
 public:
 	int getAssignedNum();
-
+	archer();
+	string getName() override;
 };
-
-
-
-
-
 
 
 

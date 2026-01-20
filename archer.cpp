@@ -8,3 +8,9 @@ using namespace std;
 int archer::getAssignedNum() {
 	return assignedNum;
 }
+
+archer::archer() :enemy(50, 25, 10) {}
+
+string archer::getName() {
+	return "Archer";
+}

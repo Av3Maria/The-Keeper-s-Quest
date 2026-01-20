@@ -25,4 +25,9 @@ player::~player(){
 
 }
 
+void player::flee() {
+  cout << endl << "You are fleeing.         Good Luck!";
+}
+
+
 

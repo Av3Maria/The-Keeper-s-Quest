@@ -17,7 +17,16 @@ public:
 
 void flee();
 
-	~monsterBug();
+/*
+name: isAttacked
+parameters: none
+return void
+subtracts number from the health, defense and strength
+*/
+void isAttacked();
+
+~monsterBug();
 
 
 #endif
+

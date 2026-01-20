@@ -13,7 +13,14 @@ protected:
 public:
 	int getAssignedNum();
 
+	~archer();
+
+	void flee();
+
+	void attack();
+
 };
+
 
 
 

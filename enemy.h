@@ -25,7 +25,7 @@ parameters: none
 return void
 subtracts number from the health, defense and strength
 */
-	virtual void isAttacked();
+	void isAttacked();
 
 };
 
@@ -34,4 +34,5 @@ subtracts number from the health, defense and strength
 
 
 #endif
+
 

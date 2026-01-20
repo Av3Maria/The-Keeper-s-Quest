@@ -8,11 +8,12 @@ using namespace std;
 
 class dragon : public enemy {
 protected:
-	string name = "dragon";
+	string name;
 	int assignedNum = 2;
 public:
 	int getAssignedNum();
-
+	dragon();
+	string getName() override;
 };
 
 #endif

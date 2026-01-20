@@ -10,7 +10,9 @@ protected:
 
 public:
 
-
+	player() : character() {}
+	player(string& n, int h, int stg, int def);
+	string getName() override;
 };
 
 #endif

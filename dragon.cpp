@@ -8,3 +8,9 @@ using namespace std;
 int dragon::getAssignedNum() {
 	return assignedNum;
 }
+
+dragon::dragon():enemy(50,25,10){}
+
+string dragon::getName() {
+	return "Dragon";
+}

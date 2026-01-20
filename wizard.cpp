@@ -8,3 +8,9 @@ using namespace std;
 int wizard::getAssignedNum() {
 	return assignedNum;
 }
+
+wizard::wizard() :enemy(50, 25, 10) {}
+
+string wizard::getName() {
+	return "Wizard";
+}

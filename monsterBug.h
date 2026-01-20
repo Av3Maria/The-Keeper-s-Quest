@@ -13,16 +13,18 @@ protected:
 public:
 	int getAssignedNum();
 
+	void flee();
+
+	~monsterBug();
+
+	void die();
 };
 
-void flee();
 
-~monsterBug();
-
-void die();
 
 
 #endif
+
 
 
 

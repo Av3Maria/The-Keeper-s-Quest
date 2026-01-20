@@ -12,6 +12,8 @@ public:
 
   void die();
 
+  void displayPlayerStats();
+
   ~player();
 
 
@@ -19,3 +21,4 @@ public:
 
 
 #endif
+

@@ -11,6 +11,12 @@ cout << "OH NO. It appears that you have died. " << endl << "That was slightly d
   ~player();
 }
 
+  void displayPlayerStats(){
+
+
+  }
+
 player::~player(){
 
 }
+

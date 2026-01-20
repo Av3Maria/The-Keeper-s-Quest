@@ -2,6 +2,7 @@
 #include <string>
 #include "character.h"
 #include "enemy.h"
+#include <random>
 using namespace std;
 
 int enemy::getAssignedNum() {
@@ -29,6 +30,10 @@ void enemy::heal() {
 		amtHealed = 1;
 	}
 
+	if (health == 0) {
+	amtHealed = 0;
+}
+
 	//add random number to health, and subtract from # of heals
 	health = health + amtHealed;
 	heals = heals - amtHealed;
@@ -44,3 +49,4 @@ void enemy::displayStats() {
 	cout << endl << "STATISTICS FOR " << name << endl;
 	cout << setw(10) << "Health" << setw(5) << health << endl;
 }
+

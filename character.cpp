@@ -19,10 +19,15 @@ int character::getStrength() {
 	return strength;
 }
 
+int character::getHeals(){
+return heals;
+}
+
 void character::loseHealth(int amtHealth) {
 	health = health - amtHealth;
 }
 
 void character::gainHealth(int amtHealth) {
 	health = health + amtHealth;
+
 }

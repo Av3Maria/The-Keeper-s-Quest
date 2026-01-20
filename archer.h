@@ -25,6 +25,8 @@ calls the destructor and says the archer has fled
 */
 	void flee();
 
+void archer::die();
+
 
 
 
@@ -37,5 +39,6 @@ calls the destructor and says the archer has fled
 
 
 #endif
+
 
 

@@ -19,6 +19,14 @@ displays the statistics for the enemy, currently only health
 */
 void displayStats();
 
+/*
+name: isAttacked
+parameters: none
+return void
+subtracts number from the health, defense and strength
+*/
+	virtual void isAttacked();
+
 };
 
 
@@ -26,3 +34,4 @@ void displayStats();
 
 
 #endif
+

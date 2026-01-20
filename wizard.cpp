@@ -7,4 +7,14 @@ using namespace std;
 
 int wizard::getAssignedNum() {
 	return assignedNum;
+
+}
+
+void wizard::flee(){
+	cout << endl << "WIZARD is in retreat.";
+	~wizard();
+}
+
+wizard::~wizard(){
+	cout << endl << "I will have my revenge next time.............";
 }

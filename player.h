@@ -8,6 +8,7 @@ using namespace std;
 
 class player : public character {
 protected:
+  string name = "Player";
 
 public:
 
@@ -17,10 +18,13 @@ public:
 
   ~player();
 
+  void flee();
+
 
 };
 
 
 #endif
+
 
 

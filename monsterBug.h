@@ -19,7 +19,10 @@ void flee();
 
 ~monsterBug();
 
+void die();
+
 
 #endif
+
 
 

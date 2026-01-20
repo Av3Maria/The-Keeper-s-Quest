@@ -13,6 +13,10 @@ protected:
 public:
 	int getAssignedNum();
 
+	void flee();
+
+	~dragon();
 };
+
 
 #endif

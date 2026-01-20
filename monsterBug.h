@@ -15,4 +15,9 @@ public:
 
 };
 
+void flee();
+
+	~monsterBug();
+
+
 #endif

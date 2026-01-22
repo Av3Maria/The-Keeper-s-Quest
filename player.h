@@ -11,8 +11,10 @@ protected:
 public:
 
 	player() : character() {}
-	player(string& n, int h, int stg, int def);
+	player( int h, int stg, int def);
 	string getName() override;
+	void flee() override;
+	void die() override;
 };
 
 #endif

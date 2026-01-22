@@ -14,6 +14,8 @@ public:
 	int getAssignedNum();
 	monsterBug();
 	string getName() override;
+	void flee() override;
+	void die() override;
 };
 
 #endif

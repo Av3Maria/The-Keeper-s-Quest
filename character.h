@@ -14,7 +14,7 @@ protected:
 	string name;
 public:
 
-	character(const string& n = " ", int h = 50, int stg = 25, int def = 25);
+	character(const string& n = " ", int h = 100, int stg = 20, int def = 25);
 	virtual ~character() = default;
 
 	bool isAlive() const;
@@ -30,6 +30,14 @@ public:
 	virtual void loseHealth(int amtHealth);
 
 	virtual void gainHealth(int amtHealth);
+
+	virtual void defenseHealing(int healAmount);
+
+	virtual int damageReduce(int damagedone);
+
+	virtual void flee();
+
+	virtual void die();
 };
 
 

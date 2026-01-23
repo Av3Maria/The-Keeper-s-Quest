@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 using namespace std;
 
 bool on = true;
@@ -14,7 +15,7 @@ int quitGame();
 void refresh();
 
 int main() {
-    
+
     while (on) { //while loop to handle user input and menu selection
         printMenu();
 

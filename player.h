@@ -9,11 +9,13 @@ class player : public character {
 protected:
 
 public:
-
-	player() : character() {}
-	player( int h, int stg, int def);
+	//constructor for player class------
+	player();
+	//function to get player name------
 	string getName() override;
+	//function for flee-------
 	void flee() override;
+	//function for dieing-------
 	void die() override;
 };
 

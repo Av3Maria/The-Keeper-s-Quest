@@ -18,6 +18,7 @@ bool battle_choices(int user_choice, player& plyr, enemy& Enemy);
 int print_stats( player& p, enemy& e);
 enemy* choose_enemy();
 int enemyAction(enemy& enemy, player& plyr);
+int randomNum(unsigned int lowbound, unsigned int ubound);
 
 //This will be taken out, currently runs the Battle Sequence-------------
 int main() {
@@ -160,7 +161,7 @@ int enemyAction(enemy& enemy, player& plyr) {
 		enemyDamage = plyr.damageReduce(enemyDamage);
 		plyr.loseHealth(enemyDamage);
 
-		cout << "The " << enemy.getName() << " fights back, you take " << enemyDamage << " damage." << endl;
+		cout << "You take " << enemyDamage << " damage." << endl;
 		takesaction = 2;
 		action = true;
 	}

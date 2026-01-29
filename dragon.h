@@ -20,6 +20,9 @@ public:
 	void flee() override;
 	//function when enemy dies in battle, output specific line--------
 	void die() override;
+	/*string attackDialogue() override;
+	string runDialogue() override;
+	string healDialogue() override;*/
 };
 
 #endif

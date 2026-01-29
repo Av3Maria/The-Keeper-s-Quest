@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include "character.h"
 #include "enemy.h"
 #include "monsterBug.h"
@@ -24,3 +25,29 @@ void monsterBug::die() {
 	cout << endl << "The bug, as weak as it was, fought til its last breath. Although "<<
 		"surprising, you still take this win. Congratulations." << endl;
 }
+
+/*string attackDialogue() {
+	//vector<string>dialogueLines;
+	cout << "The bug calls upon others like him, and they are surrounding you on all sides. The bugs attack, biting at your ankles." << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	return 0;
+}
+
+string runDialogue() {
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	return 0;
+}
+
+string healDialogue() {
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	return 0;
+}*/
+

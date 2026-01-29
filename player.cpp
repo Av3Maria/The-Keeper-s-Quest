@@ -19,3 +19,27 @@ void player::flee() {
 	cout <<endl<< "Low on items? Scared to die? No matter the reason, you choose to flee the fight, "
 		"leaving the enemy far behind as you run" << endl;
 }
+
+/*string attackDialogue() {
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	return 0;
+}
+
+string runDialogue() {
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	return 0;
+}
+
+string healDialogue() {
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	return 0;*/
+//}

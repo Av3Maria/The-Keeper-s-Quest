@@ -37,6 +37,10 @@ public:
 	virtual void flee();
 	//function for character to run------------
 	virtual void die();
+
+	/*virtual string attackDialogue();
+	virtual string runDialogue();
+	virtual string healDialogue();*/
 };
 
 

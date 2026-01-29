@@ -22,3 +22,27 @@ void wizard::flee() {
 void wizard::die() {
 	cout << endl << "As you throw your last hit, the Wizard, having no time to defend, takes the blow at full. He perishes, fading into a black mist." << endl;
 }
+
+/*string attackDialogue() {
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	return 0;
+}
+
+string runDialogue() {
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	return 0;
+}
+
+string healDialogue() {
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	return 0;
+}*/

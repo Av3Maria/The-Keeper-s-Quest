@@ -16,9 +16,33 @@ string dragon::getName() {
 }
 //function when enemy runs in battle, output specific line--------
 void dragon::flee() {
-	cout << endl << "This is not over yet. I WILL RETURN TO RAIN FIRE UPON YOU." << endl;
+	//runDialogue();
 }
 //function when enemy dies in battle, output specific line--------
 void dragon::die() {
 	cout << endl << "The Dragon has been defeated. Congratulations on your win!" << endl;
 }
+
+/*string attackDialogue() {
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	return 0;
+}
+
+string runDialogue() {
+	cout << endl << "As the Dragaon runs he screams 'This is not over yet. I WILL RETURN TO RAIN FIRE UPON YOU.'" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	return 0;
+}
+
+string healDialogue() {
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	return 0;
+}*/

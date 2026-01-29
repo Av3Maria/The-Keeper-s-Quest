@@ -17,6 +17,10 @@ public:
 	void flee() override;
 	//function for dieing-------
 	void die() override;
+
+	/*string attackDialogue() override;
+	string runDialogue() override;
+	string healDialogue() override;*/
 };
 
 #endif

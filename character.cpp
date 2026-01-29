@@ -67,3 +67,15 @@ void character::flee() {
 //function for character to run------------
 void character::die() {
 }
+
+/*string character::attackDialogue() {
+	return 0;
+}
+
+string character::runDialogue() {
+	return 0;
+}
+
+string character::healDialogue() {
+	return 0;
+}*/

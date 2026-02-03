@@ -12,9 +12,6 @@
 #include <vector>
 using namespace std;
 
-//This will be taken out, currently runs the Battle Sequence-------------
-
-
 //This plays out the entire Battle Sequence and uses the functions above-------------
 int enterBattle() {
 	//create instance of player and enemy, where enemy is chosen at random

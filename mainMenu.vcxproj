@@ -128,6 +128,7 @@
     <ClCompile Include="character.cpp" />
     <ClCompile Include="dragon.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="mainMenu.cpp" />
     <ClCompile Include="monsterBug.cpp" />
     <ClCompile Include="player.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="character.h" />
     <ClInclude Include="dragon.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="Inventory.h" />
     <ClInclude Include="monsterBug.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="wizard.h" />

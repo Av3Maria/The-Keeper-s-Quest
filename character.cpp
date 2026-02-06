@@ -62,20 +62,42 @@ int character::damageReduce(int damagedone) {
 	return damagedone - defensereduced;
 }
 //function for character to flee------------
-void character::flee() {
-}
+//void character::flee() {
+//}
 //function for character to run------------
-void character::die() {
+//void character::die() {
+//}
+
+void character::randomLine(vector<string>& lines) {
+	if (lines.empty()) {
+		return;
+	}
+
+	int index = randomNum(0, lines.size() - 1);
+	cout << endl << lines[index] << endl;
 }
 
-/*string character::attackDialogue() {
-	return 0;
+attackMoves& character::randattackmove() {
+	int index = randomNum(0, attacks.size() - 1);
+	return attacks[index];
 }
 
-string character::runDialogue() {
-	return 0;
+void character::attackDialogue(vector<string>& lines) {
+	if (lines.empty(0)) {
+		return;
+	}
+	int index = randomNum(0, lines.size() - 1);
+	cout << endl << lines[index] << endl;
 }
 
-string character::healDialogue() {
-	return 0;
-}*/
+void character::runDialogue() {
+	randomLine(runLines);
+}
+
+void character::healDialogue() {
+	randomLine(healLines);
+}
+
+void character::dieDialogue() {
+	randomLine(dieLines);
+}

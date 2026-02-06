@@ -2,7 +2,14 @@
 #ifndef character_h
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
+
+struct attackMoves {
+	string attackName;
+	int damagedone;
+	vector<string> damage;
+};
 
 class character {
 protected:
@@ -11,6 +18,7 @@ protected:
 	int defense;
 	int strength;
 	string name;
+	vector<attackMoves> attacks;
 public:
 	//constructor, initialize name, strength, health, and defense for each character------------
 	character(const string& n = " ", int h = 50, int stg = 50, int def = 50);
@@ -34,13 +42,20 @@ public:
 	//function, executes the reduciton of damage and defense when attacking------------
 	virtual int damageReduce(int damagedone);
 	//function for character to flee------------
-	virtual void flee();
+	//virtual void flee();
 	//function for character to run------------
-	virtual void die();
+	//virtual void die();
 
-	/*virtual string attackDialogue();
-	virtual string runDialogue();
-	virtual string healDialogue();*/
+	attackMoves& randattackmove();
+	vector<string> attackLines;
+	vector<string> healLines;
+	vector<string> runLines;
+	vector<string> dieLines;
+	void randomLine(vector<string>& lines);
+	virtual void attackDialogue(vector<string>& lines);
+	virtual void runDialogue();
+	virtual void healDialogue();
+	virtual void dieDialogue();
 };
 
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include "BattleSequence.h"
 using namespace std;
 
 bool on = true;
@@ -7,7 +8,7 @@ bool on = true;
 //function prototypes
 int printMenu();
 int returnToOverworld();
-int enterBattle();
+//int enterBattle();
 int manageInventory();
 int enterShop();
 int chat();
@@ -67,10 +68,6 @@ int printMenu() { //function to print the menu
 }
 int returnToOverworld() {
     cout << "\n\t you return to the overworld" << endl;
-    return 0;
-};
-int enterBattle() { //function to enter battle sequence
-    cout << "\n\t you encounter an enemy!" << endl;
     return 0;
 };
 int manageInventory() { //function to open inventory

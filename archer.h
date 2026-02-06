@@ -17,13 +17,13 @@ public:
 	//function that returns enemy name---------
 	string getName() override;
 	//function when enemy runs in battle, output specific line--------
-	void flee() override;
+	//void flee() override;
 	//function when enemy dies in battle, output specific line--------
-	void die() override;
+	//void die() override;
 
-	/*string attackDialogue() override;
-	string runDialogue() override;
-	string healDialogue() override;*/
+	/*void attackDialogue() override;
+	void runDialogue() override;
+	void healDialogue() override;*/
 };
 
 

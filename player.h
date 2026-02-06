@@ -14,13 +14,13 @@ public:
 	//function to get player name------
 	string getName() override;
 	//function for flee-------
-	void flee() override;
+	//void flee() override;
 	//function for dieing-------
-	void die() override;
+	//void die() override;
 
-	/*string attackDialogue() override;
-	string runDialogue() override;
-	string healDialogue() override;*/
+	/*void attackDialogue() override;
+	void runDialogue() override;
+	void healDialogue() override;*/
 };
 
 #endif

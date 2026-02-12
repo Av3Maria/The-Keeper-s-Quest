@@ -1,10 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include "BattleSequence.h"
-<<<<<<< HEAD
-=======
 #include "Inventory.h"
->>>>>>> 0cebf16040bd6a3f1e3a92b49ea6cade5d131d4f
 using namespace std;
 
 bool on = true;
@@ -12,11 +9,8 @@ bool on = true;
 //function prototypes
 int printMenu();
 int returnToOverworld();
-<<<<<<< HEAD
 //int enterBattle();
 int manageInventory();
-=======
->>>>>>> 0cebf16040bd6a3f1e3a92b49ea6cade5d131d4f
 int enterShop();
 int chat();
 int quitGame();
@@ -76,13 +70,10 @@ int returnToOverworld() {
     cout << "\n\t you return to the overworld" << endl;
     return 0;
 };
-<<<<<<< HEAD
 int manageInventory() { //function to open inventory
     cout << "\n\t you open your inventory" << endl;
     return 0;
 };
-=======
->>>>>>> 0cebf16040bd6a3f1e3a92b49ea6cade5d131d4f
 int enterShop() { //function to enter the shop
     cout << "\n\t you walk into the shop" << endl;
     return 0;

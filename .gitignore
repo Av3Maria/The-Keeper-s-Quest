@@ -1,8 +1,14 @@
+<<<<<<< HEAD
 # Visual Studio
 .vs/
 Debug/
 Release/
 x64/
+
+#Ignore build folders anywhere
+**/Debug/
+**/Release/
+**/x64/
 
 # Build files
 *.obj
@@ -19,4 +25,7 @@ x64/
 
 # SQLite
 *.sqlite
+=======
+.vs/
+>>>>>>> 0cebf16040bd6a3f1e3a92b49ea6cade5d131d4f
 

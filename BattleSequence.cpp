@@ -12,7 +12,10 @@
 #include <vector>
 using namespace std;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0cebf16040bd6a3f1e3a92b49ea6cade5d131d4f
 //This plays out the entire Battle Sequence and uses the functions above-------------
 int enterBattle() {
 	//create instance of player and enemy, where enemy is chosen at random

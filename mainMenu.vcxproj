@@ -128,17 +128,31 @@
     <ClCompile Include="character.cpp" />
     <ClCompile Include="dragon.cpp" />
     <ClCompile Include="enemy.cpp" />
+<<<<<<< HEAD
+=======
+    <ClCompile Include="Inventory.cpp" />
+>>>>>>> 0cebf16040bd6a3f1e3a92b49ea6cade5d131d4f
     <ClCompile Include="mainMenu.cpp" />
     <ClCompile Include="monsterBug.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="wizard.cpp" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
+=======
+    <None Include="Battle Sequence.sln" />
+    <None Include="Battle Sequence.vcxproj" />
+    <None Include="Battle Sequence.vcxproj.filters" />
+    <None Include="Battle Sequence.vcxproj.user" />
+  </ItemGroup>
+  <ItemGroup>
+>>>>>>> 0cebf16040bd6a3f1e3a92b49ea6cade5d131d4f
     <ClInclude Include="archer.h" />
     <ClInclude Include="BattleSequence.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="dragon.h" />
     <ClInclude Include="enemy.h" />
+<<<<<<< HEAD
     <ClInclude Include="monsterBug.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="wizard.h" />
@@ -148,6 +162,12 @@
     <None Include="Battle Sequence.vcxproj" />
     <None Include="Battle Sequence.vcxproj.filters" />
     <None Include="Battle Sequence.vcxproj.user" />
+=======
+    <ClInclude Include="Inventory.h" />
+    <ClInclude Include="monsterBug.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="wizard.h" />
+>>>>>>> 0cebf16040bd6a3f1e3a92b49ea6cade5d131d4f
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

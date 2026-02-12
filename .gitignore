@@ -1,1 +1,22 @@
+# Visual Studio
 .vs/
+Debug/
+Release/
+x64/
+
+# Build files
+*.obj
+*.pdb
+*.ilk
+*.tlog
+*.idb
+*.log
+*.exe
+*.recipe
+
+# User-specific files
+*.vcxproj.user
+
+# SQLite
+*.sqlite
+

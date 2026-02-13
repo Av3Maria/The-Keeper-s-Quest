@@ -3,13 +3,21 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <random>
 using namespace std;
 
 struct attackMoves {
-	string attackName;
+	string name;
 	int damagedone;
-	vector<string> damage;
+	vector<string> dialogue;
 };
+
+//function to randomize choices, in this case it is used to chose enemy for battle-------------
+inline int randomNum(unsigned int lowbound, unsigned int ubound) {
+	static default_random_engine engine{ static_cast <unsigned int>(time(nullptr)) };
+	uniform_int_distribution<unsigned int> randomInt{ lowbound, ubound };
+	return randomInt(engine);
+}
 
 class character {
 protected:
@@ -23,6 +31,8 @@ public:
 	//constructor, initialize name, strength, health, and defense for each character------------
 	character(const string& n = " ", int h = 50, int stg = 50, int def = 50);
 	virtual ~character() = default;
+
+	vector<attackMoves>& getAttacks();
 	//function, once character is creasted automatically set to true------------
 	bool isAlive() const;
 	//function, return character name------------
@@ -41,10 +51,6 @@ public:
 	virtual void defenseHealing(int healAmount);
 	//function, executes the reduciton of damage and defense when attacking------------
 	virtual int damageReduce(int damagedone);
-	//function for character to flee------------
-	//virtual void flee();
-	//function for character to run------------
-	//virtual void die();
 
 	attackMoves& randattackmove();
 	vector<string> attackLines;
@@ -57,11 +63,5 @@ public:
 	virtual void healDialogue();
 	virtual void dieDialogue();
 };
-
-
-
-
-
-
 
 #endif

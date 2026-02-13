@@ -16,13 +16,7 @@ public:
 	dragon();
 	//function that returns enemy name---------
 	string getName() override;
-	//function when enemy runs in battle, output specific line--------
-	//void flee() override;
-	//function when enemy dies in battle, output specific line--------
-	//void die() override;
-	/*void attackDialogue() override;
-	void runDialogue() override;
-	void healDialogue() override;*/
+
 };
 
 #endif

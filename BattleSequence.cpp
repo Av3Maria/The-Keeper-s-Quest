@@ -12,6 +12,7 @@
 #include <vector>
 using namespace std;
 
+
 //This plays out the entire Battle Sequence and uses the functions above-------------
 int enterBattle() {
 	//create instance of player and enemy, where enemy is chosen at random
@@ -45,12 +46,6 @@ int enterBattle() {
 	return 0;
 }
 
-//function to randomize choices, in this case it is used to chose enemy for battle-------------
-int randomNum(unsigned int lowbound, unsigned int ubound) {
-	static default_random_engine engine{ static_cast <unsigned int>(time(nullptr)) };
-	uniform_int_distribution<unsigned int> randomInt{ lowbound, ubound };
-	return randomInt(engine);
-}
 
 //function that uses the random function to choose an enemy for battle-------------
 enemy* choose_enemy() {
@@ -73,17 +68,19 @@ enemy* choose_enemy() {
 }
 
 //function to print menu for player choices-------------
-int print_battlemenu() {
+int print_battlemenu(player& plyr) {
 	cout << "\n\n\n What would you like to do?" << endl;
 	cout << " \n\n 1. Attack" << endl;
 	cout << " 2. Heal" << endl;
-	cout << " 3. Run\n\n" << endl;
+	cout << " 3. Run" << endl;
+	cout << " 4. Inventory\n\n" << endl;
 	int choice;
 	cin >> choice;
 	if (choice == 1) {
 		cout << endl << "Choose which attack you would like to do: " << endl;
-		for (int i = 0; i < plyr.attackMoves.size(); ++i) {
-			cout << i + 1 << ". " < , plyr.attackMoves[i].name << endl;
+		vector<attackMoves>& attacks = plyr.getcurrentAttacks();
+		for (int i = 0; i < attacks.size(); ++i) {
+			cout << i + 1 << ". " << attacks[i].name << endl;
 		}
 		int attackchoice;
 		cin >> attackchoice;
@@ -110,32 +107,48 @@ int print_stats(player& plyr, enemy& enmy) {
 
 //function to take the player choice and run through it / execute it-------------
 bool battle_choices(int user_choice, player& plyr, enemy& Enemy) {
-	int damage; 
-	switch (user_choice) {
-	case 1://player chooses to attack
-		if (user_choice >= 100){
+	int damage;
+
+	//player chooses to attack
+	if (user_choice >= 100) {
 		system("cls");
-		AttackMoves& chosenAttack = plyr.attackMoves[attackIndex];
-		int dialogueIndex = randomNum(0, chosenAttack.dialogue.size() - 1);
-		cout << endl << "You chose" << chosenAttack.name << " to attack the enemy with" << endl;
-		damage = plyr.getStrength();//the damage the player does is reduced by half, and the enemy defense is then reduced by a third (ensures battle is not short)
-		damage = Enemy.damageReduce(damage);
-		Enemy.loseHealth(damage);
-		cout << endl << "The " << Enemy.getName() << " only takes " << damage << " damage. There defense is now reduced to "<<Enemy.getDefense()<<"\n\n" << endl;
-		]
-		break;
-	case 2://player chooses to heal
-		system("cls");
-		plyr.healDialogue();
-		cout << "Your Chose to Heal, Health Goes Up By 10." << endl;
-		plyr.gainHealth(15);//when healing, defense is reduced by 5 points
-		break;
-	case 3://player chooses to run
-		system("cls");
-		cout << "You Chose to Run!" << endl;
-		plyr.runDialogue();
-		return false;
-		break;
+		int attackIndex = user_choice - 100;
+		vector<attackMoves>& playerAttacks = plyr.getAttacks();
+		if (attackIndex >= 0 && attackIndex < playerAttacks.size()) {
+			attackMoves& chosenAttack = playerAttacks[attackIndex];
+			cout << endl << "You chose " << chosenAttack.name << " to attack the enemy with" << endl;
+			int damage = plyr.getStrength() + chosenAttack.damagedone;
+			damage = Enemy.damageReduce(damage);
+			Enemy.loseHealth(damage);
+			plyr.loseHealth(damage);
+			plyr.attackDialogue(chosenAttack.dialogue);
+			cout << endl << "The " << Enemy.getName() << " only takes " << damage << " damage. There defense is now reduced to " << Enemy.getDefense() << "\n\n" << endl;
+		}
+		return plyr.isAlive() && Enemy.isAlive();
+	}
+	else {
+		switch (user_choice) {
+		case 2://player chooses to heal
+			system("cls");
+			plyr.healDialogue();
+			cout << "You Chose to Heal, Health Goes Up By 15." << endl;
+			plyr.gainHealth(15);//when healing, defense is reduced by 5 points
+			break;
+		case 3://player chooses to run
+			system("cls");
+			cout << "You Chose to Run!" << endl;
+			plyr.runDialogue();
+			return false;
+			break;
+		case 4:
+			system("cls");
+			plyr.showInventory();
+			cout << endl << "Choose a Weapon for the battle: " << endl;
+			int weaponChoice;
+			cin >> weaponChoice;
+			plyr.equipWeapon(weaponChoice - 1);
+			break;
+		}
 	}
 	return plyr.isAlive() && Enemy.isAlive();
 }
@@ -145,26 +158,26 @@ int enemyAction(enemy& enemy, player& plyr) {
 	int takesaction = 2;//automatically gets set to attack
 	bool action = false;//makes sure that only one action is executed
 	int choice = randomNum(1, 100);//run probability for each action
-	if (!action && enemy.getHealth() < 25 && choice <=10) {//10% chance to run, only becomes an option once the enemy health is lower than 25
+	if (!action && enemy.getHealth() < 25 && choice <= 10) {//10% chance to run, only becomes an option once the enemy health is lower than 25
 		enemy.runDialogue();
 		takesaction = 1;
 		action = true;
 	}
 	if (!action && choice <= 40) {//40% chance to heal
 		enemy.healDialogue();
-		cout << endl << cout << "The " << enemy.getName() << " heals itself by 10 points." << endl;
+		cout << endl << "The " << enemy.getName() << " heals itself by 10 points." << endl;
 		enemy.gainHealth(10);//health goes up by ten, subject to change
 		takesaction = 3;
 		action = true;
 	}
 	if (!action) {//50% chance to attack
 		attackMoves& movefrmenemy = enemy.randattackmove();
+		cout << endl << enemy.getName() << " uses " << movefrmenemy.name << endl;
 		enemy.attackDialogue(movefrmenemy.dialogue);
 		//int enemyDamage = enemy.getStrength();//works same as player, defense is reduced by a third and damage done to player is reduced to half
 		int enemyDamage = enemy.getStrength() + movefrmenemy.damagedone;
 		enemyDamage = plyr.damageReduce(enemyDamage);
 		plyr.loseHealth(enemyDamage);
-		enemy.attackDialogue();
 		cout << endl << "You take " << enemyDamage << " damage." << endl;
 		takesaction = 2;
 		action = true;

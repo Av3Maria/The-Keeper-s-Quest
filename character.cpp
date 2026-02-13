@@ -5,7 +5,13 @@ using namespace std;
 
 //constructor, initialize name, strength, health, and defense for each character------------
 character::character(const string& n, int h, int stg, int def)
-	:name(n), health(h), strength(stg), defense(def){ }
+	:name(n), health(h), strength(stg), defense(def) {
+}
+
+vector<attackMoves>& character::getAttacks() {
+	return attacks;
+}
+
 //function, once character is creasted automatically set to true------------
 bool character::isAlive() const {
 	return health > 0;
@@ -61,12 +67,6 @@ int character::damageReduce(int damagedone) {
 	}
 	return damagedone - defensereduced;
 }
-//function for character to flee------------
-//void character::flee() {
-//}
-//function for character to run------------
-//void character::die() {
-//}
 
 void character::randomLine(vector<string>& lines) {
 	if (lines.empty()) {
@@ -83,7 +83,7 @@ attackMoves& character::randattackmove() {
 }
 
 void character::attackDialogue(vector<string>& lines) {
-	if (lines.empty(0)) {
+	if (lines.empty()) {
 		return;
 	}
 	int index = randomNum(0, lines.size() - 1);

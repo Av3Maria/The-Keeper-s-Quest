@@ -9,8 +9,6 @@ bool on = true;
 //function prototypes
 int printMenu();
 int returnToOverworld();
-//int enterBattle();
-int manageInventory();
 int enterShop();
 int chat();
 int quitGame();
@@ -68,10 +66,6 @@ int printMenu() { //function to print the menu
 }
 int returnToOverworld() {
     cout << "\n\t you return to the overworld" << endl;
-    return 0;
-};
-int manageInventory() { //function to open inventory
-    cout << "\n\t you open your inventory" << endl;
     return 0;
 };
 int enterShop() { //function to enter the shop

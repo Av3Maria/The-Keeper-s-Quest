@@ -3,6 +3,32 @@
 #include "character.h"
 #include "player.h"
 using namespace std;
+
+
+//rewrite and fix
+void player::setGold(int amt) {
+	ownedGold = amt;
+}
+int player::getOwnedGold() const {
+    return ownedGold;
+}
+
+void player::addToInventory(int itemID) {
+    // For now, just print a message or add logic as needed
+    // Example: Add a placeholder weapon with the itemID as its name
+    Weapon newWeapon;
+    newWeapon.name = "Item " + std::to_string(itemID);
+    inventory.push_back(newWeapon);
+}
+void player::modifyGold(int amount) {
+    ownedGold += amount;
+    if (ownedGold < 0) {
+        ownedGold = 0;
+    }
+}
+
+
+
 // Initializes player's health, strength, and defense
 player::player() : character("Player", 100, 18, 10) {
 

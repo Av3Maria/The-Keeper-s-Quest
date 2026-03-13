@@ -1,5 +1,4 @@
 #pragma once
-#ifndef player_h
 #include <iostream>
 #include <string>
 #include <vector>
@@ -16,7 +15,11 @@ class player : public character {
 protected:
 	vector<Weapon> inventory;
 	Weapon* equippedWeapon = nullptr;
+
 public:
+	int ownedGold;
+	void setGold(int amt);
+
 	//constructor for player class------
 	player();
 	//function to get player name------
@@ -25,7 +28,10 @@ public:
 	vector<attackMoves>& getcurrentAttacks();
 	void equipWeapon(int index);
 	void showInventory();
+	int getOwnedGold() const;
+
+	void modifyGold(int amount);
+	
+	void addToInventory(int itemID);
 
 };
-
-#endif

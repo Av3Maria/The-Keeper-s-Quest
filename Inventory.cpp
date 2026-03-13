@@ -1,4 +1,5 @@
 #include "Inventory.h"
+#include "Setup.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -7,15 +8,17 @@
 #include <unordered_map>
 using namespace std;
 
-static unordered_map<int, inventoryItem> itemIndex; //unordered map to store all items in the game
+//PROBABLY HAVE TO REWRITE MOST/ALL OF THIS CODE TO MATCH SETUP AND SHOP
+
+//static unordered_map<int, Item> itemDatabase; //unordered map to store all items in the game
 static unordered_map<int, int> inventory; //unordered map to store the player's inventory
 int equippedItemID = -1; //variable to store the itemID of the currently equipped item, -1 means no item is equipped
 
-inventoryItem::inventoryItem() : itemID(0), itemName(""), equippable(false) {} 
+//Item::Item() : itemID(0), name(""), price(0), equippable(false) {}
 
 //main function
-void manageInventory() { 
-	allItems(); //call all items
+void manageInventory(Setup& s) { 
+	//allItems(); //call all items
 
 	//starting inventory
 	addToInventory(1);
@@ -25,12 +28,13 @@ void manageInventory() {
 	printInventoryMenu(); //this is the main part of the inventory stuff
 }
 //function to add all items to the itemIndex unordered map
+/*
 void allItems() {
-	itemIndex.emplace(1, inventoryItem(1, "Basic Sword", true)); //format: inventoryItem(itemID, itemName, equippable)
-	itemIndex.emplace(2, inventoryItem(2, "Basic Bow", true));
-	itemIndex.emplace(3, inventoryItem(3, "Basic Health Potion", false));
+	itemDatabase.emplace(1, Item{ 1, "Basic Sword", true }); //format: inventoryItem(itemID, itemName, equippable)
+	itemDatabase.emplace(2, Item{ 2, "Basic Bow", true });
+	itemDatabase.emplace(3, Item{ 3, "Basic Health Potion", false });
 	//add more
-}
+}*/
 //prints inventory
 void printInventoryMenu() { 
 	bool isRunning = true;
@@ -50,9 +54,9 @@ void printInventoryMenu() {
 
 		for (const auto& pair : inventory) { //for loop that prints the player's inventory
 			
-			const inventoryItem& item = itemIndex[pair.first];
+			const Item& item = itemDatabase[pair.first];
 
-			cout << " " << index << ". " << item.itemName << " x" << pair.second << endl;
+			cout << " " << index << ". " << item.name << " x" << pair.second << endl;
 			itemIDs.push_back(pair.first);
 			index++;
 		}
@@ -76,9 +80,9 @@ void printInventoryMenu() {
 		}
 
 		int selectedItemID = itemIDs[userItemChoice - 1]; //gets the itemID of the item the user selected
-		const inventoryItem& selectedItem = itemIndex[selectedItemID]; //gets the inventoryItem object of the item the user selected
+		const Item& selectedItem = itemDatabase[selectedItemID]; //gets the inventoryItem object of the item the user selected
 
-		cout << "\n" << selectedItem.itemName << "\n"; //prints the name of the item the user selected and a small menu afterwards
+		cout << "\n" << selectedItem.name << "\n"; //prints the name of the item the user selected and a small menu afterwards
 		cout << " 1. Equip Item" << endl;
 		cout << " 2. Remove Item" << endl;
 		cout << " 3. Back to Inventory" << endl;
@@ -122,14 +126,15 @@ void removeFromInventory(int itemID) {
 		}
 	}
 
-	cout << "\n\tYou removed: " << itemIndex[itemID].itemName << endl;
+	cout << "\n\tYou removed: " << itemDatabase[itemID].name << endl;
 }
 //equips item
 void equipItem(int itemID) {
-	const inventoryItem& item = itemIndex[itemID]; //gets the inventoryItem object of the item the user selected
+	const Item& item = itemDatabase[itemID]; //gets the inventoryItem object of the item the user selected
 
 	if (item.equippable) { //if the item is equippable, equip it and set equippedItemID to the itemID of the item the user selected
-		cout << "\n\tYou equipped: " << item.itemName << endl;
+		
+		cout << "\n\tYou equipped: " << item.name << endl;
 	}
 	else {
 		cout << "\n\t(this item cannot be equipped)" << endl;

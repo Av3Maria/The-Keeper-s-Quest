@@ -1,10 +1,17 @@
 #pragma once
-#ifndef Inventory_h
+#include "Setup.h"
 #include <iostream>
 #include <string>
 #include <unordered_map>
-using namespace std;
+/*
+struct Item {
+	int itemID;
+	string name;
+	int price;
+	bool equippable;
+};*/
 
+/*
 class inventoryItem {
 public:
 
@@ -15,15 +22,12 @@ public:
 	inventoryItem();
 	inventoryItem(int itemID, string itemName, bool equippable) : itemID(itemID), itemName(itemName), equippable(equippable) {}
 
-};
+};*/
 
-void allItems();
+//void allItems();
 void printInventoryMenu();
 void addToInventory(int itemID);
 void removeFromInventory(int itemID);
 void equipItem(int itemID);
 void refreshInv();
-void manageInventory();
-
-#endif
-
+void manageInventory(Setup& s);

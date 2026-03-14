@@ -1,3 +1,4 @@
+#include "Setup.h"
 #include "character.h"
 #include <iostream>
 #include <string>

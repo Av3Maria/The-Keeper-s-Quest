@@ -3,10 +3,11 @@
 #include <iostream>
 #include <unordered_map>
 
+class Setup;
 
-void enterShop(Setup& s);
-void purchaseItem(Setup& s, int itemID);
-void sellItem(Setup& s);
-void displayShopMenu(Setup& s);
-
+void enterShop(Setup& setup);
+void purchaseItem(Setup& setup, int itemID);
+void sellItem(Setup& setup);
+void displayShopMenu(Setup& setup);
+void displayType(Setup& setup, ItemType type);
 

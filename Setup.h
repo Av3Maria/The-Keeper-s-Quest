@@ -4,10 +4,17 @@
 #include "player.h"
 using namespace std;
 
+enum ItemType {
+	WEAPON,
+	POTION,
+	MAGIC_ITEM
+};
+
 struct Item {
 	int itemID;
 	string name;
-	int price;
+	int value;
+	ItemType type;
 	bool equippable;
 };
 
@@ -16,8 +23,7 @@ public:
 
 	unordered_map<int, Item> itemDatabase;
 	unordered_map<int, int> shopInventory;
-	player plyr;
+	player mainPlayer;
 
 	void initializeItems();
 };
-

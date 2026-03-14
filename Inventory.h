@@ -3,31 +3,13 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
-/*
-struct Item {
-	int itemID;
-	string name;
-	int price;
-	bool equippable;
-};*/
 
-/*
-class inventoryItem {
-public:
+class Setup;
 
-	int itemID;
-	string itemName;
-	bool equippable;
+void addToInventory(Setup& setup, int itemID);
+void removeFromInventory(Setup& setup, int itemID);
+void printInventoryMenu(Setup& setup);
+void equipItem(Setup& setup, int itemID);
+void manageInventory(Setup& setup);
 
-	inventoryItem();
-	inventoryItem(int itemID, string itemName, bool equippable) : itemID(itemID), itemName(itemName), equippable(equippable) {}
-
-};*/
-
-//void allItems();
-void printInventoryMenu();
-void addToInventory(int itemID);
-void removeFromInventory(int itemID);
-void equipItem(int itemID);
 void refreshInv();
-void manageInventory(Setup& s);

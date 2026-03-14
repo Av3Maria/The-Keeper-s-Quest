@@ -34,7 +34,7 @@ int main() {
             refresh(); //delete later
             break;
         case 2:
-            enterBattle();
+            enterBattle(s);
             refresh();
             break;
         case 3:

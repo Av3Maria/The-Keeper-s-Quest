@@ -1,32 +1,9 @@
+#include "Setup.h"
 #include <iostream>
 #include <string>
 #include "character.h"
 #include "player.h"
 using namespace std;
-
-
-//rewrite and fix
-void player::setGold(int amt) {
-	ownedGold = amt;
-}
-int player::getOwnedGold() const {
-    return ownedGold;
-}
-
-void player::addToInventory(int itemID) {
-    // For now, just print a message or add logic as needed
-    // Example: Add a placeholder weapon with the itemID as its name
-    Weapon newWeapon;
-    newWeapon.name = "Item " + std::to_string(itemID);
-    inventory.push_back(newWeapon);
-}
-void player::modifyGold(int amount) {
-    ownedGold += amount;
-    if (ownedGold < 0) {
-        ownedGold = 0;
-    }
-}
-
 
 
 // Initializes player's health, strength, and defense
@@ -59,6 +36,8 @@ player::player() : character("Player", 100, 18, 10) {
         "As the enemy towers over you, your vision blurs. You face death one last time. You lose, player—do better next time.",
         "You are struck down by the enemy's last attack. Helpless, you watch them walk away without remorse."
     };
+    
+    //probaply have to change this part
     Weapon WoodenSword;
     WoodenSword.name = "Wooden Sword";
     WoodenSword.currentAttacks = {
@@ -71,32 +50,63 @@ player::player() : character("Player", 100, 18, 10) {
         { "Piercing Shot", 13, { "Choosing to attack with your bow, you draw the string close to your ear, aim carefully, and release an arrow that hits directly in the target's chest." } },
         { "Glancing Arrow", 12, { "With your bow, you hit the enemy's limb. With a cry, it is left hobbling and disoriented." } }
     };
-    inventory.push_back(WoodenSword);
-    inventory.push_back(WoodenBow);
-    equippedWeapon = &inventory[0];
+    inventoryW.push_back(WoodenSword);
+    inventoryW.push_back(WoodenBow);
+    equippedWeapon = &inventoryW[0];
+    
 }
 
 void player::showInventory() {
     cout << endl << "Inventory Options: " << endl;
-    for (int i = 0; i < inventory.size(); i++) {
-        cout << i + 1 << ". " << inventory[i].name;
-        if (&inventory[i] == equippedWeapon) {
+    for (int i = 0; i < inventoryW.size(); i++) {
+        cout << i + 1 << ". " << inventoryW[i].name;
+        if (&inventoryW[i] == equippedWeapon) {
             cout << " is equipped";
         }
         cout << endl;
     }
 }
 
+void player::setGold(int amt) {
+    ownedGold = amt;
+}
+int player::getOwnedGold() const {
+    return ownedGold;
+}
+void player::modifyGold(int amount) {
+    ownedGold += amount;
+    if (ownedGold < 0) {
+        ownedGold = 0;
+    }
+}
+/*
 void player::addToInventory(Setup& setup, int itemID) {
     inventory[itemID]++;
 
     const Item& item = setup.itemDatabase[itemID];
 
 	cout << endl << "You added: " << item.name << " to your inventory." << endl;
+}*/
+void player::equipWeapon(Setup& setup, int itemID) {
+
+	const Item& item = setup.itemDatabase[itemID];
+
+    if (!item.equippable) {
+        cout << "\n\tthis item cannot be equipped\n";
+		return;
     }
-    else {
-        cout << endl << "You chose to equip " << equippedWeapon->name << endl;
-    }
+    
+
+
+    Weapon newWeapon;
+    newWeapon.name = item.name;
+
+    inventoryW.push_back(newWeapon);
+
+	equippedWeapon = &inventoryW.back();
+
+    cout << "Equipped Weapon: " << item.name << endl;
+    
 }
 
 vector<attackMoves>& player::getcurrentAttacks() {

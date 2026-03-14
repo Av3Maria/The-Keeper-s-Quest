@@ -87,11 +87,12 @@ void player::showInventory() {
     }
 }
 
-void player::equipWeapon(int index) {
-    if (index >= 0 && index < inventory.size()) {
-        equippedWeapon = &inventory[index];
-        attacks = equippedWeapon->currentAttacks;
-        cout << "Equiped Weapon: " << equippedWeapon->name << endl;
+void player::addToInventory(Setup& setup, int itemID) {
+    inventory[itemID]++;
+
+    const Item& item = setup.itemDatabase[itemID];
+
+	cout << endl << "You added: " << item.name << " to your inventory." << endl;
     }
     else {
         cout << endl << "You chose to equip " << equippedWeapon->name << endl;

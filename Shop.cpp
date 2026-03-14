@@ -1,5 +1,6 @@
 #include "Shop.h"
 #include "Setup.h"
+#include "Shop.h"
 #include "player.h"
 #include "Inventory.h"
 #include <iostream>
@@ -10,19 +11,21 @@ using namespace std;
 static unordered_map<int, int> shopInventory;
 
 //main function
-void enterShop(Setup& s) { 
-	displayShopMenu(s);
-
+void enterShop(Setup& setup) { 
+	displayShopMenu(setup);
 }
 
-void displayShopMenu(Setup& s) {
+void displayShopMenu(Setup& setup) {
+	cout << "\n\t You step into the shop and walk up to the shopkeeper who says," << endl;
+	cout << "\t\t'What would you like to buy?'" << endl;
+
 	bool inShop = true;
 
 	cout << "\n\tYou step into the shop.\n";
 
 	while (inShop) {
 
-		cout << "\tGold: " << s.plyr.getOwnedGold() << "\n\n";
+		cout << "\tGold: " << setup.mainPlayer.getOwnedGold() << "\n\n";
 
 		cout << "Available Items:\n";
 

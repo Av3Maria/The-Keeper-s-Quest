@@ -2,6 +2,7 @@
 #include <iomanip>
 #include "BattleSequence.h"
 #include "Inventory.h"
+#include "talkingNPC.h"
 using namespace std;
 
 bool on = true;

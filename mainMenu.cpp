@@ -1,7 +1,9 @@
 #include <iostream>
 #include <iomanip>
+#include "Setup.h"
 #include "BattleSequence.h"
 #include "Inventory.h"
+#include "Shop.h"
 using namespace std;
 
 bool on = true;
@@ -9,14 +11,15 @@ bool on = true;
 //function prototypes
 int printMenu();
 int returnToOverworld();
-//int enterBattle();
-int manageInventory();
-int enterShop();
 int chat();
 int quitGame();
 void refresh();
 
 int main() {
+
+    Setup s;
+	s.initializeItems();
+
 
     while (on) { //while loop to handle user input and menu selection
         printMenu();
@@ -31,15 +34,15 @@ int main() {
             refresh(); //delete later
             break;
         case 2:
-            enterBattle();
+            enterBattle(s);
             refresh();
             break;
         case 3:
-            manageInventory();
+            manageInventory(s);
             break;
         case 4:
-            enterShop();
-			refresh(); //delete later
+            enterShop(s);
+            refresh(); //delete later
             break;
         case 5:
             chat();
@@ -68,14 +71,6 @@ int printMenu() { //function to print the menu
 }
 int returnToOverworld() {
     cout << "\n\t you return to the overworld" << endl;
-    return 0;
-};
-int manageInventory() { //function to open inventory
-    cout << "\n\t you open your inventory" << endl;
-    return 0;
-};
-int enterShop() { //function to enter the shop
-    cout << "\n\t you walk into the shop" << endl;
     return 0;
 };
 int chat() { //function to talk to an npc

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <random>
+//#include "Setup.h"
 using namespace std;
 
 struct attackMoves {
@@ -21,13 +22,15 @@ inline int randomNum(unsigned int lowbound, unsigned int ubound) {
 
 class character {
 protected:
-	//start as 50
-	int health;
-	int defense;
-	int strength;
+	
 	string name;
 	vector<attackMoves> attacks;
 public:
+//start as 50
+	int health;
+	int defense;
+	int strength;
+
 	//constructor, initialize name, strength, health, and defense for each character------------
 	character(const string& n = " ", int h = 50, int stg = 50, int def = 50);
 	virtual ~character() = default;

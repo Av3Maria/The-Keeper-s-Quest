@@ -1,3 +1,4 @@
+#include "Setup.h"
 #include <iostream>
 #include <iomanip>
 #include "BattleSequence.h"
@@ -10,13 +11,14 @@
 #include "wizard.h"
 #include <random>
 #include <vector>
+#include "Inventory.h"
 using namespace std;
 
 
 //This plays out the entire Battle Sequence and uses the functions above-------------
-int enterBattle() {
+int enterBattle(Setup& setup) {
 	//create instance of player and enemy, where enemy is chosen at random
-	player plyr;
+	player& plyr = setup.mainPlayer;
 	enemy* Enemy = choose_enemy();
 
 	cout << endl << left << setw(50) << " " << "You encountered an Enemy!" << endl;
@@ -24,7 +26,7 @@ int enterBattle() {
 	while (plyr.isAlive() && Enemy->isAlive()) {
 		print_stats(plyr, *Enemy);//visual for the player to see the stats of them and the enemy
 		int  choice = print_battlemenu(plyr);//print choices for the player to pick from, return choice
-		bool continueFight = battle_choices(choice, plyr, *Enemy);//choice is taken into account for player
+		bool continueFight = battle_choices(setup, choice, plyr, *Enemy);//choice is taken into account for player
 
 		if (!Enemy->isAlive()) {//if enemy dies end loop
 			Enemy->dieDialogue();
@@ -106,7 +108,7 @@ int print_stats(player& plyr, enemy& enmy) {
 }
 
 //function to take the player choice and run through it / execute it-------------
-bool battle_choices(int user_choice, player& plyr, enemy& Enemy) {
+bool battle_choices(Setup& setup, int user_choice, player& plyr, enemy& Enemy) {
 	int damage;
 
 	//player chooses to attack
@@ -142,11 +144,11 @@ bool battle_choices(int user_choice, player& plyr, enemy& Enemy) {
 			break;
 		case 4:
 			system("cls");
-			plyr.showInventory();
+			manageInventory(setup);
 			cout << endl << "Choose a Weapon for the battle: " << endl;
 			int weaponChoice;
 			cin >> weaponChoice;
-			plyr.equipWeapon(weaponChoice - 1);
+			//plyr.equipWeapon(weaponChoice - 1);
 			break;
 		}
 	}

@@ -26,7 +26,7 @@ void displayShopMenu(Setup& setup) {
 		cout << "\nShop Menu:\n" << endl;
 		cout << " 1. Weapons" << endl;
 		cout << " 2. Potions" << endl;
-		cout << " 3. Magic Items" << endl; //change to knowledge/spells
+		cout << " 3. Magic Items" << endl; //change to knowledge/spells?
 		cout << " 4. Sell Items" << endl;
 		cout << " 5. Exit Shop" << endl;
 

@@ -2,6 +2,7 @@
 #include <iomanip>
 #include "Setup.h"
 #include "BattleSequence.h"
+#include "talkingNPC.h"
 #include "Inventory.h"
 #include "Shop.h"
 using namespace std;
@@ -11,7 +12,6 @@ bool on = true;
 //function prototypes
 int printMenu();
 int returnToOverworld();
-int chat();
 int quitGame();
 void refresh();
 
@@ -71,10 +71,6 @@ int printMenu() { //function to print the menu
 }
 int returnToOverworld() {
     cout << "\n\t you return to the overworld" << endl;
-    return 0;
-};
-int chat() { //function to talk to an npc
-    cout << "\n\t you say hello" << endl;
     return 0;
 };
 int quitGame() { //function to quit the game

@@ -7,7 +7,6 @@
 using namespace std;
 
 class Setup;
-class Setup;
 
 struct Weapon {
 	string name;

@@ -48,8 +48,8 @@ void Setup::initializeItems() {
 	shopInventory[10] = 15; //basic staff
 	shopInventory[14] = 20; //small health potion
 	shopInventory[15] = 10; //large health potion
-	shopInventory[17] = 1; //amulet of defense
-	shopInventory[18] = 10; //amulet of strength
+	//shopInventory[17] = 1; //amulet of defense
+	//shopInventory[18] = 10; //amulet of strength
 
 
 	mainPlayer.setGold(500);

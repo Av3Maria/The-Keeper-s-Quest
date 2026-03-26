@@ -53,7 +53,7 @@ void talkingNPC::printLines(int currentLine, Setup& setup) {
 		return;
 	}
 	if (node.type == BEGGAR_DROP) {
-		addToInventory(setup, 21);
+		addToInventory(setup, 17);
 		return;
 	}
 

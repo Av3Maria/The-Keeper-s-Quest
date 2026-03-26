@@ -20,7 +20,7 @@ player::player() : character("Player", 100, 18, 10) {
         "Low on items or afraid to die? Whatever the reason, you choose to flee, leaving the enemy far behind as you run.",
         "Your attacks aren’t doing as much damage as hoped, so before you get hurt further, you turn and run away, stumbling over debris from the fight as you go.",
         "Panic sets in as you realize this battle is not in your favor. Limbs trembling, you scramble away as fast as your legs can carry you, the sound of the creature fading as you escape.",
-        "Exhausted, you can no longer fight. You make the decision to retreat—looks like the enemy will win this one."
+        "Exhausted, you can no longer fight. You make the decision to retreat, looks like the enemy will win this one."
     };
 
     healLines = {

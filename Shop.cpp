@@ -2,33 +2,36 @@
 #include "Shop.h"
 #include "player.h"
 #include "Inventory.h"
+#include "talkingNPC.h"
 #include <iostream>
 #include <string>
 #include <unordered_map>
 using namespace std;
 
+ShopKeeper shopkeeperNPC;
+
 //main function
 void enterShop(Setup& setup) { 
-	displayShopMenu(setup);
+	cout << "\nYou step into the shop where you recieve a friendly greeting." << endl;
+
+	shopkeeperNPC.printLines(0, setup);
 }
 
 //function for main ship menu
-void displayShopMenu(Setup& setup) {
-	cout << "\n\t You step into the shop and walk up to the shopkeeper who says," << endl;
-	cout << "\t\t'What would you like to buy?'" << endl;
+int displayShopMenu(Setup& setup) {
 
 	bool inShop = true;
 
 	while (inShop) {
 
-		cout << "\tGold: " << setup.mainPlayer.getOwnedGold() << "\n\n";
+		cout << "\n\tYour Gold: " << setup.mainPlayer.getOwnedGold() << "\n\n";
 
-		cout << "\nShop Menu:\n" << endl;
+		cout << "\n Shop Menu:\n" << endl;
 		cout << " 1. Weapons" << endl;
 		cout << " 2. Potions" << endl;
 		cout << " 3. Magic Items" << endl; //change to knowledge/spells?
 		cout << " 4. Sell Items" << endl;
-		cout << " 5. Exit Shop" << endl;
+		cout << " 5. Exit Shop\n" << endl;
 
 		int shopInput;
 		cin >> shopInput;
@@ -48,15 +51,16 @@ void displayShopMenu(Setup& setup) {
 			break;
 		case 5:
 			inShop = false;
-			cout << "\n\tYou leave the shop.\n";
 			break;
 		}
 	}
+	shopkeeperNPC.printLines(5, setup);
+	return -1;
 }
 
 //function for secondary shop menu
 void displayType(Setup& setup, ItemType type) {
-	cout << "\n\t " << (type == WEAPON ? "Weapons" : type == POTION ? "Potions" : "Magic Items") << ": \n" << endl;
+	cout << "\n " << (type == WEAPON ? "Weapons" : type == POTION ? "Potions" : "Magic Items") << ": \n" << endl;
 
 	for (const auto& pair : setup.shopInventory) {
 
@@ -70,13 +74,16 @@ void displayType(Setup& setup, ItemType type) {
 			}
 	}
 
-	cout << "0. Back\n";
+	cout << "0. Back\n\n";
 
 	int userChoice;
 	cin >> userChoice;
 
 	if (userChoice != 0) {
 		purchaseItem(setup, userChoice);
+	}
+	if (userChoice == 0) {
+		shopkeeperNPC.printLines(2, setup);
 	}
 }
 
@@ -116,7 +123,9 @@ void purchaseItem(Setup& setup, int itemID) {
 	it->second--;
 
 	cout << "\nYou bought: " << item.name << "!\n";
-	cout << "Gold remaining: " << mP.getOwnedGold() << "\n";
+	cout << "\nGold remaining: " << mP.getOwnedGold() << "\n";
+
+	shopkeeperNPC.printLines(4, setup);
 }
 
 //function to sell items from player's inventory
@@ -126,7 +135,7 @@ void sellItem(Setup& setup) {
 	player& mP = setup.mainPlayer;
 
 	if (pInv.empty()) {
-		cout << "\nYou have nothing to sell\n";
+		cout << "\nLooks like you don't have anything to sell.\n";
 		return;
 	}
 
@@ -155,7 +164,7 @@ void sellItem(Setup& setup) {
 	auto it = pInv.find(userChoice);
 
 	if (it == pInv.end()) {
-		cout << "\nitem does not exist\n";
+		cout << "\n[item does not exist]\n";
 		return;
 	}
 
@@ -170,4 +179,6 @@ void sellItem(Setup& setup) {
 	setup.shopInventory[userChoice]++;
 
 	cout << "\nYou sold: " << item.name << "!\n";
+
+	mP.modifyGold(+item.value);
 }

@@ -16,10 +16,10 @@ using namespace std;
 
 
 //This plays out the entire Battle Sequence and uses the functions above-------------
-int enterBattle(Setup& setup) {
+int enterBattle(Setup& setup, enemy* customEnemy = nullptr) {
 	//create instance of player and enemy, where enemy is chosen at random
 	player& plyr = setup.mainPlayer;
-	enemy* Enemy = choose_enemy();
+	enemy* Enemy = (customEnemy != nullptr) ? customEnemy : choose_enemy();
 
 	cout << endl << left << setw(50) << " " << "You encountered an Enemy!" << endl;
 	//while loop that runs the game as long as both the enemy and the player are alive
@@ -122,7 +122,6 @@ bool battle_choices(Setup& setup, int user_choice, player& plyr, enemy& Enemy) {
 			int damage = plyr.getStrength() + chosenAttack.damagedone;
 			damage = Enemy.damageReduce(damage);
 			Enemy.loseHealth(damage);
-			plyr.loseHealth(damage);
 			plyr.attackDialogue(chosenAttack.dialogue);
 			cout << endl << "The " << Enemy.getName() << " only takes " << damage << " damage. There defense is now reduced to " << Enemy.getDefense() << "\n\n" << endl;
 		}
@@ -165,14 +164,14 @@ int enemyAction(enemy& enemy, player& plyr) {
 		takesaction = 1;
 		action = true;
 	}
-	if (!action && choice <= 40) {//40% chance to heal
+	if (!action && choice <= 20) {//40% chance to heal
 		enemy.healDialogue();
 		cout << endl << "The " << enemy.getName() << " heals itself by 10 points." << endl;
 		enemy.gainHealth(10);//health goes up by ten, subject to change
 		takesaction = 3;
 		action = true;
 	}
-	if (!action) {//50% chance to attack
+	if (!action) {//70% chance to attack
 		attackMoves& movefrmenemy = enemy.randattackmove();
 		cout << endl << enemy.getName() << " uses " << movefrmenemy.name << endl;
 		enemy.attackDialogue(movefrmenemy.dialogue);

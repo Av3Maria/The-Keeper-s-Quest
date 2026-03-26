@@ -1,27 +1,38 @@
 #pragma once
-#include "character.h"
+#include "Setup.h"
+#include "character.h" 
+#include "enemy.h"
 #include <vector>
 #include <string>
 using namespace std;
 
-int chat();
+class Setup;
+
+int chat(Setup& setup);
+
+enum NodeType {
+	NORMAL,
+	START_BATTLE,
+	OPEN_SHOP,
+	BEGGAR_DROP
+};
 
 class dialogueNode {
 public:
 	string npcDialogue;
 	string playerChoice;
 	vector<int> nextDialogue;
+	NodeType type;
 	dialogueNode();
-	dialogueNode(string npcLines, string playerOptions, vector<int> nextList);
+	dialogueNode(string npcLines, string playerOptions, vector<int> nextList, NodeType nType);
 };
 
-class talkingNPC :public character
-{
+class talkingNPC : public character {
 protected:
 	vector<dialogueNode> dialogueTree;
 public:
 	talkingNPC(int size, string name);
-	void printLines(int currentLine);
+	void printLines(int currentLine, Setup& setup);
 
 };
 
@@ -50,12 +61,18 @@ public:
 	Townsfolk();
 };
 
+class Farmer : public talkingNPC {
+public:
+	Farmer();
+};
+
 class Knight : public talkingNPC {
 public:
 	Knight();
 };
 
-class Farmer : public talkingNPC {
+class KnightEnemy : public enemy {
 public:
-	Farmer();
+	KnightEnemy();
 };
+

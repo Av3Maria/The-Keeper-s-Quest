@@ -34,7 +34,7 @@ int main() {
             refresh(); //delete later
             break;
         case 2:
-            enterBattle(s);
+            enterBattle(s, nullptr);
             refresh();
             break;
         case 3:
@@ -45,7 +45,7 @@ int main() {
             refresh(); //delete later
             break;
         case 5:
-            chat();
+            chat(s);
 			refresh(); //delete later
             break;
         case 6:

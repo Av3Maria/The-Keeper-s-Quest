@@ -23,11 +23,10 @@ player::player() : character("Player", 100, 18, 10) {
         "Exhausted, you can no longer fight. You make the decision to retreat, looks like the enemy will win this one."
     };
 
-    healLines = {
-        "Tired from the attacks thrown at you, you reach into your pouch and take out a red potion, hoping it will give you the energy to keep going.",
-        "New wounds cover your body, but adrenaline kicks in, allowing you to ignore most of the damage.",
-        "You drink a healing potion, and your body slowly begins to recover, stitching wounds and easing pain.",
-        "Potions become your best friend. You take out a vial of red liquid, drink it, and watch as your cuts begin to close. A strange, almost magical sensation fills you."
+    healingOptions = {//{"name", type, cooldown time, turns left, base healing, health points per turn, how long it lasts}
+         { 14, "Small Potion", Potion, 2, 0, 0, 4, 3, 2, {"Tired from the attacks thrown at you, you reach into your pouch and take out a red potion, hoping it will give you the energy to keep going."}},
+         { 15, "Large Potion", Potion, 3, 0, 0, 6, 3, 1, {"You drink a healing potion, and your body slowly begins to recover, stitching wounds and easing pain."}}
+
     };
 
     dieLines = {
@@ -52,7 +51,7 @@ player::player() : character("Player", 100, 18, 10) {
     };
     inventoryW.push_back(WoodenSword);
     inventoryW.push_back(WoodenBow);
-    equippedWeapon = &inventoryW[0];
+    equippedIndex = 0;
     
 }
 
@@ -60,7 +59,7 @@ void player::showInventory() {
     cout << endl << "Inventory Options: " << endl;
     for (int i = 0; i < inventoryW.size(); i++) {
         cout << i + 1 << ". " << inventoryW[i].name;
-        if (&inventoryW[i] == equippedWeapon) {
+        if (i == equippedIndex) {
             cout << " is equipped";
         }
         cout << endl;
@@ -87,39 +86,130 @@ void player::addToInventory(Setup& setup, int itemID) {
 
 	cout << endl << "You added: " << item.name << " to your inventory." << endl;
 }*/
-void player::equipWeapon(Setup& setup, int itemID) {
+void player::equipWeapon(int inventoryIndex) {
 
-	const Item& item = setup.itemDatabase[itemID];
-
-    if (!item.equippable) {
-        cout << "\n\tthis item cannot be equipped\n";
-		return;
+    if (inventoryIndex < 0 || inventoryIndex >= inventoryW.size()) {
+        cout << "\nSorry, you can't choose that." << endl;
+        return;
     }
-    
 
-
-    Weapon newWeapon;
-    newWeapon.name = item.name;
-
-    inventoryW.push_back(newWeapon);
-
-	equippedWeapon = &inventoryW.back();
-
-    cout << "Equipped Weapon: " << item.name << endl;
-    
+    cout << "\nUnequipping " << inventoryW[equippedIndex].name << endl;
+    equippedIndex = inventoryIndex; // set new equipped weapon
+    cout << "\nEquipped Weapon: " << inventoryW[equippedIndex].name << endl;
 }
 
 vector<attackMoves>& player::getcurrentAttacks() {
-    static vector<attackMoves> emptyAttacks;
-    if (equippedWeapon) {
-        return equippedWeapon->currentAttacks;
-    }
-    else {
-        return emptyAttacks;
+    static vector<attackMoves> empty;
+    if (!inventoryW.empty()) {
+        Weapon& currentWeapon = inventoryW[equippedIndex];
+        return currentWeapon.currentAttacks;
+    }else {
+        return empty;
     }
 }
 
 //funciton to get players name----------
 string player::getName() {
     return "player";
+}
+
+void player::useHealingOption(int index) {
+    if (index < 0 || index >= healingOptions.size()) return;
+    HealOption& potion = healingOptions[index];
+    // Apply healing
+    gainHealth(potion.baseHeal);
+    if (potion.healAmountPerTurn > 0)
+        slowTurnEffect_Logic(potion.name, potion.healAmountPerTurn, potion.durationTime);
+
+    cout << "You used " << potion.name << "! Your health goes up to " << getHealth() << ".\n";
+
+    // Set cooldown AFTER using
+    potion.turnRemaining = potion.optionCooldown;
+}
+
+vector<HealOption>& player::getHealingOptions() {
+    return healingOptions;
+}
+
+void player::updateHealingCooldown() {
+    for (HealOption& heal : healingOptions) {
+        if (heal.turnRemaining > 0) {
+            heal.turnRemaining -= 1;
+        }
+    }
+}
+
+void player::showHeallingOpt() {
+    cout << "Inventory Options: " << endl;
+    for (int i = 0; i < healingOptions.size(); i++) {
+        cout << i + 1 << ". " << healingOptions[i].name;
+        if (healingOptions[i].turnRemaining > 0) {
+            cout << " has" << healingOptions[i].turnRemaining << " turns remaining.";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void player::syncWeapons(player& plyr, Setup& setup) {
+    plyr.inventoryW.clear();
+    if (!plyr.inventoryW.empty()) {
+        plyr.equippedIndex = 0;
+    }
+
+    // populate inventoryW from inventory
+    for (const auto& pair : plyr.inventory) {
+        int itemID = pair.first;
+        const Item& item = setup.itemDatabase[itemID];
+
+        if (item.type == WEAPON) {
+            Weapon w;
+            w.name = item.name;
+
+            const weaponTemp& temp = setup.itemTemplates[itemID];
+            for (int i = 0; i < temp.attackNames.size(); i++) {
+                attackMoves a;
+                a.name = temp.attackNames[i];
+                a.damagedone = temp.baseDamage[i];
+                a.dialogue = { temp.dialogue[i] };
+                w.currentAttacks.push_back(a);
+            }
+
+            plyr.inventoryW.push_back(w);
+
+            if (!plyr.inventoryW.empty()) {
+                plyr.equippedIndex = 0; // auto-equip first weapon
+            }
+        }
+    }
+}
+
+HealOption& player::getPotionFromItemID(int itemID) {
+    for (HealOption& heal : healingOptions) {
+        if (heal.itemID == itemID) {  // we need to add `itemID` field to HealOption
+            return heal;
+        }
+    }
+    throw std::runtime_error("Potion not found for itemID!");
+}
+
+void player::syncPotion(player& plyr, Setup& setup, int itemID) {
+    if (plyr.inventory[itemID] <= 0) {
+        cout << "You don't have that potion!\n";
+        return;
+    }
+    for (int i = 0; i < plyr.getHealingOptions().size(); i++) {
+        if (plyr.getHealingOptions()[i].itemID == itemID) {
+
+            plyr.useHealingOption(i);
+
+            // remove from inventory
+            plyr.inventory[itemID]--;
+            if (plyr.inventory[itemID] == 0)
+                plyr.inventory.erase(itemID);
+
+            return;
+        }
+    }
+    cout << "Potion not found.\n";
 }

@@ -4,7 +4,10 @@ void Setup::initializeItems() {
 	//ID, name, price/value, equippable
 	
 	// Initialize the item database with some items
-
+	mainPlayer.setGold(100);
+	mainPlayer.inventory[1] = 1;
+	mainPlayer.inventory[7] = 1;
+	mainPlayer.inventory[14] = 2;
 //swords
 	itemDatabase[1] = { 1, "Wooden Sword", 50, WEAPON, true }; 
 	itemDatabase[2] = { 2, "Iron Sword", 100, WEAPON, true };
@@ -55,3 +58,63 @@ void Setup::initializeItems() {
 	mainPlayer.setGold(500);
 }
 
+// Setup.cpp
+
+Weapon createWeapon(const weaponTemp& temp, const string& weaponName, const vector<int>& damages) {
+	Weapon w;
+	w.name = weaponName;
+	for (int i = 0; i < temp.attackNames.size(); i++) {
+		attackMoves a;
+		a.name = temp.attackNames[i];
+		a.damagedone = damages[i];    // damage specific to this weapon
+		a.dialogue = temp.dialogue;   // shared dialogue for weapon type
+		w.currentAttacks.push_back(a);
+	}
+	return w;
+}
+
+Setup::Setup() {
+	// sword template
+	swordTemp = {
+		"Sword",
+		{"You attack the enemy with great force, your blade striking its body.",
+		 "With surprising agility, you strike the enemy with your blade. Landing a hit on its side, you quickly follow up with another as it is distracted."},
+		{0, 0}, // placeholder, actual damage per weapon in weaponDamage
+		{"Sword Strike", "Double Slash"}
+	};
+
+	// bow template
+	bowTemp = {
+		"Bow",
+		{"Choosing to attack with your bow, you draw the string close to your ear, aim carefully, and release an arrow that hits directly in the target's chest.",
+		 "With your bow, you hit the enemy's limb. With a cry, it is left hobbling and disoriented."},
+		{0, 0}, // placeholder
+		{"Piercing Shot","Glancing Arrow"}
+	};
+
+	lastingEffectTemp = {
+		"Lasting Damage",
+		{"As your weapon hits the enemy, you see the effects instantly. Damage starts racking the monsters body, and you know it will last longer than the other cuts.",
+		"Your weapon strikes the monster right in the chest. Thats going to hurt, hopefully for a few more turns."},
+		{0,0},
+		{"Splintering Strike", "Everlasting Fracture"}
+	};
+
+	// map itemIDs to templates
+	itemTemplates = {
+		{1, swordTemp}, {2, swordTemp}, {3, swordTemp}, {4, swordTemp}, {5, lastingEffectTemp}, {6, lastingEffectTemp}, {7, bowTemp}, {8, bowTemp}, {9, bowTemp}
+	};
+
+	// assign weapon-specific damage
+	weaponDamage = {
+		{1, {12, 20}}, // Wooden Sword
+		{2, {15, 25}}, // Iron Sword
+		{3, {25, 40}}, // Unbreakable Sword
+		{4, {8, 12}},  // Basic Dagger
+		{5, {10, 18}}, // Poison Dagger
+		{6, {12, 22}}, // Fire Dagger
+		{7, {13, 12}}, // Wooden Bow
+		{8, {18, 15}}, // Hunter Bow
+		{9, {25, 22}}  // Elven Bow
+	};
+}

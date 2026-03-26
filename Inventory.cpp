@@ -125,7 +125,7 @@ void equipItem(Setup& setup, int itemID) {
 		return;
 	}
 	if (item.type == WEAPON) {
-		mP.equipWeapon(setup, itemID);
+		//mP.equipWeapon(setup, itemID);
 		cout << "\n\tYou equipped: " << item.name << endl;
 	}
 	else if (item.type == MAGIC_ITEM) {

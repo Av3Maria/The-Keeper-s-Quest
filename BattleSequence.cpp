@@ -14,27 +14,78 @@
 #include "Inventory.h"
 using namespace std;
 
+//Check Player health before battle-----------------------------------------------------------------
+bool HealthCheck(player& plyr) {
+	int healthcurr = plyr.getHealth();
+
+	cout << "\nBefore entering battle it is best to see how you feel. This is your current health status: " << healthcurr << endl;
+	if (healthcurr <= 50) {
+		cout << "Since your health is low right now I suggest taking a minute to heal up just in case there is a really tough enemy up ahead." << endl;
+		cout << endl;
+	}
+	else if (healthcurr < 100) {
+		cout << "You have enough health to sway the battle. Although you are not at your best strength." << endl;
+		cout << endl;
+	}
+	else {
+		cout << "Your strength will be of no issue, but I cannot say the same for your decisions during battle." << endl;
+		cout << endl;
+	}
+	cout << "Do you still wish to proceede with the way you are? You are allowed to avoid this battle. (Enter: 1 = Yes, 2 = No)" << endl;
+	int choice;
+	cin >> choice;
+	return (choice == 1);
+}
 
 //This plays out the entire Battle Sequence and uses the functions above-------------
-int enterBattle(Setup& setup, enemy* customEnemy = nullptr) {
+int enterBattle(Setup& setup, enemy* customEnemy) {
 	//create instance of player and enemy, where enemy is chosen at random
 	player& plyr = setup.mainPlayer;
-	enemy* Enemy = (customEnemy != nullptr) ? customEnemy : choose_enemy();
+
+	plyr.syncWeapons(plyr, setup);
+
+	// Ensure player has a weapon equipped after syncing
+	if (plyr.inventoryW.empty()) {
+		cout << "Warning: player has no weapons!" << endl;
+	}
+	else if (plyr.equippedIndex >= plyr.inventoryW.size()) {
+		plyr.equippedIndex = 0;
+	}
+
+	// Reset all potion cooldowns
+	for (HealOption& heal : plyr.getHealingOptions()) {
+		heal.turnRemaining = 0;
+	}
+
+	if (!HealthCheck(plyr)) {
+		cout << "You decide to run from this fight." << endl;
+		return 0;
+	}
+	system("cls");
+
+	enemy* Enemy = choose_enemy();
 
 	cout << endl << left << setw(50) << " " << "You encountered an Enemy!" << endl;
 	//while loop that runs the game as long as both the enemy and the player are alive
 	while (plyr.isAlive() && Enemy->isAlive()) {
 		print_stats(plyr, *Enemy);//visual for the player to see the stats of them and the enemy
 		int  choice = print_battlemenu(plyr);//print choices for the player to pick from, return choice
-		bool continueFight = battle_choices(setup, choice, plyr, *Enemy);//choice is taken into account for player
+		
+		BattleResults result = battle_choices(setup, choice, plyr, *Enemy);
 
 		if (!Enemy->isAlive()) {//if enemy dies end loop
 			Enemy->dieDialogue();
-		}
-		if (!continueFight) {//if player runs, end loop
 			break;
 		}
+		if (result == EndBattle) {
+			break;
+		}
+		if (result == IgnoreAction) {
+			continue;
+		}
 		int enemyResult = enemyAction(*Enemy, plyr);// enemy chocie is chosen through probability
+		plyr.updateHealingCooldown();
+		plyr.slowTurnEffect_Use();
 		if (!enemyResult) {//if enemy runs end loop
 			cout << endl << "Enemy chooses to run!" << endl;
 			break;
@@ -88,6 +139,34 @@ int print_battlemenu(player& plyr) {
 		cin >> attackchoice;
 		return 100 + (attackchoice - 1);
 	}
+	if (choice == 2) {
+		cout << endl << "Choose a healing option you would like to do: " << endl;
+		vector<HealOption>& healing = plyr.getHealingOptions();
+		vector<int> validIndices;
+		for (int i = 0; i < healing.size(); i++) {
+			int itemID = healing[i].itemID;
+
+			if (plyr.inventory[itemID] <= 0) continue;
+
+			validIndices.push_back(i);
+
+			cout << validIndices.size() << ". " << healing[i].name;
+			cout << " (x" << plyr.inventory[itemID] << ")";
+
+			if (healing[i].turnRemaining > 0)
+				cout << " - Cooldown: " << healing[i].turnRemaining;
+
+			cout << endl;
+		}
+		int healthChoice;
+		cin >> healthChoice;
+		if (healthChoice > 0 && healthChoice <= validIndices.size()) {
+			return 200 + validIndices[healthChoice - 1];
+		}
+		else {
+			return -1;
+		}
+	}
 	return choice;
 }
 
@@ -108,10 +187,37 @@ int print_stats(player& plyr, enemy& enmy) {
 }
 
 //function to take the player choice and run through it / execute it-------------
-bool battle_choices(Setup& setup, int user_choice, player& plyr, enemy& Enemy) {
+BattleResults battle_choices(Setup& setup, int user_choice, player& plyr, enemy& Enemy) {
 	int damage;
 
 	//player chooses to attack
+	if (user_choice >= 200) {
+		system("cls");
+		int healIndex = user_choice - 200;
+		vector<HealOption>& heals = plyr.getHealingOptions();
+
+		// Check index validity
+		if (healIndex >= 0 && healIndex < heals.size()) {
+			HealOption& chosenPotion = heals[healIndex];
+
+			if (plyr.inventory[chosenPotion.itemID] <= 0) {
+				cout << "You have none left of " << chosenPotion.name << "!\n";
+			}
+			else {
+				plyr.useHealingOption(healIndex);
+				// Reduce inventory count
+				plyr.inventory[chosenPotion.itemID]--;
+				// remove if it hits 0
+				if (plyr.inventory[chosenPotion.itemID] == 0) {
+					plyr.inventory.erase(chosenPotion.itemID);
+				}
+			}
+		}
+		else {
+			cout << "Invalid potion choice.\n";
+		}
+		return continueTurn;
+	}
 	if (user_choice >= 100) {
 		system("cls");
 		int attackIndex = user_choice - 100;
@@ -122,36 +228,65 @@ bool battle_choices(Setup& setup, int user_choice, player& plyr, enemy& Enemy) {
 			int damage = plyr.getStrength() + chosenAttack.damagedone;
 			damage = Enemy.damageReduce(damage);
 			Enemy.loseHealth(damage);
+
+			if (!chosenAttack.effectName.empty() && chosenAttack.effectAmount != 0 && chosenAttack.effectDuration > 0) {
+				Enemy.slowTurnEffect_Logic(
+					chosenAttack.effectName,
+					chosenAttack.effectAmount,
+					chosenAttack.effectDuration
+				);
+				cout << Enemy.getName() << " is now affected by " << chosenAttack.effectName << " for "
+					<< chosenAttack.effectDuration << " turns!\n";
+			}
+
 			plyr.attackDialogue(chosenAttack.dialogue);
 			cout << endl << "The " << Enemy.getName() << " only takes " << damage << " damage. There defense is now reduced to " << Enemy.getDefense() << "\n\n" << endl;
 		}
-		return plyr.isAlive() && Enemy.isAlive();
+		//return plyr.isAlive() && Enemy.isAlive();
+		return continueTurn;
 	}
 	else {
 		switch (user_choice) {
-		case 2://player chooses to heal
-			system("cls");
-			plyr.healDialogue();
-			cout << "You Chose to Heal, Health Goes Up By 15." << endl;
-			plyr.gainHealth(15);//when healing, defense is reduced by 5 points
-			break;
 		case 3://player chooses to run
 			system("cls");
 			cout << "You Chose to Run!" << endl;
 			plyr.runDialogue();
-			return false;
+			//return false;
+			return EndBattle;
 			break;
 		case 4:
 			system("cls");
-			manageInventory(setup);
-			cout << endl << "Choose a Weapon for the battle: " << endl;
-			int weaponChoice;
-			cin >> weaponChoice;
-			//plyr.equipWeapon(weaponChoice - 1);
+			cout << "\nYour current weapons: " << endl;
+			for (int i = 0; i < plyr.inventoryW.size(); i++) {
+				cout << i + 1 << ". " << plyr.inventoryW[i].name;
+				if (i == plyr.equippedIndex) {   // <-- use index, not pointer
+					cout << " Equipped";
+				}
+				cout << endl;
+			}
+			cout << "\nSelect a weapon to equip: ";
+			int choice;
+			cin >> choice;
+			choice -= 1; // convert to 0-based index
+
+			if (choice >= 0 && choice < plyr.inventoryW.size()) {
+				int previousIndex = plyr.equippedIndex;  // save old weapon
+				plyr.equippedIndex = choice;             // equip new weapon
+
+				if (previousIndex >= 0 && previousIndex < plyr.inventoryW.size()) {
+					cout << "\nUnequipping " << plyr.inventoryW[previousIndex].name << endl;
+				}
+				cout << "Equipped Weapon: " << plyr.inventoryW[plyr.equippedIndex].name << endl;
+			}
+			else {
+				cout << "\nInvalid choice!\n";
+			}
+			return IgnoreAction;
 			break;
 		}
 	}
-	return plyr.isAlive() && Enemy.isAlive();
+	return continueTurn;
+	// return plyr.isAlive() && Enemy.isAlive();
 }
 
 //function for enemy actions-------------
@@ -180,6 +315,13 @@ int enemyAction(enemy& enemy, player& plyr) {
 		enemyDamage = plyr.damageReduce(enemyDamage);
 		plyr.loseHealth(enemyDamage);
 		cout << endl << "You take " << enemyDamage << " damage." << endl;
+		if (movefrmenemy.effectDuration > 0) {
+			plyr.slowTurnEffect_Logic(
+				movefrmenemy.effectName,
+				movefrmenemy.effectAmount,
+				movefrmenemy.effectDuration
+			);
+		}
 		takesaction = 2;
 		action = true;
 	}

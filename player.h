@@ -13,28 +13,56 @@ struct Weapon {
 	vector<attackMoves> currentAttacks;
 };
 
+enum HealingOptionType {
+	Potion,  //option 0
+	Bandage, //option 1
+	Spell    //option 2
+};
+
+struct HealOption {
+	int itemID;
+	string name;
+	HealingOptionType type;
+	int optionCooldown;
+	int turnRemaining;
+	int baseHeal;
+	int healAmountPerTurn;
+	int durationTime;
+	int quantity;
+	vector<string> dialogue;
+};
+
+enum InventorySlots {
+	WeaponSlot,
+	NumberofSlots
+};
 
 class player : public character {
 protected:
 	
 	int ownedGold = 0;
-
+	vector<HealOption> healingOptions;
 public:
 	unordered_map<int, int> inventory;
 
 	vector<Weapon> inventoryW;
-	Weapon* equippedWeapon = nullptr;
-	//int equippedWeapon;
+	//Weapon* equippedWeapon = nullptr;
+	int equippedIndex = 0;
 
 	//constructor for player class------
 	player();
 	//function to get player name------
 	string getName() override;
+	vector<HealOption>& getHealingOptions();
 	vector<attackMoves>& getcurrentAttacks();
 	void showInventory();
-
-	//void addToInventory(Setup& setup, int itemID);
-	void equipWeapon(Setup& setup, int itemID);
+	void useHealingOption(int index);
+	void updateHealingCooldown();
+	void syncWeapons(player& plyr, Setup& setup);
+	void syncPotion(player& plyr, Setup& setup, int itemID);
+	HealOption& getPotionFromItemID(int itemID);
+	void equipWeapon(int inventoryIndex);
+	void showHeallingOpt();
 
 	int getOwnedGold() const;
 	void setGold(int amt);

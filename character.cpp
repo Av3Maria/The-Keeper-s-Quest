@@ -1,4 +1,4 @@
-#include "Setup.h"
+//#include "Setup.h"
 #include "character.h"
 #include <iostream>
 #include <string>
@@ -11,6 +11,56 @@ character::character(const string& n, int h, int stg, int def)
 
 vector<attackMoves>& character::getAttacks() {
 	return attacks;
+}
+
+void character::slowTurnEffect_Logic(const string& name, int amount, int turns) {
+	// Check if effect already exists
+	for (auto& effect : currentEffect) {
+		if (effect.name == name) {
+			// refresh duration instead of stacking
+			effect.turnsRemain = turns;
+			return;
+		}
+	}
+	slowTurnEffect currenteffect;
+	currenteffect.name = name;
+	currenteffect.amountinTurn = amount;
+	currenteffect.turnsRemain = turns;
+	currenteffect.active = true;
+	currentEffect.push_back(currenteffect);
+}
+
+void character::slowTurnEffect_Use() {
+	for (int i = 0; i < currentEffect.size();) {
+		slowTurnEffect& useEffect = currentEffect[i];
+
+		if (!useEffect.active) {
+			i++;
+			continue;
+		}
+
+		if (useEffect.amountinTurn > 0) {
+			int beforeturnheal = getHealth();
+			gainHealth(useEffect.amountinTurn);
+			int healedafter = getHealth() - beforeturnheal;
+			cout << useEffect.name << " restores " << healedafter << " health." << endl;
+		}
+		else {
+			int beforeturnheal = getHealth();
+			loseHealth(-useEffect.amountinTurn);
+			int losthealthafter = beforeturnheal - getHealth();
+			if (losthealthafter > 0) {
+				cout << useEffect.name << " does " << losthealthafter << " damage." << endl;
+			}
+		}
+		useEffect.turnsRemain -= 1;
+		if (useEffect.turnsRemain <= 0) {
+			currentEffect.erase(currentEffect.begin() + i);
+		}
+		else {
+			i++;
+		}
+	}
 }
 
 //function, once character is creasted automatically set to true------------

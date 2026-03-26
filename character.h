@@ -11,6 +11,16 @@ struct attackMoves {
 	string name;
 	int damagedone;
 	vector<string> dialogue;
+	string effectName = "";
+	int effectAmount = 0;
+	int effectDuration = 0;
+};
+
+struct slowTurnEffect {
+	string name;
+	int amountinTurn;
+	int turnsRemain;
+	bool active = true;
 };
 
 //function to randomize choices, in this case it is used to chose enemy for battle-------------
@@ -25,6 +35,7 @@ protected:
 	
 	string name;
 	vector<attackMoves> attacks;
+	vector<slowTurnEffect> currentEffect;
 public:
 //start as 50
 	int health;
@@ -34,6 +45,8 @@ public:
 	//constructor, initialize name, strength, health, and defense for each character------------
 	character(const string& n = " ", int h = 50, int stg = 50, int def = 50);
 	virtual ~character() = default;
+	void slowTurnEffect_Logic(const string& name, int amount, int turns);
+	void slowTurnEffect_Use();
 
 	vector<attackMoves>& getAttacks();
 	//function, once character is creasted automatically set to true------------

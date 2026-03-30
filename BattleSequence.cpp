@@ -63,7 +63,7 @@ int enterBattle(Setup& setup, enemy* customEnemy) {
 	}
 	system("cls");
 
-	enemy* Enemy = choose_enemy();
+	enemy* Enemy = (customEnemy != nullptr) ? customEnemy : choose_enemy();
 
 	cout << endl << left << setw(50) << " " << "You encountered an Enemy!" << endl;
 	//while loop that runs the game as long as both the enemy and the player are alive

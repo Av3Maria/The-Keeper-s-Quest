@@ -1,6 +1,28 @@
+#include "Setup.h"
+#include "player.h"
 #include "SaveGame.h"
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <istream>
+#include <string>
+using namespace std;
+
+namespace fs = std::filesystem;
 
 void saveGame(Setup& s, string fileName) {
+	bool fileExists = fs::exists(fileName);
+
+	if (fileExists) {
+		char userChoice;
+		cout << "\n\tA save file with this name already exists. Do you want to overwrite it? (y/n): ";
+		cin >> userChoice;
+		if (userChoice != 'y' && userChoice != 'Y') {
+			cout << "\n\t[save cancelled]" << endl;
+			return;
+		}
+	}
+
 	ofstream file(fileName);
 
 	if (!file) {
@@ -19,6 +41,8 @@ void saveGame(Setup& s, string fileName) {
 		file << pair.first << " " << pair.second << endl;
 	}
 
+	//add location save
+
 	file.close();
 	cout << "\n\t[game saved as " << fileName << "]" << endl;
 	return;
@@ -35,16 +59,22 @@ void loadGame(Setup& s, string fileName) {
 	file >> s.mainPlayer.health;
 	file >> s.mainPlayer.defense;
 	file >> s.mainPlayer.strength;
-	file >> s.mainPlayer.getOwnedGold();
+
+	int gold;
+	file >> gold;
+	s.mainPlayer.setGold(gold);
 
 	size_t inventorySize;
 	file >> inventorySize;
+	s.mainPlayer.inventory.clear();
 	for (size_t i = 0; i < inventorySize; ++i) {
-		string itemName;
+		int itemID;
 		int itemQuantity;
-		file >> itemName >> itemQuantity;
-		s.mainPlayer.inventory[itemName] = itemQuantity;
+		file >> itemID >> itemQuantity;
+		s.mainPlayer.inventory[itemID] = itemQuantity;
 	}
+
+	//add location load
 
 	file.close();
 	cout << "\n\t[game loaded from " << fileName << "]" << endl;
@@ -54,9 +84,8 @@ void loadGame(Setup& s, string fileName) {
 string getFileName(string prompt) {
 	string fileName;
 	cout << prompt;
-	cin.ignore(numeric_limits<streamsize>::max(), '\n');
-	getline(cin, fileName);
-	fileName += ".sav";
+	getline(cin >> ws, fileName);
+	fileName += ".saveFile";
 	return fileName;
 }
 
@@ -66,7 +95,7 @@ vector<string> listSaveFiles() {
 	for (const auto& entry : fs::directory_iterator(".")) {
 		string name = entry.path().filename().string();
 
-		if (name.find(".sav") != string::npos) {
+		if (entry.path().extension() == ".saveFile") {
 			saveFiles.push_back(name);
 		}
 	}

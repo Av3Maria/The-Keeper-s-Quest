@@ -1,5 +1,5 @@
 #include <iostream>
-#include <iomanip>
+#include <string>
 #include "Setup.h"
 #include "BattleSequence.h"
 #include "talkingNPC.h"
@@ -8,13 +8,15 @@
 #include "SaveGame.h"
 using namespace std;
 
-bool on = true;
+bool gameRunning = true; //for the menu loop, set to false when user wants to quit the game
+string currentSaveFile = ""; //to keep track of current save file
 
 //function prototypes
 int printMenu();
 int returnToOverworld();
-int quitGame();
+int quitGame(Setup& s);
 void refresh();
+
 
 int main() {
 
@@ -22,7 +24,8 @@ int main() {
 	s.initializeItems();
 
     int isSaveGame;
-	cout << "1. New Game\n2. Load Game" << endl;
+	cout << "Welcome to our game!" << endl;
+	cout << "\n1. New Game\n2. Load Game" << endl;
 	cin >> isSaveGame;
 
     if (isSaveGame == 2) {
@@ -31,12 +34,14 @@ int main() {
         if (fileName != "") {
             loadGame(s, fileName);
         }
+
+        currentSaveFile = fileName;
     }
     else {
 		cout << "\n\t Starting New Game..." << endl;
     }
 
-    while (on) { //while loop to handle user input and menu selection
+    while (gameRunning) { //while loop to handle user input and menu selection
         printMenu();
 
         int userInput;
@@ -63,22 +68,27 @@ int main() {
             chat(s);
 			refresh(); //delete later
             break;
-        case 6: {
-            string fileName = getFileName(" Enter a name for your save file: ");
-            saveGame(s, fileName);
-            refresh();
-            break;
-        }
-        case 7: {
-			string fileName = chooseSaveFile();
-            if (fileName != "") {
-                loadGame(s, fileName);
+        case 6: { //save current game
+            if (currentSaveFile == "") {
+                cout << "\n\t [no save file found, please create a new save file]" << endl;
+                break;
+            }
+            else {
+                saveGame(s, currentSaveFile);
             }
             refresh();
             break;
         }
+        case 7: { //save new game file
+            string fileName = getFileName(" Enter a name for your save file: ");
+            currentSaveFile = fileName;
+            saveGame(s, currentSaveFile);
+            refresh();
+            break;
+        }
         case 8:
-            quitGame();
+            quitGame(s);
+            gameRunning = false;
             break;
         default:
             cout << "\n\t Invalid Number" << endl;
@@ -95,18 +105,33 @@ int printMenu() { //function to print the menu
     cout << " 3. Manage Inventory" << endl;
     cout << " 4. Enter Shop" << endl;
     cout << " 5. Talk to Someone" << endl;
-	cout << " 6. Save Game" << endl;
-	cout << " 7. Load Game" << endl;
+	cout << "\n 6. Save Game" << endl;
+	cout << " 7. Save Game As" << endl;
     cout << " 8. Quit Game" << endl;
     return 0;
 }
-int returnToOverworld() {
+int returnToOverworld() { //??
     cout << "\n\t you return to the overworld" << endl;
     return 0;
 };
-int quitGame() { //function to quit the game
+int quitGame(Setup& s) { //function to quit the game
+    char saveChoice;
+    cout << "save game before you leave? (y/n): ";
+    cin >> saveChoice;
+
+    if (saveChoice == 'y' || saveChoice == 'Y') {
+        if (currentSaveFile == "") {
+            string fileName = getFileName(" Enter a name for your save file: ");
+            currentSaveFile = fileName;
+        }
+
+		saveGame(s, currentSaveFile);
+		cout << "\n\t [game saved to " << currentSaveFile << "]" << endl;
+    }
+    else {
+        cout << "\n\t [game not saved]" << endl;
+    }
     cout << "\n\t you exit the game" << endl;
-    on = false;
     return 0;
 };
 void refresh() { //function to refresh the screen

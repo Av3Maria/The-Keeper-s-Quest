@@ -24,7 +24,7 @@ int main() {
 	s.initializeItems();
 
     int isSaveGame;
-	cout << "Welcome to our game!" << endl;
+	cout << "\n\tWelcome to our game!" << endl;
 	cout << "\n1. New Game\n2. Load Game" << endl;
 	cin >> isSaveGame;
 

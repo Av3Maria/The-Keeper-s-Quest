@@ -85,7 +85,7 @@ string getFileName(string prompt) {
 	string fileName;
 	cout << prompt;
 	getline(cin >> ws, fileName);
-	fileName += ".saveFile";
+	fileName += ".sf";
 	return fileName;
 }
 
@@ -95,7 +95,7 @@ vector<string> listSaveFiles() {
 	for (const auto& entry : fs::directory_iterator(".")) {
 		string name = entry.path().filename().string();
 
-		if (entry.path().extension() == ".saveFile") {
+		if (entry.path().extension() == ".sf") {
 			saveFiles.push_back(name);
 		}
 	}

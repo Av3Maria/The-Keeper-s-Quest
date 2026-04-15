@@ -130,6 +130,7 @@
     <ClCompile Include="mainMenu.cpp" />
     <ClCompile Include="monsterBug.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="SaveGame.cpp" />
     <ClCompile Include="Setup.cpp" />
     <ClCompile Include="Shop.cpp" />
     <ClCompile Include="talkingNPC.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="monsterBug.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="SaveGame.h" />
     <ClInclude Include="Setup.h" />
     <ClInclude Include="Shop.h" />
     <ClInclude Include="talkingNPC.h" />

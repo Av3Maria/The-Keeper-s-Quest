@@ -1,13 +1,14 @@
 #include "Setup.h"
 
 void Setup::initializeItems() {
-	//ID, name, price/value, equippable
+	//ID, name, price/value, type, equippable
 	
 	// Initialize the item database with some items
 	mainPlayer.setGold(100);
 	mainPlayer.inventory[1] = 1;
 	mainPlayer.inventory[7] = 1;
 	mainPlayer.inventory[14] = 2;
+
 //swords
 	itemDatabase[1] = { 1, "Wooden Sword", 50, WEAPON, true }; 
 	itemDatabase[2] = { 2, "Iron Sword", 100, WEAPON, true };

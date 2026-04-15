@@ -5,6 +5,7 @@
 #include "talkingNPC.h"
 #include "Inventory.h"
 #include "Shop.h"
+#include "SaveGame.h"
 using namespace std;
 
 bool on = true;
@@ -20,6 +21,20 @@ int main() {
     Setup s;
 	s.initializeItems();
 
+    int isSaveGame;
+	cout << "1. New Game\n2. Load Game" << endl;
+	cin >> isSaveGame;
+
+    if (isSaveGame == 2) {
+		string fileName = chooseSaveFile();
+
+        if (fileName != "") {
+            loadGame(s, fileName);
+        }
+    }
+    else {
+		cout << "\n\t Starting New Game..." << endl;
+    }
 
     while (on) { //while loop to handle user input and menu selection
         printMenu();
@@ -48,7 +63,21 @@ int main() {
             chat(s);
 			refresh(); //delete later
             break;
-        case 6:
+        case 6: {
+            string fileName = getFileName(" Enter a name for your save file: ");
+            saveGame(s, fileName);
+            refresh();
+            break;
+        }
+        case 7: {
+			string fileName = chooseSaveFile();
+            if (fileName != "") {
+                loadGame(s, fileName);
+            }
+            refresh();
+            break;
+        }
+        case 8:
             quitGame();
             break;
         default:
@@ -66,7 +95,9 @@ int printMenu() { //function to print the menu
     cout << " 3. Manage Inventory" << endl;
     cout << " 4. Enter Shop" << endl;
     cout << " 5. Talk to Someone" << endl;
-    cout << " 6. Quit Game" << endl;
+	cout << " 6. Save Game" << endl;
+	cout << " 7. Load Game" << endl;
+    cout << " 8. Quit Game" << endl;
     return 0;
 }
 int returnToOverworld() {

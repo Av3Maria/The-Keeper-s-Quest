@@ -36,7 +36,15 @@ void printInventoryMenu(Setup& setup) {
 	
 		for (const auto& pair : inv) {
 
-			const Item& item = setup.itemDatabase[pair.first];
+			//const Item& item = setup.itemDatabase[pair.first];
+
+			auto it = setup.itemDatabase.find(pair.first);
+			if (it == setup.itemDatabase.end()) {
+				cout << "\n\t[error: item not found in database]" << endl;
+				continue;
+			}
+
+			const Item& item = it->second;
 
 			cout << " " << index << ". " << item.name << " x" << pair.second << endl;
 
@@ -126,6 +134,18 @@ void equipItem(Setup& setup, int itemID) {
 	}
 	if (item.type == WEAPON) {
 		//mP.equipWeapon(setup, itemID);
+		//cout << "\n\tYou equipped: " << item.name << endl;
+
+		mP.syncWeapons(mP, setup);
+
+		// auto-equip correct weapon index
+		for (int i = 0; i < mP.inventoryW.size(); i++) {
+			if (mP.inventoryW[i].name == item.name) {
+				mP.equipWeapon(i);
+				break;
+			}
+		}
+
 		cout << "\n\tYou equipped: " << item.name << endl;
 	}
 	else if (item.type == MAGIC_ITEM) {

@@ -30,6 +30,9 @@ void saveGame(Setup& s, string fileName) {
 		return;
 	}
 
+	file << s.mainPlayer.getName() << endl;
+	file << s.mainPlayer.getClassType() << endl;
+	
 	file << s.mainPlayer.getHealth() << endl;
 	file << s.mainPlayer.getDefense() << endl;
 	file << s.mainPlayer.getStrength() << endl;
@@ -56,6 +59,14 @@ void loadGame(Setup& s, string fileName) {
 		return;
 	}
 
+	string name;
+	file >> name;
+	s.mainPlayer.setName(name);
+
+	string classType;
+	file >> classType;
+	s.mainPlayer.setClassType(classType);
+
 	file >> s.mainPlayer.health;
 	file >> s.mainPlayer.defense;
 	file >> s.mainPlayer.strength;
@@ -77,7 +88,12 @@ void loadGame(Setup& s, string fileName) {
 	//add location load
 
 	file.close();
+
+	s.mainPlayer.syncWeapons(s.mainPlayer, s);
+
 	cout << "\n\t[game loaded from " << fileName << "]" << endl;
+	
+	//cout << "debug: " << s.mainPlayer.getName() << ", " << s.mainPlayer.getClassType() << ", " << s.mainPlayer.getHealth() << ", " << s.mainPlayer.getDefense() << ", " << s.mainPlayer.getStrength() << ", " << s.mainPlayer.getOwnedGold() << s.mainPlayer.inventory.size() << endl;
 	return;
 }
 
@@ -102,11 +118,12 @@ vector<string> listSaveFiles() {
 	return saveFiles;
 }
 
-string chooseSaveFile() {
+string chooseSaveFile(Setup& s) {
 	vector<string> saveFiles = listSaveFiles();
 
 	if (saveFiles.empty()) {
 		cout << "\n\t[no save files found]" << endl;
+		startNewGame(s);
 		return "";
 	}
 
@@ -125,4 +142,43 @@ string chooseSaveFile() {
 	}
 
 	return saveFiles[userFile - 1];
+}
+
+void startNewGame(Setup& s) {
+	cout << "\n\t Starting New Game..." << endl;
+
+	string playerName;
+	cout << "\n\t Enter your name! : ";
+	getline(cin >> ws, playerName);
+
+	int classChoice;
+	cout << "Choose your class: ";
+	cout << "\n1.Warrior (high defense)";
+	cout << "\n2.Rogue (high health)";
+	cout << "\n3.Hunter (high strength)";
+	cout << "\n4.Sorcerer (high strength)" << endl;
+	cin >> classChoice;
+
+	string classType;
+	switch (classChoice) {
+	case 1:
+		classType = "Warrior";
+		break;
+	case 2:
+		classType = "Rogue";
+		break;
+	case 3:
+		classType = "Hunter";
+		break;
+	case 4:
+		classType = "Sorcerer";
+		break;
+	default:
+		cout << "\n\t Invalid Class Choice" << endl;
+		cout << "\n\t Defaulting to Warrior class..." << endl;
+		classType = "Warrior";
+		break;
+	}
+	player customPlayer(playerName, classType);
+	s.mainPlayer = customPlayer;
 }

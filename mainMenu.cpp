@@ -1,6 +1,8 @@
 #include <iostream>
+#include <istream>
 #include <string>
 #include "Setup.h"
+//#include "player.h"
 #include "BattleSequence.h"
 #include "talkingNPC.h"
 #include "Inventory.h"
@@ -29,7 +31,7 @@ int main() {
 	cin >> isSaveGame;
 
     if (isSaveGame == 2) {
-		string fileName = chooseSaveFile();
+		string fileName = chooseSaveFile(s);
 
         if (fileName != "") {
             loadGame(s, fileName);
@@ -38,7 +40,7 @@ int main() {
         currentSaveFile = fileName;
     }
     else {
-		cout << "\n\t Starting New Game..." << endl;
+        startNewGame(s);
     }
 
     while (gameRunning) { //while loop to handle user input and menu selection
@@ -88,7 +90,6 @@ int main() {
         }
         case 8:
             quitGame(s);
-            gameRunning = false;
             break;
         default:
             cout << "\n\t Invalid Number" << endl;
@@ -132,6 +133,8 @@ int quitGame(Setup& s) { //function to quit the game
         cout << "\n\t [game not saved]" << endl;
     }
     cout << "\n\t you exit the game" << endl;
+
+    gameRunning = false;
     return 0;
 };
 void refresh() { //function to refresh the screen

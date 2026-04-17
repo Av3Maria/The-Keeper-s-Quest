@@ -40,7 +40,7 @@ enum InventorySlots {
 
 class player : public character {
 protected:
-	
+	string classType;
 	int ownedGold = 0;
 	vector<HealOption> healingOptions;
 public:
@@ -52,8 +52,13 @@ public:
 
 	//constructor for player class------
 	player();
+	player(string charName, string charType);
 	//function to get player name------
 	string getName() override;
+	void setName(string newName);
+	string getClassType() const;
+	void setClassType(string newClassType);
+
 	vector<HealOption>& getHealingOptions();
 	vector<attackMoves>& getcurrentAttacks();
 	void showInventory();

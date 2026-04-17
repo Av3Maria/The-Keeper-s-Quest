@@ -5,9 +5,51 @@
 #include "player.h"
 using namespace std;
 
+//default constructor
+player::player() : character("Player", 100, 10, 10) {
+    name = "Player";
+    classType = "None";
+    equippedIndex = -1;
+}
 
 // Initializes player's health, strength, and defense
-player::player() : character("Player", 100, 18, 10) {
+player::player(string charName, string charType) : character(charName, 100, 18, 10) {
+
+    name = charName;
+    classType = charType;
+    equippedIndex = -1;
+
+    if (charType == "Warrior") { //high defense
+        health = 100;
+        strength = 18;
+        defense = 30;
+
+		inventory[1] = 1; //wooden sword
+    }
+    else if (charType == "Rogue") { //high health
+        health = 120;
+        strength = 15;
+        defense = 10;
+
+		inventory[4] = 1; //basic dagger
+    }
+	else if (charType == "Hunter") { //high strength
+        health = 90;
+        strength = 25;
+        defense = 8;
+
+		inventory[7] = 1; //wooden bow
+    }
+    else if (charType == "Sorcerer") { //high strength
+        health = 80;
+        strength = 30;
+        defense = 5;
+
+		inventory[10] = 1; //basic staff
+	}
+
+	inventory[14] = 2; //small health potion
+    setGold(500);
 
     attacks = {
         { "Sword Strike", 12, { "You attack the enemy with great force, your blade striking its body." } },
@@ -36,7 +78,7 @@ player::player() : character("Player", 100, 18, 10) {
         "You are struck down by the enemy's last attack. Helpless, you watch them walk away without remorse."
     };
     
-    //probaply have to change this part
+    //probably have to change this part
     Weapon WoodenSword;
     WoodenSword.name = "Wooden Sword";
     WoodenSword.currentAttacks = {
@@ -88,6 +130,11 @@ void player::addToInventory(Setup& setup, int itemID) {
 }*/
 void player::equipWeapon(int inventoryIndex) {
 
+	if (inventoryW.empty()) {
+        cout << "\nYou have no weapons to equip." << endl;
+        return;
+    }
+
     if (inventoryIndex < 0 || inventoryIndex >= inventoryW.size()) {
         cout << "\nSorry, you can't choose that." << endl;
         return;
@@ -110,7 +157,16 @@ vector<attackMoves>& player::getcurrentAttacks() {
 
 //funciton to get players name----------
 string player::getName() {
-    return "player";
+    return name;
+}
+void player::setName(string newName) {
+    name = newName;
+}
+string player::getClassType() const {
+    return classType;
+}
+void player::setClassType(string newClassType) {
+    classType = newClassType;
 }
 
 void player::useHealingOption(int index) {
@@ -153,6 +209,8 @@ void player::showHeallingOpt() {
 
 void player::syncWeapons(player& plyr, Setup& setup) {
     plyr.inventoryW.clear();
+	//plyr.equippedIndex = -1;
+
     if (!plyr.inventoryW.empty()) {
         plyr.equippedIndex = 0;
     }
@@ -179,6 +237,9 @@ void player::syncWeapons(player& plyr, Setup& setup) {
 
             if (!plyr.inventoryW.empty()) {
                 plyr.equippedIndex = 0; // auto-equip first weapon
+            }
+            else {
+                plyr.equippedIndex = -1;
             }
         }
     }

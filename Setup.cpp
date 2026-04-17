@@ -1,13 +1,8 @@
 #include "Setup.h"
+#include "player.h"
 
 void Setup::initializeItems() {
 	//ID, name, price/value, type, equippable
-	
-	// Initialize the item database with some items
-	mainPlayer.setGold(100);
-	mainPlayer.inventory[1] = 1;
-	mainPlayer.inventory[7] = 1;
-	mainPlayer.inventory[14] = 2;
 
 //swords
 	itemDatabase[1] = { 1, "Wooden Sword", 50, WEAPON, true }; 
@@ -55,8 +50,11 @@ void Setup::initializeItems() {
 	//shopInventory[17] = 1; //amulet of defense
 	//shopInventory[18] = 10; //amulet of strength
 
-
-	mainPlayer.setGold(500);
+	/* //player starting inventory
+	mainPlayer.inventory[1] = 1;
+	mainPlayer.inventory[7] = 1;
+	mainPlayer.inventory[14] = 1;
+	mainPlayer.setGold(500); */
 }
 
 // Setup.cpp

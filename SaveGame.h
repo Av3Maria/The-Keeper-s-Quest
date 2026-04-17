@@ -7,4 +7,5 @@ void saveGame(Setup& s, string fileName);
 void loadGame(Setup& s, string fileName);
 string getFileName(string prompt);
 vector<string> listSaveFiles();
-string chooseSaveFile();
+string chooseSaveFile(Setup& s);
+void startNewGame(Setup& s);

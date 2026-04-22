@@ -8,6 +8,10 @@
 #include "Inventory.h"
 #include "Shop.h"
 #include "SaveGame.h"
+#include <thread>
+#include <chrono>
+#include <cstdlib>
+
 using namespace std;
 
 bool gameRunning = true; //for the menu loop, set to false when user wants to quit the game
@@ -27,7 +31,7 @@ int main() {
 
     int isSaveGame;
 	cout << "\n\tWelcome to our game!" << endl;
-	cout << "\n1. New Game\n2. Load Game" << endl;
+	cout << "\n 1. New Game\n 2. Load Game" << endl;
 	cin >> isSaveGame;
 
     if (isSaveGame == 2) {
@@ -38,12 +42,14 @@ int main() {
         }
 
         currentSaveFile = fileName;
+
     }
     else {
         startNewGame(s);
     }
 
     while (gameRunning) { //while loop to handle user input and menu selection
+        refresh();
         printMenu();
 
         int userInput;
@@ -63,8 +69,10 @@ int main() {
             manageInventory(s);
             break;
         case 4:
+            refresh();
+            cout << "\nYou step into the shop where you recieve a friendly greeting." << endl;
+            this_thread::sleep_for(chrono::seconds(2));
             enterShop(s);
-            refresh(); //delete later
             break;
         case 5:
             chat(s);
@@ -76,7 +84,7 @@ int main() {
                 break;
             }
             else {
-                saveGame(s, currentSaveFile);
+                QuickSaveGame(s, currentSaveFile);
             }
             refresh();
             break;
@@ -101,14 +109,15 @@ int main() {
 
 //function code
 int printMenu() { //function to print the menu
-    cout << "\n 1. Return to Game" << endl;
-    cout << " 2. Enter Battle" << endl;
-    cout << " 3. Manage Inventory" << endl;
-    cout << " 4. Enter Shop" << endl;
-    cout << " 5. Talk to Someone" << endl;
-	cout << "\n 6. Save Game" << endl;
-	cout << " 7. Save Game As" << endl;
-    cout << " 8. Quit Game" << endl;
+    cout << "\n 1. Return to Overworld" << endl;
+    cout << " 2. Enter A Battle" << endl;
+    cout << " 3. Manage Your Inventory" << endl;
+    cout << " 4. Enter Shop" << endl; //name shop?
+    cout << " 5. Talk to Someone" << endl; //chamge this wordng?
+
+	cout << "\n 6. Quick Save Game" << endl; //save current game
+	cout << " 7. Save Game As" << endl; //save new game
+    cout << " 8. Quit Game" << endl; //end game session
     return 0;
 }
 int returnToOverworld() { //??
@@ -127,7 +136,7 @@ int quitGame(Setup& s) { //function to quit the game
         }
 
 		saveGame(s, currentSaveFile);
-		cout << "\n\t [game saved to " << currentSaveFile << "]" << endl;
+		//cout << "\n\t [game saved to " << currentSaveFile << "]" << endl;
     }
     else {
         cout << "\n\t [game not saved]" << endl;
@@ -138,8 +147,6 @@ int quitGame(Setup& s) { //function to quit the game
     return 0;
 };
 void refresh() { //function to refresh the screen
-    cin.ignore(numeric_limits<streamsize>::max(), '\n'); //this codeline makes sure the refresh function waits for the user's enter before refreshing
-    cout << "\n Press Enter to refresh: ";
-    cin.get(); //reads the user's enter and then refreshes
-    system("cls");
+	this_thread::sleep_for(chrono::milliseconds(500));
+	system("cls");
 }

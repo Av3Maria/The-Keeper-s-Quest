@@ -34,6 +34,11 @@ void Setup::initializeItems() {
 	itemDatabase[20] = { 20, "Amulet of Fire", 200, MAGIC_ITEM, true }; //drop somehow
 	itemDatabase[21] = { 21, "Amulet of Enduring", 500, MAGIC_ITEM, true }; // very rare drop (massive boost to health)
 
+//random magic items
+	itemDatabase[22] = { 22, "Feather Pen", 10, MAGIC_ITEM, false };
+	itemDatabase[23] = { 23, "Dragon Tooth", 100, MAGIC_ITEM, false };
+	itemDatabase[24] = { 24, "Bottle of Light", 50, MAGIC_ITEM, false };
+
 
 	// Initialize the shop inventory with item IDs and their quantities
 
@@ -47,6 +52,9 @@ void Setup::initializeItems() {
 	shopInventory[10] = 15; //basic staff
 	shopInventory[14] = 20; //small health potion
 	shopInventory[15] = 10; //large health potion
+	shopInventory[22] = 10; //feather pen
+	shopInventory[23] = 2; //dragon tooth
+	shopInventory[24] = 5; //bottle of light
 	//shopInventory[17] = 1; //amulet of defense
 	//shopInventory[18] = 10; //amulet of strength
 

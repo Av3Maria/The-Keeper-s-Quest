@@ -8,6 +8,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <thread>
+#include <chrono>
+#include <cstdlib>
 using namespace std;
 
 int chat(Setup& setup) {
@@ -36,6 +39,7 @@ talkingNPC::talkingNPC(int size, string name)
 	dialogueTree.resize(size);
 }
 void talkingNPC::printLines(int currentLine, Setup& setup) {
+	refreshNPC();
 	dialogueNode& node = dialogueTree[currentLine];
 	cout << endl;
 	cout << getName() << ": " << node.npcDialogue << endl;
@@ -446,4 +450,9 @@ KnightEnemy::KnightEnemy()
 		"The knight yields to you, saying, 'That was an good fight, I could learn a lot from you!'",
 		"'I suppose I'll overlook the rude comments from earlier...' Defeated the knight mounts his horse and finds a safer place to fight his enemies in peace."
 	};
+}
+
+void refreshNPC() { //function to refresh the screen
+	this_thread::sleep_for(chrono::milliseconds(500));
+	system("cls");
 }

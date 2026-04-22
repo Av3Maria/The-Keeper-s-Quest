@@ -10,4 +10,4 @@ void purchaseItem(Setup& setup, int itemID);
 void sellItem(Setup& setup);
 int displayShopMenu(Setup& setup);
 void displayType(Setup& setup, ItemType type);
-
+void refreshShop();

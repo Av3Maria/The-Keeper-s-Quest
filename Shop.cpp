@@ -6,20 +6,20 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <thread>
+#include <chrono>
+#include <cstdlib>
 using namespace std;
 
 ShopKeeper shopkeeperNPC;
 
 //main function
 void enterShop(Setup& setup) { 
-	cout << "\nYou step into the shop where you recieve a friendly greeting." << endl;
-
-	shopkeeperNPC.printLines(0, setup);
+	shopkeeperNPC.printLines(0, setup); //all other functions controlled through the npc code
 }
 
 //function for main ship menu
 int displayShopMenu(Setup& setup) {
-
 	bool inShop = true;
 
 	while (inShop) {
@@ -60,6 +60,10 @@ int displayShopMenu(Setup& setup) {
 
 //function for secondary shop menu
 void displayType(Setup& setup, ItemType type) {
+	refreshShop();
+
+	cout << "\n\tYour Gold: " << setup.mainPlayer.getOwnedGold() << "\n\n";
+
 	cout << "\n " << (type == WEAPON ? "Weapons" : type == POTION ? "Potions" : "Magic Items") << ": \n" << endl;
 
 	for (const auto& pair : setup.shopInventory) {
@@ -125,11 +129,14 @@ void purchaseItem(Setup& setup, int itemID) {
 	cout << "\nYou bought: " << item.name << "!\n";
 	cout << "\nGold remaining: " << mP.getOwnedGold() << "\n";
 
+	this_thread::sleep_for(chrono::seconds(2));
+
 	shopkeeperNPC.printLines(4, setup);
 }
 
 //function to sell items from player's inventory
 void sellItem(Setup& setup) {
+	refreshShop();
 	auto& pInv = setup.mainPlayer.inventory;
 	auto& itemDB = setup.itemDatabase;
 	player& mP = setup.mainPlayer;
@@ -181,4 +188,11 @@ void sellItem(Setup& setup) {
 	cout << "\nYou sold: " << item.name << "!\n";
 
 	mP.modifyGold(+item.value);
+
+	refreshShop();
+}
+
+void refreshShop() { //function to refresh the screen
+	this_thread::sleep_for(chrono::milliseconds(500)); 
+	system("cls");
 }

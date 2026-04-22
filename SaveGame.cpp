@@ -12,7 +12,7 @@ namespace fs = std::filesystem;
 
 void saveGame(Setup& s, string fileName) {
 	bool fileExists = fs::exists(fileName);
-
+	
 	if (fileExists) {
 		char userChoice;
 		cout << "\n\tA save file with this name already exists. Do you want to overwrite it? (y/n): ";
@@ -33,6 +33,36 @@ void saveGame(Setup& s, string fileName) {
 	file << s.mainPlayer.getName() << endl;
 	file << s.mainPlayer.getClassType() << endl;
 	
+	file << s.mainPlayer.getHealth() << endl;
+	file << s.mainPlayer.getDefense() << endl;
+	file << s.mainPlayer.getStrength() << endl;
+
+	file << s.mainPlayer.getOwnedGold() << endl;
+
+	file << s.mainPlayer.inventory.size() << endl;
+	for (const auto& pair : s.mainPlayer.inventory) {
+		file << pair.first << " " << pair.second << endl;
+	}
+
+	//add location save
+
+	file.close();
+	cout << "\n\t[game saved as " << fileName << "]" << endl;
+	return;
+}
+
+void QuickSaveGame(Setup& s, string fileName) {
+
+	ofstream file(fileName);
+
+	if (!file) {
+		cout << "\n\t[error saving game]" << endl;
+		return;
+	}
+
+	file << s.mainPlayer.getName() << endl;
+	file << s.mainPlayer.getClassType() << endl;
+
 	file << s.mainPlayer.getHealth() << endl;
 	file << s.mainPlayer.getDefense() << endl;
 	file << s.mainPlayer.getStrength() << endl;
@@ -138,6 +168,7 @@ string chooseSaveFile(Setup& s) {
 
 	if (userFile < 1 || userFile > saveFiles.size()) {
 		cout << "\n\t[invalid choice]" << endl;
+		startNewGame(s);
 		return "";
 	}
 

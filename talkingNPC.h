@@ -76,3 +76,4 @@ public:
 	KnightEnemy();
 };
 
+void refreshNPC();

@@ -7,11 +7,14 @@
 #include <limits>
 #include <vector>
 #include <unordered_map>
+#include <thread>
+#include <chrono>
+#include <cstdlib>
 using namespace std;
 
 //main function
 void manageInventory(Setup& setup) { 
-
+	refreshInv();
 	printInventoryMenu(setup); //call inventory menu
 }
 
@@ -31,6 +34,8 @@ void printInventoryMenu(Setup& setup) {
 
 		vector<int> itemIDs; //stores what is actually in the player's inventory
 		int index = 1;
+
+		refreshInv();
 
 		cout << "\n Your Inventory:\n" << endl;
 	
@@ -72,7 +77,8 @@ void printInventoryMenu(Setup& setup) {
 		int selectedItemID = itemIDs[userItemChoice - 1]; //gets the itemID of the item the user selected
 		//const Item& selectedItem = itemDatabase[selectedItemID]; //gets the inventoryItem object of the item the user selected
 
-		//cout << "\n" << selectedItem.name << "\n"; //prints the name of the item the user selected and a small menu afterwards
+		refreshInv();
+		cout << "\n" << setup.itemDatabase[selectedItemID].name << "\n"; //prints the name of the item the user selected and a small menu afterwards
 		cout << " 1. Equip Item" << endl;
 		cout << " 2. Remove Item" << endl;
 		cout << " 3. Back to Inventory" << endl;
@@ -175,8 +181,6 @@ void equipItem(Setup& setup, int itemID) {
 }
 
 void refreshInv() { //function to refresh the screen
-	cin.ignore(numeric_limits<streamsize>::max(), '\n'); //this codeline makes sure the refresh function waits for the user's enter before refreshing
-	cout << "\n Press Enter to refresh: ";
-	cin.get(); //reads the user's enter and then refreshes
-	system("cls"); //clears the screen
+	this_thread::sleep_for(chrono::milliseconds(500));
+	system("cls");
 }

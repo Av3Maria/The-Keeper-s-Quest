@@ -1,24 +1,27 @@
 #pragma once
 #include <unordered_map>
 #include <string>
+#include <vector>
 #include "player.h"
 using namespace std;
 
-enum ItemType {
+//header file for file connecting all game systems together
+
+enum ItemType { //designates item types
 	WEAPON,
 	POTION,
 	MAGIC_ITEM
 };
 
-struct Item {
-	int itemID;
-	string name;
-	int value;
-	ItemType type;
-	bool equippable;
+struct Item { //item object with relevant data
+	int itemID; //ID# of item, used for referencing in inventory and shop
+	string name; //name of item
+	int value; //gold value of item
+	ItemType type; //type of item
+	bool equippable; //if item can be equipped or not
 };
 
-struct weaponTemp {
+struct weaponTemp { 
 	string type;
 	vector <string> dialogue;
 	vector <int> baseDamage;
@@ -38,6 +41,7 @@ public:
 	weaponTemp lastingEffectTemp;
 	unordered_map<int, weaponTemp> itemTemplates;
 	unordered_map<int, vector<int>> weaponDamage;
+
 	Setup();
 	void initializeItems();
 };

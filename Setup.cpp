@@ -1,8 +1,12 @@
 #include "Setup.h"
 #include "player.h"
+#include "character.h"
 
+//function to initialize all items in the game
 void Setup::initializeItems() {
 	//ID, name, price/value, type, equippable
+
+	//WEAPON:
 
 //swords
 	itemDatabase[1] = { 1, "Wooden Sword", 50, WEAPON, true }; 
@@ -22,10 +26,14 @@ void Setup::initializeItems() {
 	itemDatabase[12] = { 12, "Fire Staff", 150, WEAPON, true }; //wizard drop?
 	itemDatabase[13] = { 13, "Lightning Staff", 300, WEAPON, true }; //very rare wizard drop?
 
+	//POTION:
+
 //health potions
 	itemDatabase[14] = { 14, "Small Health Potion", 20, POTION, false }; 
 	itemDatabase[15] = { 15, "Large Health Potion", 60, POTION, false };
 	itemDatabase[16] = { 16, "Undying Health Potion", 200, POTION, false }; //very rare find?
+
+	//MAGIC_ITEM:
 
 //magic amulets
 	itemDatabase[17] = { 17, "Amulet of Defense", 150, MAGIC_ITEM, true }; 
@@ -33,7 +41,6 @@ void Setup::initializeItems() {
 	itemDatabase[19] = { 19, "Amulet of Poison", 200, MAGIC_ITEM, true }; //drop somehow
 	itemDatabase[20] = { 20, "Amulet of Fire", 200, MAGIC_ITEM, true }; //drop somehow
 	itemDatabase[21] = { 21, "Amulet of Enduring", 500, MAGIC_ITEM, true }; // very rare drop (massive boost to health)
-
 //random magic items
 	itemDatabase[22] = { 22, "Feather Pen", 10, MAGIC_ITEM, false };
 	itemDatabase[23] = { 23, "Dragon Tooth", 100, MAGIC_ITEM, false };
@@ -55,17 +62,10 @@ void Setup::initializeItems() {
 	shopInventory[22] = 10; //feather pen
 	shopInventory[23] = 2; //dragon tooth
 	shopInventory[24] = 5; //bottle of light
+
 	//shopInventory[17] = 1; //amulet of defense
 	//shopInventory[18] = 10; //amulet of strength
-
-	/* //player starting inventory
-	mainPlayer.inventory[1] = 1;
-	mainPlayer.inventory[7] = 1;
-	mainPlayer.inventory[14] = 1;
-	mainPlayer.setGold(500); */
 }
-
-// Setup.cpp
 
 Weapon createWeapon(const weaponTemp& temp, const string& weaponName, const vector<int>& damages) {
 	Weapon w;

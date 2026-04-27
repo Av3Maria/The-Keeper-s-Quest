@@ -2,9 +2,7 @@
 #include "Inventory.h"
 #include "player.h"
 #include <iostream>
-#include <iomanip>
 #include <string>
-#include <limits>
 #include <vector>
 #include <unordered_map>
 #include <thread>
@@ -20,13 +18,13 @@ void manageInventory(Setup& setup) {
 
 //prints inventory
 void printInventoryMenu(Setup& setup) {
-	bool isRunning = true;
+	bool isRunning = true; //boolean to control while loop, set to false when user wants to exit inventory
 
 	while (isRunning) {
 
-		auto& inv = setup.mainPlayer.inventory;
+		auto& inv = setup.mainPlayer.inventory; //for easier access to player inventory
 
-		if (inv.empty()) {
+		if (inv.empty()) { //if player's inventory is empty
 			cout << "\n (your inventory is empty)" << endl;
 			refreshInv();
 			return;
@@ -35,25 +33,24 @@ void printInventoryMenu(Setup& setup) {
 		vector<int> itemIDs; //stores what is actually in the player's inventory
 		int index = 1;
 
-		refreshInv();
+		refreshInv(); 
 
 		cout << "\n Your Inventory:\n" << endl;
 	
-		for (const auto& pair : inv) {
+		for (const auto& pair : inv) { //gets player's inventory
 
-			//const Item& item = setup.itemDatabase[pair.first];
+			auto it = setup.itemDatabase.find(pair.first); //finds the item in the item database
 
-			auto it = setup.itemDatabase.find(pair.first);
-			if (it == setup.itemDatabase.end()) {
+			if (it == setup.itemDatabase.end()) { //if item is not found in database, print error and skip to next item
 				cout << "\n\t[error: item not found in database]" << endl;
 				continue;
 			}
 
-			const Item& item = it->second;
+			const Item& item = it->second; //gets the item object from the database
 
-			cout << " " << index << ". " << item.name << " x" << pair.second << endl;
+			cout << " " << index << ". " << item.name << " x" << pair.second << endl; //prints name/quantity of each item
 
-			itemIDs.push_back(pair.first);
+			itemIDs.push_back(pair.first); //stores the itemID of the item in the same order as it is printed, so we can reference it later when the user selects an item to manage
 			index++;
 		}
 
@@ -75,7 +72,6 @@ void printInventoryMenu(Setup& setup) {
 		}
 
 		int selectedItemID = itemIDs[userItemChoice - 1]; //gets the itemID of the item the user selected
-		//const Item& selectedItem = itemDatabase[selectedItemID]; //gets the inventoryItem object of the item the user selected
 
 		refreshInv();
 		cout << "\n" << setup.itemDatabase[selectedItemID].name << "\n"; //prints the name of the item the user selected and a small menu afterwards
@@ -107,7 +103,7 @@ void printInventoryMenu(Setup& setup) {
 	}
 }
 
-//adds to inventory
+//adds to inventory, used when buying/receiving items
 void addToInventory(Setup& setup, int itemID) {
 	setup.mainPlayer.inventory[itemID]++;
 }
@@ -125,23 +121,21 @@ void removeFromInventory(Setup& setup, int itemID) {
 		}
 	}
 
-	cout << "\n\tYou removed: " << setup.itemDatabase[itemID].name << endl;
+	cout << "\n\tYou removed: " << setup.itemDatabase[itemID].name << endl; //tells player they removed the item
 }
 
 
 //equips item
 void equipItem(Setup& setup, int itemID) {
-	player& mP = setup.mainPlayer;
-	const Item& item = setup.itemDatabase[itemID];
+	player& mP = setup.mainPlayer; //for easier access to player
+	const Item& item = setup.itemDatabase[itemID]; //for easier access to item information
 
-	if (!item.equippable) {
+	if (!item.equippable) { //if item can't be equipped
 		cout << "\n\tthis item cannot be equipped\n";
 		return;
 	}
-	if (item.type == WEAPON) {
-		//mP.equipWeapon(setup, itemID);
-		//cout << "\n\tYou equipped: " << item.name << endl;
-
+	if (item.type == WEAPON) { //if item is weapon (can be equipped)
+		
 		mP.syncWeapons(mP, setup);
 
 		// auto-equip correct weapon index
@@ -152,9 +146,9 @@ void equipItem(Setup& setup, int itemID) {
 			}
 		}
 
-		cout << "\n\tYou equipped: " << item.name << endl;
+		cout << "\n\tYou equipped: " << item.name << endl; //tells player they equipped the item
 	}
-	else if (item.type == MAGIC_ITEM) {
+	else if (item.type == MAGIC_ITEM) { //if item is magic item (can be equipped)
 		if (itemID == 17) { //amulet of defense
 			mP.defense += 20;
 			cout << "\n\tYou equipped: " << item.name << endl;

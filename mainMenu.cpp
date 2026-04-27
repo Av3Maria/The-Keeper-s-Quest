@@ -23,28 +23,27 @@ int returnToOverworld();
 int quitGame(Setup& s);
 void refresh();
 
-
 int main() {
 
     Setup s;
 	s.initializeItems();
 
-    int isSaveGame;
 	cout << "\n\tWelcome to our game!" << endl;
 	cout << "\n 1. New Game\n 2. Load Game" << endl;
-	cin >> isSaveGame;
 
-    if (isSaveGame == 2) {
+    int isSavedGame;
+	cin >> isSavedGame;
+
+    if (isSavedGame == 2) { //if the user chooses to load a file previously saved
 		string fileName = chooseSaveFile(s);
 
         if (fileName != "") {
             loadGame(s, fileName);
         }
 
-        currentSaveFile = fileName;
-
+        currentSaveFile = fileName; //sets the file running to the saved file
     }
-    else {
+    else { //if there isn't a saved file the user wants to play
         startNewGame(s);
     }
 
@@ -52,9 +51,10 @@ int main() {
         refresh();
         printMenu();
 
-        int userInput;
         cout << "\n What would you like to do? (type the number): ";
-        cin >> userInput;
+
+        int userInput;
+        cin >> userInput; //gets user input for menu choice
 
         switch (userInput) { //switch to call the function corresponding to the number
         case 1:
@@ -104,10 +104,10 @@ int main() {
             break;
         }
     }
-
 }
 
 //function code
+
 int printMenu() { //function to print the menu
     cout << "\n 1. Return to Overworld" << endl;
     cout << " 2. Enter A Battle" << endl;
@@ -125,20 +125,21 @@ int returnToOverworld() { //??
     return 0;
 };
 int quitGame(Setup& s) { //function to quit the game
-    char saveChoice;
-    cout << "save game before you leave? (y/n): ";
-    cin >> saveChoice;
+    cout << "save game before you leave? (y/n): "; //to make sure player doesn't accidentally quit before saving
 
-    if (saveChoice == 'y' || saveChoice == 'Y') {
-        if (currentSaveFile == "") {
+    char saveChoice;
+    cin >> saveChoice; //gets user choice for saving game before quitting
+
+    if (saveChoice == 'y' || saveChoice == 'Y') { //if player does want to save
+
+        if (currentSaveFile == "") { //if there isn't a save file already
             string fileName = getFileName(" Enter a name for your save file: ");
             currentSaveFile = fileName;
         }
 
 		saveGame(s, currentSaveFile);
-		//cout << "\n\t [game saved to " << currentSaveFile << "]" << endl;
     }
-    else {
+    else { //if player chooses not to save
         cout << "\n\t [game not saved]" << endl;
     }
     cout << "\n\t you exit the game" << endl;

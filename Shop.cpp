@@ -24,19 +24,19 @@ int displayShopMenu(Setup& setup) {
 
 	while (inShop) {
 
-		cout << "\n\tYour Gold: " << setup.mainPlayer.getOwnedGold() << "\n\n";
+		cout << "\n\tYour Gold: " << setup.mainPlayer.getOwnedGold() << "\n\n"; //prints player's current gold
 
-		cout << "\n Shop Menu:\n" << endl;
+		cout << "\n Shop Menu:\n" << endl; //shop menu options
 		cout << " 1. Weapons" << endl;
 		cout << " 2. Potions" << endl;
-		cout << " 3. Magic Items" << endl; //change to knowledge/spells?
+		cout << " 3. Magic Items" << endl; 
 		cout << " 4. Sell Items" << endl;
 		cout << " 5. Exit Shop\n" << endl;
 
 		int shopInput;
-		cin >> shopInput;
+		cin >> shopInput; //gets user's choice for menu
 
-		switch (shopInput) {
+		switch (shopInput) { //handles user input and prints submenu for each item type
 		case 1:
 			displayType(setup, WEAPON);
 			break;
@@ -49,12 +49,12 @@ int displayShopMenu(Setup& setup) {
 		case 4:
 			sellItem(setup);
 			break;
-		case 5:
+		case 5: //leaves shop
 			inShop = false;
 			break;
 		}
 	}
-	shopkeeperNPC.printLines(5, setup);
+	shopkeeperNPC.printLines(5, setup); //prints npc lines
 	return -1;
 }
 
@@ -62,11 +62,11 @@ int displayShopMenu(Setup& setup) {
 void displayType(Setup& setup, ItemType type) {
 	refreshShop();
 
-	cout << "\n\tYour Gold: " << setup.mainPlayer.getOwnedGold() << "\n\n";
+	cout << "\n\tYour Gold: " << setup.mainPlayer.getOwnedGold() << "\n\n"; //prints player's current gold
 
-	cout << "\n " << (type == WEAPON ? "Weapons" : type == POTION ? "Potions" : "Magic Items") << ": \n" << endl;
+	cout << "\n " << (type == WEAPON ? "Weapons" : type == POTION ? "Potions" : "Magic Items") << ": \n" << endl; //prints item type header based on user choice
 
-	for (const auto& pair : setup.shopInventory) {
+	for (const auto& pair : setup.shopInventory) { //prints out item types (but only corresponding item type)
 
 			int itemID = pair.first;
 			int quantity = pair.second;
@@ -81,74 +81,73 @@ void displayType(Setup& setup, ItemType type) {
 	cout << "0. Back\n\n";
 
 	int userChoice;
-	cin >> userChoice;
+	cin >> userChoice; //gets user choice for what item to buy
 
-	if (userChoice != 0) {
+	if (userChoice != 0) { //buys item
 		purchaseItem(setup, userChoice);
 	}
-	if (userChoice == 0) {
+	if (userChoice == 0) { //does not buy item
 		shopkeeperNPC.printLines(2, setup);
 	}
 }
 
 //function to buy items from shop
 void purchaseItem(Setup& setup, int itemID) {
-	//each item has to store a gold value
 	//put all buying code in here so dSM is easier to read
 	//work on later
-	// Check if item exists in shop
 
-	auto& shopInv = setup.shopInventory;
-	auto& itemDB = setup.itemDatabase;
-	player& mP = setup.mainPlayer;
+	auto& shopInv = setup.shopInventory; //for easier access to shop inventory
+	auto& itemDB = setup.itemDatabase; //for easier access to item database
+	player& mP = setup.mainPlayer; //for easier access to player
 
 	auto it = shopInv.find(itemID);
 
-	if (it == shopInv.end()) {
+	if (it == shopInv.end()) { //checks to make sure item is in the shop
 		cout << "\nitem does not exist\n";
 		return;
 	}
-	if (it->second <= 0) {
+	if (it->second <= 0) { //checks to make sure item is in stock
 		cout << "\nItem is out of stock.\n";
 		return;
 	}
 
 	const Item& item = itemDB[itemID];
 
-	if (mP.getOwnedGold() < item.value) {
+	if (mP.getOwnedGold() < item.value) { //if player doesn't have enough gold
 		cout << "\nYou don't have enough gold.\n";
 		return;
 	}
 
-	mP.modifyGold(-item.value);
+	mP.modifyGold(-item.value); //decreases gold if item bought
 
-	addToInventory(setup, itemID);
+	addToInventory(setup, itemID); //adds to player inventory
 
-	it->second--;
+	it->second--; //decreases shop inventory
 
-	cout << "\nYou bought: " << item.name << "!\n";
-	cout << "\nGold remaining: " << mP.getOwnedGold() << "\n";
+	cout << "\nYou bought: " << item.name << "!\n"; //tells player they bought item
+	cout << "\nGold remaining: " << mP.getOwnedGold() << "\n"; //tells player their remaining gold
 
-	this_thread::sleep_for(chrono::seconds(2));
+	this_thread::sleep_for(chrono::seconds(2)); //waits a bit so player can read confirmation
 
-	shopkeeperNPC.printLines(4, setup);
+	shopkeeperNPC.printLines(4, setup); //prints npc lines
 }
 
 //function to sell items from player's inventory
 void sellItem(Setup& setup) {
 	refreshShop();
-	auto& pInv = setup.mainPlayer.inventory;
-	auto& itemDB = setup.itemDatabase;
-	player& mP = setup.mainPlayer;
 
-	if (pInv.empty()) {
+	auto& pInv = setup.mainPlayer.inventory; //for easier access to player inventory
+	auto& itemDB = setup.itemDatabase; //for easier access to item database
+	player& mP = setup.mainPlayer; //for easier access to player
+
+	if (pInv.empty()) { //if player inventory is empty
 		cout << "\nLooks like you don't have anything to sell.\n";
 		return;
 	}
 
-	cout << "\nYour Inventory:\n" << endl;
+	cout << "\nYour Inventory:\n" << endl; 
 
-	for (const auto& pair : pInv) {
+	for (const auto& pair : pInv) { //prints player inventory and corresponding sell values
 
 		int itemID = pair.first;
 		int quantity = pair.second;
@@ -162,32 +161,33 @@ void sellItem(Setup& setup) {
 	cout << "0. Back\n";
 
 	int userChoice;
-	cin >> userChoice;
+	cin >> userChoice; //gets user choice for what item to sell
 
-	if (userChoice == 0) {
+	if (userChoice == 0) { //if player doesn't want to sell anything
+		refreshShop();
 		return;
 	}
 
-	auto it = pInv.find(userChoice);
+	auto it = pInv.find(userChoice); //finds item in player's inventory
 
-	if (it == pInv.end()) {
+	if (it == pInv.end()) { //if item doesn't exist in player's inventory
 		cout << "\n[item does not exist]\n";
 		return;
 	}
 
-	const Item& item = itemDB[userChoice];
+	const Item& item = itemDB[userChoice]; //gets item information from item database
 
-	it->second--;
+	it->second--; //decreases item quantity in player's inventory
 
-	if (it->second <= 0) {
+	if (it->second <= 0) { //if quantity is 0 or less, remove item from player's inventory
 		pInv.erase(it);
 	}
 
-	setup.shopInventory[userChoice]++;
+	setup.shopInventory[userChoice]++; //increases shop inventory (adds sold item to shop inventory)
 
-	cout << "\nYou sold: " << item.name << "!\n";
+	cout << "\nYou sold: " << item.name << "!\n"; //tells player what they sold
 
-	mP.modifyGold(+item.value);
+	mP.modifyGold(+item.value); //increases player's gold based on sold item
 
 	refreshShop();
 }

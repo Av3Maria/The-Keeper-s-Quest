@@ -1,9 +1,7 @@
 #pragma once
 #include "Setup.h"
-#include <iostream>
-#include <unordered_map>
 
-class Setup;
+//header file for shop functions
 
 void enterShop(Setup& setup);
 void purchaseItem(Setup& setup, int itemID);

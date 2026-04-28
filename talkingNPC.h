@@ -1,5 +1,5 @@
 #pragma once
-#include "Setup.h"
+//#include "Setup.h"
 #include "character.h" 
 #include "enemy.h"
 #include <vector>
@@ -7,8 +7,8 @@
 using namespace std;
 
 class Setup;
-
-int chat(Setup& setup);
+class Map;
+int chat(Setup& setup, Map& map);
 
 enum NodeType {
 	NORMAL,
@@ -32,7 +32,7 @@ protected:
 	vector<dialogueNode> dialogueTree;
 public:
 	talkingNPC(int size, string name);
-	void printLines(int currentLine, Setup& setup);
+	void printLines(int currentLine, Setup& setup, Map& map);
 
 };
 
@@ -74,6 +74,6 @@ public:
 class KnightEnemy : public enemy {
 public:
 	KnightEnemy();
+	enemy* clone() const override;
 };
-
 void refreshNPC();

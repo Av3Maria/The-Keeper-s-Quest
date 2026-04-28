@@ -4,49 +4,48 @@
 
 //function to initialize all items in the game
 void Setup::initializeItems() {
-	//ID, name, price/value, type, equippable
+	//ID, name, price/value, equippable
 
-	//WEAPON:
-
-//swords
-	itemDatabase[1] = { 1, "Wooden Sword", 50, WEAPON, true }; 
+	// Initialize the item database with some items
+	mainPlayer.setGold(100);
+	mainPlayer.inventory[1] = 1;
+	mainPlayer.inventory[7] = 1;
+	mainPlayer.inventory[14] = 2;
+	shardsCollected = 0;
+	//swords
+	itemDatabase[1] = { 1, "Wooden Sword", 50, WEAPON, true };
 	itemDatabase[2] = { 2, "Iron Sword", 100, WEAPON, true };
 	itemDatabase[3] = { 3, "Unbreakable Sword", 300, WEAPON, true }; //drop somehow
-//daggers
-	itemDatabase[4] = { 4, "Basic Dagger", 30, WEAPON, true }; 
+	//daggers
+	itemDatabase[4] = { 4, "Basic Dagger", 30, WEAPON, true };
 	itemDatabase[5] = { 5, "Poison Dagger", 130, WEAPON, true };
 	itemDatabase[6] = { 6, "Fire Dagger", 130, WEAPON, true };
-//bows
-	itemDatabase[7] = { 7, "Wooden Bow", 40, WEAPON, true }; 
+	//bows
+	itemDatabase[7] = { 7, "Wooden Bow", 40, WEAPON, true };
 	itemDatabase[8] = { 8, "Hunter Bow", 90, WEAPON, true };
 	itemDatabase[9] = { 9, "Elven Bow", 300, WEAPON, true }; //drop somehow
-//staffs (magic)
-	itemDatabase[10] = { 10, "Basic Staff", 30, WEAPON, true }; 
+	//staffs (magic)
+	itemDatabase[10] = { 10, "Basic Staff", 30, WEAPON, true };
 	itemDatabase[11] = { 11, "Poison Staff", 150, WEAPON, true }; //wizard drop?
 	itemDatabase[12] = { 12, "Fire Staff", 150, WEAPON, true }; //wizard drop?
 	itemDatabase[13] = { 13, "Lightning Staff", 300, WEAPON, true }; //very rare wizard drop?
 
-	//POTION:
-
-//health potions
-	itemDatabase[14] = { 14, "Small Health Potion", 20, POTION, false }; 
+	//health potions
+	itemDatabase[14] = { 14, "Small Health Potion", 20, POTION, false };
 	itemDatabase[15] = { 15, "Large Health Potion", 60, POTION, false };
 	itemDatabase[16] = { 16, "Undying Health Potion", 200, POTION, false }; //very rare find?
 
-	//MAGIC_ITEM:
-
-//magic amulets
-	itemDatabase[17] = { 17, "Amulet of Defense", 150, MAGIC_ITEM, true }; 
+	//magic amulets
+	itemDatabase[17] = { 17, "Amulet of Defense", 150, MAGIC_ITEM, true };
 	itemDatabase[18] = { 18, "Amulet of Strength", 150, MAGIC_ITEM, true };
-	itemDatabase[19] = { 19, "Amulet of Poison", 200, MAGIC_ITEM, true }; //drop somehow
-	itemDatabase[20] = { 20, "Amulet of Fire", 200, MAGIC_ITEM, true }; //drop somehow
-	itemDatabase[21] = { 21, "Amulet of Enduring", 500, MAGIC_ITEM, true }; // very rare drop (massive boost to health)
-//random magic items
+	itemDatabase[19] = { 19, "Amulet of Poison", 200, MAGIC_ITEM, true };
+	itemDatabase[20] = { 20, "Amulet of Fire", 200, MAGIC_ITEM, true };
+	itemDatabase[21] = { 21, "Amulet of Enduring", 500, MAGIC_ITEM, true };
+
+	//random magic items
 	itemDatabase[22] = { 22, "Feather Pen", 10, MAGIC_ITEM, false };
 	itemDatabase[23] = { 23, "Dragon Tooth", 100, MAGIC_ITEM, false };
 	itemDatabase[24] = { 24, "Bottle of Light", 50, MAGIC_ITEM, false };
-
-
 	// Initialize the shop inventory with item IDs and their quantities
 
 	shopInventory[1] = 10; //wooden sword
@@ -62,10 +61,14 @@ void Setup::initializeItems() {
 	shopInventory[22] = 10; //feather pen
 	shopInventory[23] = 2; //dragon tooth
 	shopInventory[24] = 5; //bottle of light
-
 	//shopInventory[17] = 1; //amulet of defense
 	//shopInventory[18] = 10; //amulet of strength
+
+
+	//mainPlayer.setGold(500);
 }
+
+// Setup.cpp
 
 Weapon createWeapon(const weaponTemp& temp, const string& weaponName, const vector<int>& damages) {
 	Weapon w;
@@ -106,10 +109,53 @@ Setup::Setup() {
 		{0,0},
 		{"Splintering Strike", "Everlasting Fracture"}
 	};
+	featherPenTemp = {
+	"Magic Feather Pen",
+	{
+		"You feel strangely focused holding the feather pen...",
+		"Ink-like energy flows through your hands."
+	},
+	{0, 0},
+	{"Mind Spark", "Ink Burst"}
+	};
 
+	dragonToothTemp = {
+		"Dragon Tooth",
+		{
+			"The tooth burns hot in your hand.",
+			"A primal rage awakens inside you."
+		},
+		{0, 0},
+		{"Draconic Bite", "Infernal Snap"}
+	};
+
+	bottleLightTemp = {
+		"Bottle of Light",
+		{
+			"Soft light surrounds your weapon.",
+			"The glow intensifies your strike."
+		},
+		{0, 0},
+		{"Radiant Pulse", "Light Surge"}
+	};
+	basicStaffTemp = {
+	"Magic Staff",
+	{
+		"Arcane energy surges through your staff.",
+		"A burst of magical force erupts forward."
+	},
+	{0, 0},
+	{"Arcane Bolt", "Magic Burst"}
+	};
 	// map itemIDs to templates
 	itemTemplates = {
-		{1, swordTemp}, {2, swordTemp}, {3, swordTemp}, {4, swordTemp}, {5, lastingEffectTemp}, {6, lastingEffectTemp}, {7, bowTemp}, {8, bowTemp}, {9, bowTemp}
+	{1, swordTemp}, {2, swordTemp}, {3, swordTemp}, {4, swordTemp},
+	{5, lastingEffectTemp}, {6, lastingEffectTemp},
+	{7, bowTemp}, {8, bowTemp}, {9, bowTemp}, {10, basicStaffTemp}, {11, basicStaffTemp}, {12, basicStaffTemp}, {13, basicStaffTemp},
+
+	{22, featherPenTemp},
+	{23, dragonToothTemp},
+	{24, bottleLightTemp}
 	};
 
 	// assign weapon-specific damage
@@ -122,6 +168,52 @@ Setup::Setup() {
 		{6, {12, 22}}, // Fire Dagger
 		{7, {13, 12}}, // Wooden Bow
 		{8, {18, 15}}, // Hunter Bow
-		{9, {25, 22}}  // Elven Bow
+		{9, {25, 22}},  // Elven Bow
+		{10, {10, 18}}, // Basic Staff
+		{11, {12, 20}}, // Poison Staff
+		{12, {15, 25}}, // Fire Staff
+		{13, {20, 35}}  // Lightning Staff
 	};
+}
+
+void Setup::lootDrops() {
+
+	int roll = rand() % 100;
+
+	// ================= GOLD DROP =================
+	if (roll < 60) {
+		int gold = (rand() % 20) + 5;
+		mainPlayer.modifyGold(gold);
+
+		cout << "\nYou found " << gold << " gold!\n";
+		return;
+	}
+
+	// ================= COMMON ITEM DROP =================
+	else if (roll < 90) {
+
+		vector<int> possibleItems = {
+			1,2,4,5,6,7,8,10,14,15
+		};
+
+		int itemID = possibleItems[rand() % possibleItems.size()];
+
+		mainPlayer.inventory[itemID]++;
+
+		cout << "\nYou found: " << itemDatabase[itemID].name << "!\n";
+		return;
+	}
+
+	// ================= RARE ITEM DROP =================
+	else {
+
+		int rareItems[] = { 3, 9, 11, 12, 13, 16 };
+
+		int itemID = rareItems[rand() % 6]; // FIXED
+
+		mainPlayer.inventory[itemID]++;
+
+		cout << "\nRARE DROP: " << itemDatabase[itemID].name << "!\n";
+		return;
+	}
 }

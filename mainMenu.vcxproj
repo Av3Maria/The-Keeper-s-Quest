@@ -129,12 +129,14 @@
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="mainMenu.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="monsterBug.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="SaveGame.cpp" />
     <ClCompile Include="Setup.cpp" />
     <ClCompile Include="Shop.cpp" />
     <ClCompile Include="talkingNPC.cpp" />
+    <ClCompile Include="Toad.cpp" />
     <ClCompile Include="wizard.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -144,12 +146,14 @@
     <ClInclude Include="dragon.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="Inventory.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="monsterBug.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="SaveGame.h" />
     <ClInclude Include="Setup.h" />
     <ClInclude Include="Shop.h" />
     <ClInclude Include="talkingNPC.h" />
+    <ClInclude Include="Toad.h" />
     <ClInclude Include="wizard.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

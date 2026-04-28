@@ -9,6 +9,7 @@
 #include "monsterBug.h"
 #include "player.h"
 #include "wizard.h"
+#include "Map.h"
 #include <random>
 #include <vector>
 #include "Inventory.h"
@@ -34,17 +35,22 @@ bool HealthCheck(player& plyr) {
 	cout << "Do you still wish to proceede with the way you are? You are allowed to avoid this battle. (Enter: 1 = Yes, 2 = No)" << endl;
 	int choice;
 	cin >> choice;
+
+	if (cin.fail()) {
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		return true; // default = continue battle, NOT exit
+	}
+
 	return (choice == 1);
 }
 
-//This plays out the entire Battle Sequence and uses the functions above-------------
-int enterBattle(Setup& setup, enemy* customEnemy) {
-	//create instance of player and enemy, where enemy is chosen at random
+int enterBattle(Setup& setup, Map& map, enemy* Enemy, Tile* tile) {
+
 	player& plyr = setup.mainPlayer;
 
 	plyr.syncWeapons(plyr, setup);
 
-	// Ensure player has a weapon equipped after syncing
 	if (plyr.inventoryW.empty()) {
 		cout << "Warning: player has no weapons!" << endl;
 	}
@@ -52,7 +58,6 @@ int enterBattle(Setup& setup, enemy* customEnemy) {
 		plyr.equippedIndex = 0;
 	}
 
-	// Reset all potion cooldowns
 	for (HealOption& heal : plyr.getHealingOptions()) {
 		heal.turnRemaining = 0;
 	}
@@ -61,46 +66,113 @@ int enterBattle(Setup& setup, enemy* customEnemy) {
 		cout << "You decide to run from this fight." << endl;
 		return 0;
 	}
+
 	system("cls");
 
-	enemy* Enemy = (customEnemy != nullptr) ? customEnemy : choose_enemy();
+	//enemy* Enemy = nullptr;
 
-	cout << endl << left << setw(50) << " " << "You encountered an Enemy!" << endl;
-	//while loop that runs the game as long as both the enemy and the player are alive
-	while (plyr.isAlive() && Enemy->isAlive()) {
-		print_stats(plyr, *Enemy);//visual for the player to see the stats of them and the enemy
-		int  choice = print_battlemenu(plyr);//print choices for the player to pick from, return choice
-		
+	// ================= ENEMY SELECTION =================
+	if (Enemy == nullptr)
+	{
+		if (tile != nullptr && tile->hasFixedBoss && tile->fixedEnemy != nullptr)
+		{
+			Enemy = tile->fixedEnemy->clone();
+			system("cls");
+			bossIntro(*Enemy);
+
+			cout << "\n(Press ENTER to continue...)";
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cin.get();
+		}
+		else
+		{
+			enemy* temp = map.currentTile->getRandomEnemy();
+
+			if (!temp)
+			{
+				cout << "No enemies here.\n";
+				return 0;
+			}
+
+			Enemy = temp->clone();
+		}
+	}
+
+	// ================= BATTLE LOOP =================
+	while (plyr.isAlive() && Enemy->isAlive())
+	{
+		print_stats(plyr, *Enemy);
+
+		int choice = print_battlemenu(plyr);
+
 		BattleResults result = battle_choices(setup, choice, plyr, *Enemy);
 
-		if (!Enemy->isAlive()) {//if enemy dies end loop
+		if (!Enemy->isAlive())
+		{
 			Enemy->dieDialogue();
+
+			// always drops
+			setup.lootDrops();
+
+			// boss reward only
+			if (tile && tile->hasFixedBoss) {
+
+				string msg = Enemy->getAmuletMessage();
+
+				if (!msg.empty()) {
+					cout << "\n" << msg << "\n";
+				}
+
+				if (tile->fixedEnemy->getName() == "Dragon")
+					setup.mainPlayer.giveAmulet(20);
+
+				else if (tile->fixedEnemy->getName() == "Wizard") {
+					setup.mainPlayer.giveAmulet(21);
+					wizardVictoryEnding(setup, map);
+				}
+				else if (tile->fixedEnemy->getName() == "Toad")
+					setup.mainPlayer.giveAmulet(18);
+
+				else if (tile->fixedEnemy->getName() == "MonsterBug")
+					setup.mainPlayer.giveAmulet(19);
+			}
+			cout << "\n(Press ENTER to continue...)";
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cin.get();
+
 			break;
 		}
-		if (result == EndBattle) {
-			break;
-		}
-		if (result == IgnoreAction) {
-			continue;
-		}
-		int enemyResult = enemyAction(*Enemy, plyr);// enemy chocie is chosen through probability
+
+		if (result == EndBattle) break;
+		if (result == IgnoreAction) continue;
+
+		int enemyResult = enemyAction(*Enemy, plyr);
+
 		plyr.updateHealingCooldown();
 		plyr.slowTurnEffect_Use();
-		if (!enemyResult) {//if enemy runs end loop
-			cout << endl << "Enemy chooses to run!" << endl;
+
+		if (!enemyResult) {
+			cout << "\nEnemy chooses to run!" << endl;
 			break;
 		}
-		if (!plyr.isAlive()) {//if player dies end loop
+
+		if (!plyr.isAlive()) {
 			plyr.dieDialogue();
+			cout << "\n(Press ENTER to continue...)";
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cin.get();
 			break;
 		}
 	}
-	delete Enemy;//delete enemy after battle ends
+	if (Enemy != nullptr && (tile == nullptr))
+	{
+		delete Enemy;
+	}
 	return 0;
 }
 
 
-//function that uses the random function to choose an enemy for battle-------------
+/*//function that uses the random function to choose an enemy for battle-------------
 enemy* choose_enemy() {
 	int choose = randomNum(0, 3);
 	switch (choose) {
@@ -118,7 +190,7 @@ enemy* choose_enemy() {
 		break;
 	}
 	return nullptr;
-}
+}*/
 
 //function to print menu for player choices-------------
 int print_battlemenu(player& plyr) {
@@ -204,7 +276,7 @@ BattleResults battle_choices(Setup& setup, int user_choice, player& plyr, enemy&
 				cout << "You have none left of " << chosenPotion.name << "!\n";
 			}
 			else {
-				plyr.useHealingOption(healIndex);
+				plyr.useHealingOption(healIndex, true);
 				// Reduce inventory count
 				plyr.inventory[chosenPotion.itemID]--;
 				// remove if it hits 0
@@ -241,6 +313,18 @@ BattleResults battle_choices(Setup& setup, int user_choice, player& plyr, enemy&
 
 			plyr.attackDialogue(chosenAttack.dialogue);
 			cout << endl << "The " << Enemy.getName() << " only takes " << damage << " damage. There defense is now reduced to " << Enemy.getDefense() << "\n\n" << endl;
+			// FIRE AMULET (20)
+			if (plyr.hasItem(20)) {
+				cout << "Flames surge through your attack!\n";
+				Enemy.loseHealth(5); // or scale if you want: plyr.getStrength()/4
+			}
+
+			// POISON AMULET (19)
+			if (plyr.hasItem(19)) {
+				cout << "A toxic burn spreads through the enemy!\n";
+				Enemy.slowTurnEffect_Logic("Poison", 2, 3);
+			}
+
 		}
 		//return plyr.isAlive() && Enemy.isAlive();
 		return continueTurn;
@@ -326,4 +410,162 @@ int enemyAction(enemy& enemy, player& plyr) {
 		action = true;
 	}
 	return takesaction;
+}
+
+void clearInput() {
+	cin.clear();
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+
+void bossIntro(enemy& Enemy) {
+	string name = Enemy.getName();
+
+	if (name == "Dragon")
+	{
+		cout << "You push forward into a rocky clearing near the base of the mountain." << endl;
+		cout << "Loose gravel crunches beneath your feet as smoke rolls through the air." << endl;
+		cout << "The heat grows stronger with every step, and the ground begins to tremble.\n" << endl;
+
+		cout << "A deafening roar shakes the cliffs above you." << endl;
+		cout << "From the flames, a massive Dragon rises and spreads its wings wide." << endl;
+		cout << "Its burning eyes lock onto you as fire escapes from its jaws.\n" << endl;
+
+		cout << "The Dragon slams its claws into the earth and lowers its head." << endl;
+		cout << "You grip your weapon tightly and prepare for battle.\n" << endl;
+	}
+	else if (name == "Wizard")
+	{
+		cout << "You step into the ruined throne room at the top of the dark castle." << endl;
+		cout << "Broken stone litters the floor, and torn banners hang from the walls." << endl;
+		cout << "A cold wind slips through shattered windows as shadows twist around the room.\n" << endl;
+
+		cout << "At the far end of the chamber, a figure slowly rises from the throne." << endl;
+		cout << "The Wizard turns toward you, staff in hand, his cloak trailing black mist." << endl;
+		cout << "His eyes glow with anger as he tightens his grip on the final amulet shard.\n" << endl;
+
+		cout << "\"So... you have made it this far,\" he says." << endl;
+		cout << "Dark magic gathers around him as he raises his staff." << endl;
+		cout << "You take your stance as the final battle begins.\n" << endl;
+	}
+	else if (name == "MonsterBug")
+	{
+		cout << "You travel deeper into the forest, where the trees grow taller and the sunlight barely reaches the ground." << endl;
+		cout << "The path becomes narrow and twisted, covered in roots and fallen branches." << endl;
+		cout << "An uneasy silence settles around you as even the birds seem to have vanished.\n" << endl;
+
+		cout << "Ahead, hidden between thick vines and stone, you notice the entrance to a dark cave." << endl;
+		cout << "As you step closer, pairs of glowing eyes suddenly appear within the shadows." << endl;
+		cout << "The ground begins to shake as scratching and skittering sounds echo from inside.\n" << endl;
+
+		cout << "With a violent screech, the Monster Bug bursts from the cave entrance." << endl;
+		cout << "Its massive body towers above you as venom drips from its jaws." << endl;
+		cout << "Its many legs claw against the earth as it rushes forward.\n" << endl;
+
+		cout << "You tighten your grip and prepare for battle.\n" << endl;
+	}
+	else if (name == "Toad")
+	{
+		cout << "You leave the safety of the town behind and begin your journey down an old dirt path." << endl;
+		cout << "Rolling fields soon give way to damp ground and tall reeds swaying in the wind." << endl;
+		cout << "Before long, you arrive at a quiet lake covered in lily pads stretching across the water.\n" << endl;
+
+		cout << "Carefully, you step from pad to pad, making your way farther across the lake." << endl;
+		cout << "With each step, the air grows heavier and the water darker." << endl;
+		cout << "What began as a peaceful lake slowly turns into a murky swamp filled with fog and twisted trees.\n" << endl;
+
+		cout << "The water around you begins to ripple." << endl;
+		cout << "A giant Toad rises from the muck, mud sliding from its back as it stares you down." << endl;
+		cout << "Its glowing eyes lock onto you as it lets out a deep, thunderous croak.\n" << endl;
+
+		cout << "You brace yourself as the creature leaps forward.\n" << endl;
+	}
+	else
+	{
+		cout << "You step cautiously into the area ahead." << endl;
+		cout << "A powerful presence suddenly blocks your path." << endl;
+		cout << name << " appears before you." << endl;
+		cout << "You prepare yourself for battle.\n" << endl;
+	}
+}
+
+void wizardVictoryEnding(Setup& setup, Map& map)
+{
+	system("cls");
+	cout << "The castle trembles around you as the final battle comes to an end." << endl;
+	cout << "Cracked stone falls from the ceiling, and the once-grand halls echo with silence." << endl;
+	cout << "Before you, the Wizard collapses to one knee, weakened and struggling to rise." << endl;
+	cout << "Dark mist spills from his cloak as he grips the final amulet shard tightly in his hand.\n" << endl;
+
+	cout << "\"No... this power is mine!\"" << endl;
+	cout << "\"I searched for these pieces for years... I will not lose them to you!\"" << endl;
+	cout << "He stumbles forward in anger, barely able to stand, yet refusing to surrender." << endl;
+	cout << "With one final cry, he gathers the last of his strength and lunges at you.\n" << endl;
+
+	cout << "You steady yourself and deliver the final strike." << endl;
+	cout << "The Wizard freezes in place as the shadows around him begin to unravel." << endl;
+	cout << "His body fades into a cloud of black mist, carried away by the cold air." << endl;
+	cout << "Only the final amulet shard remains, clattering onto the stone floor.\n" << endl;
+
+	cout << "You step forward and pick it up." << endl;
+	cout << "The moment it touches the other shards in your pack, they begin to shake." << endl;
+	cout << "One by one, the five pieces rise into the air and pull toward each other." << endl;
+	cout << "A brilliant light fills the ruined chamber as the Sacred Amulet is restored.\n" << endl;
+
+	cout << "With your quest complete, you begin the long journey home." << endl;
+	cout << "Across forests, ruins, and broken roads, you retrace the path that led you here." << endl;
+	cout << "The restored amulet glows warmly at your side as you carry hope back to the town.\n" << endl;
+
+	cout << "When you arrive, the townsfolk rush toward you." << endl;
+	cout << "\"Is that them?\"" << endl;
+	cout << "\"Did they recover the shards?\"" << endl;
+	cout << "\"Could it really be over?\"" << endl;
+	cout << "Whispers spread through the crowd as the people gather around.\n" << endl;
+
+	cout << "The townsfolk slowly part, and the village elder steps forward." << endl;
+	cout << "His eyes are wide with anticipation as he stops before you." << endl;
+
+	cout << "\"Tell me... did you defeat the Wizard?\"" << endl;
+	cout << "\"Were you able to restore the amulet?\"" << endl;
+
+	cout << "You nod and carefully raise the Sacred Amulet into the air." << endl;
+	cout << "As the sunlight touches it, rays of brilliant color dance across the village." << endl;
+	cout << "The crowd gasps in amazement.\n" << endl;
+
+	cout << "\"You have done it...\"" << endl;
+	cout << "\"With this, our town shall be protected once more.\"" << endl;
+	cout << "\"You have given our people a future again.\"" << endl;
+	cout << "\"Thank you for your bravery, " << setup.mainPlayer.getClassType() << ".\"" << endl;
+	cout << "\"Your name will be remembered for generations to come.\"\n" << endl;
+
+	cout << "\n(Press ENTER to continue...)";
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	cin.get();
+	system("cls");
+	string playerClass = setup.mainPlayer.getClassType();
+
+	if (playerClass == "Warrior")
+	{
+		cout << "The townspeople spoke of the mighty Warrior whose courage shattered the Wizard's reign.\n";
+		cout << "Your strength became their shield.\n\n";
+	}
+	else if (playerClass == "Rogue")
+	{
+		cout << "They told stories of the Rogue who moved through danger unseen and struck when hope was lost.\n";
+		cout << "Your cunning saved them all.\n\n";
+	}
+	else if (playerClass == "Hunter")
+	{
+		cout << "They honored the Hunter whose precision never failed, even against impossible odds.\n";
+		cout << "Your instincts guided the town back to safety.\n\n";
+	}
+	else if (playerClass == "Sorcerer")
+	{
+		cout << "They remembered the Sorcerer who turned ancient power against the darkness.\n";
+		cout << "Your mastery of magic restored the light.\n\n";
+	}
+
+	cout << "\n(Press ENTER to continue...)";
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	cin.get();
+	system("cls");
 }

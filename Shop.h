@@ -3,9 +3,8 @@
 
 //header file for shop functions
 
-void enterShop(Setup& setup);
 void purchaseItem(Setup& setup, int itemID);
 void sellItem(Setup& setup);
-int displayShopMenu(Setup& setup);
+int displayShopMenu(Setup& setup, ShopKeeper& npc, Map& map);
 void displayType(Setup& setup, ItemType type);
-void refreshShop();
+void showInventoryPreview(Setup& setup);

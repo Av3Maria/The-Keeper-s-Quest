@@ -10,20 +10,16 @@ class monsterBug : public enemy {
 protected:
 	int assignedNum = 3;
 	string name;
+	bool isBoss;
 public:
 	int getAssignedNum();
+	string getAmuletMessage() const override;
 	//constructor, initializes health, strength, defense----------
-	monsterBug();
+	monsterBug(bool bossMode = false);
 	//function that returns enemy name---------
 	string getName() override;
-	//function when enemy runs in battle, output specific line--------
-	//void flee() override;
-	//function when enemy dies in battle, output specific line--------
-	//void die() override;
+	enemy* clone() const override;
 
-	/*void attackDialogue() override;
-	void runDialogue() override;
-	void healDialogue() override;*/
 };
 
 #endif

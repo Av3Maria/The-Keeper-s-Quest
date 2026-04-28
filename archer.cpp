@@ -8,11 +8,14 @@ using namespace std;
 int archer::getAssignedNum() {
     return assignedNum;
 }
+string archer::getAmuletMessage() const {
+    return "";
+}
 // Constructor: initializes health, strength, defense
 archer::archer() : enemy(90, 15, 10) {
     attacks = {
         { "Personal Hit", 9, { "As an arrow flies straight toward you, the Archer says, 'This one is just for you!'" } },
-        { "Rapid-fire", 12, { "The Archer seems upset as he shoots arrow after arrow barreling toward you. Some miss, but quite a few hit their intended target." } },
+        { "Rapid fire", 12, { "The Archer seems upset as he shoots arrow after arrow barreling toward you. Some miss, but quite a few hit their intended target." } },
         { "Straight Shot", 10, { "The Archer lifts his bow and shoots an arrow directly at where you are standing. Anyone else might move in time, but you react too slowly and are hit. How disappointing." } },
         { "Stray Arrow", 8, { "As weak as the Archer may be, you are still struck by one of his stray arrows, boosting his already inflated ego." } }
     };
@@ -32,7 +35,7 @@ archer::archer() : enemy(90, 15, 10) {
     };
 
     dieLines = {
-        "The Archer has succumbed to his fate. Congratulations, Player—you won this battle.",
+        "The Archer has succumbed to his fate. Congratulations, Player, you won this battle.",
         "You deal the final blow. With his last breath, the Archer tries to fire one final arrow, but it misses by a long shot.",
         "The Archer tries to flee, but just as he is about to escape into the woods, you land one last hit. He collapses with a thud, and you are victorious.",
         "After your last strike, the Archer falls to the ground. With his final breath, he calls this fight the most unfair battle he has ever been part of."
@@ -41,4 +44,7 @@ archer::archer() : enemy(90, 15, 10) {
 //function that returns enemy name---------
 string archer::getName() {
     return "Archer";
+}
+enemy* archer::clone() const {
+    return new archer(*this);
 }

@@ -12,10 +12,13 @@ protected:
 	int assignedNum = 1;
 public:
 	int getAssignedNum();
+	string getAmuletMessage() const override;
 	//constructor, initializes health, strength, defense----------
 	archer();
 	//function that returns enemy name---------
 	string getName() override;
+	enemy* clone() const override;
 };
+
 
 #endif

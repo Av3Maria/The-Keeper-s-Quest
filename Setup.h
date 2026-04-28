@@ -39,9 +39,17 @@ public:
 	weaponTemp swordTemp;
 	weaponTemp bowTemp;
 	weaponTemp lastingEffectTemp;
+	weaponTemp featherPenTemp;
+	weaponTemp dragonToothTemp;
+	weaponTemp bottleLightTemp;
+	weaponTemp basicStaffTemp;
 	unordered_map<int, weaponTemp> itemTemplates;
 	unordered_map<int, vector<int>> weaponDamage;
-
+	bool amuletFromBeggarReceived = false;
+	bool amuletAvailableInShop2 = true;
+	bool amuletFromShop2Taken = false;
+	void lootDrops();
 	Setup();
+	int shardsCollected = 0;
 	void initializeItems();
 };

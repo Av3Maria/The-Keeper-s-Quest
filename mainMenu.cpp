@@ -1,16 +1,15 @@
 #include <iostream>
-#include <istream>
 #include <string>
+#include <limits>
+#include <thread>
+#include <chrono>
 #include "Setup.h"
-//#include "player.h"
 #include "BattleSequence.h"
 #include "talkingNPC.h"
 #include "Inventory.h"
 #include "Shop.h"
 #include "SaveGame.h"
-#include <thread>
-#include <chrono>
-#include <cstdlib>
+#include "Map.h"
 
 using namespace std;
 
@@ -19,107 +18,123 @@ string currentSaveFile = ""; //to keep track of current save file
 
 //function prototypes
 int printMenu();
-int returnToOverworld();
-int quitGame(Setup& s);
 void refresh();
 void Intro();
+int quitGame(Setup& s);
 
 int main() {
 
+    Map map;
     Setup s;
-	s.initializeItems();
+    s.initializeItems();
+    map.assignCharacters();
 
-	cout << "\n\tWelcome to our game!" << endl;
-	cout << "\n 1. New Game\n 2. Load Game" << endl;
+    bool inGame = false;
+    bool inWorld = false;
 
-    int isSavedGame;
-	cin >> isSavedGame;
+    cout << "\n\tWelcome to our game!\n";
 
-    if (isSavedGame == 2) { //if the user chooses to load a file previously saved
-		string fileName = chooseSaveFile(s);
+    while (gameRunning) {
 
-        if (fileName != "") {
-            loadGame(s, fileName);
-        }
+        if (!inGame) {
 
-        currentSaveFile = fileName; //sets the file running to the saved file
-    }
-    else { //if there isn't a saved file the user wants to play
-        startNewGame(s);
-    }
+            cout << "\n1. New Game\n2. Load Game\n";
 
-    while (gameRunning) { //while loop to handle user input and menu selection
-        refresh();
-        Intro();
-        printMenu();
+            int input;
+            cin >> input;
 
-        cout << "\n What would you like to do? (type the number): ";
+            switch (input) {
 
-        int userInput;
-        cin >> userInput; //gets user input for menu choice
+            case 1:
 
-        switch (userInput) { //switch to call the function corresponding to the number
-        case 1:
-            returnToOverworld();
-            refresh(); //delete later
-            break;
-        case 2:
-            enterBattle(s, nullptr);
-            refresh();
-            break;
-        case 3:
-            manageInventory(s);
-            break;
-        case 4:
-            refresh();
-            cout << "\nYou step into the shop where you recieve a friendly greeting." << endl;
-            this_thread::sleep_for(chrono::seconds(2));
-            enterShop(s);
-            break;
-        case 5:
-            chat(s);
-			refresh(); //delete later
-            break;
-        case 6: { //save current game
-            if (currentSaveFile == "") {
-                cout << "\n\t [no save file found, please create a new save file]" << endl;
+                startNewGame(s);
+                Intro();
+
+                map.currentTile = map.startTile;
+                inGame = true;
+                break;
+
+            case 2: {
+                string fileName = chooseSaveFile(s);
+
+                if (!fileName.empty()) {
+                    loadGame(s, fileName);
+                    currentSaveFile = fileName;
+                    inGame = true;
+                }
                 break;
             }
-            else {
-                QuickSaveGame(s, currentSaveFile);
+
+            default:
+                cout << "\nInvalid option.\n";
+                break;
             }
-            refresh();
-            break;
         }
-        case 7: { //save new game file
-            string fileName = getFileName(" Enter a name for your save file: ");
-            currentSaveFile = fileName;
-            saveGame(s, currentSaveFile);
-            refresh();
-            break;
+
+        else if (!inWorld) {
+
+            printMenu();
+
+            int input;
+            cin >> input;
+
+            switch (input) {
+
+            case 1:
+                inWorld = true;
+                break;
+
+            case 2:
+                if (!currentSaveFile.empty())
+                    saveGame(s, currentSaveFile);
+                else
+                    cout << "\nNo save file selected.\n";
+                refresh();
+                break;
+
+            case 3:
+                currentSaveFile = getFileName("Enter save file name: ");
+                saveGame(s, currentSaveFile);
+                refresh();
+                break;
+
+            case 4:
+                quitGame(s);
+                break;
+
+            case 5:
+                if (!currentSaveFile.empty())
+                    QuickSaveGame(s, currentSaveFile);
+                else
+                    cout << "\nNo save file selected.\n";
+                refresh();
+                break;
+
+            default:
+                cout << "\nInvalid option.\n";
+                break;
+            }
         }
-        case 8:
-            quitGame(s);
-            break;
-        default:
-            cout << "\n\t Invalid Number" << endl;
-            break;
+
+        else {
+            inWorld = map.returnToOverworld(s);
         }
     }
+
+    return 0;
 }
 
 //function code
 
 int printMenu() { //function to print the menu
-    cout << "\n 1. Return to Overworld" << endl;
-    cout << " 2. Enter A Battle" << endl;
-    cout << " 3. Manage Your Inventory" << endl;
-    cout << " 4. Enter Shop" << endl; //name shop?
-    cout << " 5. Talk to Someone" << endl; //chamge this wordng?
+    system("cls");
 
-	cout << "\n 6. Quick Save Game" << endl; //save current game
-	cout << " 7. Save Game As" << endl; //save new game
-    cout << " 8. Quit Game" << endl; //end game session
+    cout << "\nWhat would you like to do...\n";
+    cout << "\n 1. Enter Overworld" << endl;
+    cout << " 2. Save Game" << endl;
+    cout << " 3. Save Game As" << endl;
+    cout << " 4. Quit Game" << endl;
+    cout << " 5. Quick Save Game" << endl;
     return 0;
 }
 int returnToOverworld() { //??

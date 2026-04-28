@@ -1,9 +1,7 @@
 #pragma once
-//#include "Setup.h"
 #include "player.h"
 #include "enemy.h"
-
-//class Setup;
+#include "Map.h"
 
 enum BattleResults {
 	continueTurn,
@@ -11,10 +9,13 @@ enum BattleResults {
 	EndBattle
 };
 
-int enterBattle(Setup& setup, enemy* customEnemy = nullptr);
+void clearInput();
+void bossIntro(enemy& Enemy);
+void wizardVictoryEnding(Setup& setup, Map& map);
+int enterBattle(Setup& setup, Map& map, enemy* Enemy, Tile* tile = nullptr);
 int print_battlemenu(player& plyr);
 BattleResults battle_choices(Setup& setup, int user_choice, player& plyr, enemy& Enemy);
 int print_stats(player& p, enemy& e);
-enemy* choose_enemy();
+//enemy* choose_enemy();
 int enemyAction(enemy& enemy, player& plyr);
 bool HealthCheck(player& plyr);

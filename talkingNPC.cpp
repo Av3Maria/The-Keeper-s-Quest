@@ -13,7 +13,7 @@
 #include <cstdlib>
 using namespace std;
 
-int chat(Setup& setup) {
+int chat(Setup& setup, Map& map) {
 
 	ShopKeeper ShopKeepernpc;
 	Blacksmith Blacksmithnpc;
@@ -22,7 +22,7 @@ int chat(Setup& setup) {
 	Townsfolk Townsfolknpc;
 	Farmer Farmernpc;
 	Knight Knightnpc;
-	
+
 
 	vector < talkingNPC*> NPCs = {
 		&ShopKeepernpc, &Blacksmithnpc, &Bankernpc ,&Beggarnpc ,&Townsfolknpc ,&Farmernpc ,&Knightnpc
@@ -30,34 +30,48 @@ int chat(Setup& setup) {
 
 	int index = randomNum(0, NPCs.size() - 1);
 	cout << "As you are walking you run into " << NPCs[index]->getName() << "." << endl;
-	NPCs[index]->printLines(0, setup);
+	NPCs[index]->printLines(0, setup, map);
 	return 0;
 }
-
+enemy* KnightEnemy::clone() const {
+	return new KnightEnemy(*this);
+}
 talkingNPC::talkingNPC(int size, string name)
 	: character(name), dialogueTree(size) {
 	dialogueTree.resize(size);
 }
-void talkingNPC::printLines(int currentLine, Setup& setup) {
+void talkingNPC::printLines(int currentLine, Setup& setup, Map& map) {
 	refreshNPC();
 	dialogueNode& node = dialogueTree[currentLine];
 	cout << endl;
 	cout << getName() << ": " << node.npcDialogue << endl;
-
 	if (node.type == START_BATTLE) {
-		enterBattle(setup, new KnightEnemy());
+		enterBattle(setup, map, new KnightEnemy(), nullptr);
 		return;
 	}
 	if (node.type == OPEN_SHOP) {
-		int nextNode = displayShopMenu(setup);
+		ShopKeeper* sk = dynamic_cast<ShopKeeper*>(this);
 
-		if (nextNode != -1) {
-			printLines(nextNode, setup);
+		if (sk) {
+			displayShopMenu(setup, *sk, map);
 		}
 		return;
+		return; // IMPORTANT: stop recursion here
 	}
 	if (node.type == BEGGAR_DROP) {
-		addToInventory(setup, 17);
+
+		if (!setup.amuletFromBeggarReceived)
+		{
+			addToInventory(setup, 17);
+			setup.amuletFromBeggarReceived = true;
+
+			cout << "\nYou received: Amulet of Defense!\n";
+			cout << "\n You never know what kindness will get you - press enter)\n";
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cin.get();
+			system("cls");
+		}
+
 		return;
 	}
 
@@ -72,7 +86,7 @@ void talkingNPC::printLines(int currentLine, Setup& setup) {
 		return;
 	}
 	int nextSpot = node.nextDialogue[choice];
-	printLines(nextSpot, setup);
+	printLines(nextSpot, setup, map);
 }
 
 dialogueNode::dialogueNode() {
@@ -95,14 +109,14 @@ ShopKeeper::ShopKeeper()
 	dialogueTree[0] = dialogueNode(
 		"Welcome to my shop! Looking for something?\n",
 		"0) Show me your wares\n1) Thanks but I'm good\n",
-		{ 1,5 }, 
+		{ 1,5 },
 		NORMAL
 	);
 
 	dialogueTree[1] = dialogueNode(
 		"Here's what I have for sale!\n",
 		"",
-		{}, 
+		{},
 		OPEN_SHOP
 	);
 
@@ -116,7 +130,7 @@ ShopKeeper::ShopKeeper()
 	dialogueTree[3] = dialogueNode(
 		"Have you decided yet?\n",
 		"0) Show me your wares\n2) Thanks but I'm good",
-		{ 1, 2, 5},
+		{ 1, 2, 5 },
 		NORMAL
 	);
 
@@ -247,14 +261,14 @@ Beggar::Beggar()
 	dialogueTree[3] = dialogueNode(
 		"Oh thank you kind soul! You were so nice to me...here take this thing I found...\n",
 		"0) Oh, thank you!\n1) Where did you get that? No thanks\n",
-		{ 7, 4 }, 
+		{ 7, 4 },
 		NORMAL
 	);
 
 	dialogueTree[4] = dialogueNode(
 		"Oh...\n",
 		"",
-		{}, 
+		{},
 		NORMAL
 	);
 
@@ -262,14 +276,14 @@ Beggar::Beggar()
 		"Oh...uh. Well you see...I had a lot of money before, but I had spent it on some games. I almost won too!! I just need a little more and I am sure I'll get it all back.\n",
 		"0) Wow no I am not giving you anything.\n1) Oh um ok, here is a coin.\n",
 		{ 4,6 },
-		NORMAL 
+		NORMAL
 	);
 
 	dialogueTree[6] = dialogueNode(
 		"Thank you so much kind soul! This is going to good use, trust me.\n",
 		"",
-		{}, 
-		NORMAL 
+		{},
+		NORMAL
 	);
 
 	dialogueTree[7] = dialogueNode(
@@ -287,42 +301,42 @@ Townsfolk::Townsfolk()
 		"Hello! Staying safe out there?\n",
 		"0) Yeah, I'm trying my best. \n1) What do you mean?\n2) Sorry I don't have time to talk\n",
 		{ 1,2,4 },
-		NORMAL 
+		NORMAL
 	);
 
 	dialogueTree[1] = dialogueNode(
 		"That is all you can do sometimes, with the amount of monsters out there I'm surprised people like you are brave enough to travel through the woods alone.\n",
 		"0) At first it was difficult, but I am getting the hang of it now\n1) Oh I know. Sometimes I don't even want to go out there.\n2)Haha...yeah. Speaking of the woods, I have to go. See ya!\n",
 		{ 3,5,4 },
-		NORMAL 
+		NORMAL
 	);
 
 	dialogueTree[2] = dialogueNode(
 		"Well with all the monsters around I worry for those like you who seem to follow the danger. I was just wondering if you are doing alright out there!\n",
 		"0) Oh, sorry. Yeah I am doing alright, thank you for asking!\n 1) If I am being honest, these enemies are horrible!\n",
 		{ 4,3 },
-		NORMAL 
+		NORMAL
 	);
 
 	dialogueTree[3] = dialogueNode(
 		"That's great! Could never be me, I hate monsters...Anyway I wish you good luck on your travels!!\n",
 		"",
 		{},
-		NORMAL 
+		NORMAL
 	);
 
 	dialogueTree[4] = dialogueNode(
 		"That's ok!! Good luck out there.\n",
 		"",
 		{},
-		NORMAL 
+		NORMAL
 	);
 
 	dialogueTree[5] = dialogueNode(
 		"Haha yeah Good luck out there!\n",
 		"",
 		{},
-		NORMAL 
+		NORMAL
 	);
 }
 
@@ -333,28 +347,28 @@ Farmer::Farmer()
 		"The crops around here haven't been doing well lately..\n",
 		"0) Oh no, what's wrong?\n1) Anything I can help with?\n2) Yikes, that's gotte be rough. Good luck with that!\n",
 		{ 1,2,4 },
-		NORMAL 
+		NORMAL
 	);
 
 	dialogueTree[1] = dialogueNode(
 		"Well it looks like some creature is coming in and eating off the produce. I have found slimy trails all around, and it is killing my plants!.\n",
 		"0) Sounds like you have got a bug infestation.\n1) That is horrible! I'm sorry about that.\n",
 		{ 3,4 },
-		NORMAL 
+		NORMAL
 	);
 
 	dialogueTree[2] = dialogueNode(
 		"Well...What do you think this creature like? I can't figure out what it is...\n",
 		"0) Well It seems like a type of bug that is going through your crops.\n1)Uhhh I have no clue, maybe a bird??\n",
 		{ 3,5 },
-		NORMAL 
+		NORMAL
 	);
 
 	dialogueTree[3] = dialogueNode(
 		"I haven't thought about that...I'll look into some repellent, thank you traveler.\n",
 		"",
-		{}, 
-		NORMAL 
+		{},
+		NORMAL
 	);
 
 	dialogueTree[4] = dialogueNode(
@@ -379,7 +393,7 @@ Knight::Knight()
 		"Hello traveler, can I help you? I am busy at the moment.\n",
 		"0) Are you? There are so many monsters around I couldn't tell.\n1) Just walking around, see anything interesting lately?\n2) No, sorry to bother.\n",
 		{ 1,2,4 },
-		NORMAL 
+		NORMAL
 	);
 
 	dialogueTree[1] = dialogueNode(
@@ -392,7 +406,7 @@ Knight::Knight()
 	dialogueTree[2] = dialogueNode(
 		"Nothing that scares me. All the enemies around here are weak, I wonder if there is anything that could be a challenge for me.\n",
 		"0) Oh uh.. right. Makes sense that this is your job then.\n1) Someone's full of themself huh? If they are so easy why aren't you doing your job then?\n",
-		{ 4,3 }, 
+		{ 4,3 },
 		NORMAL
 	);
 
@@ -400,25 +414,25 @@ Knight::Knight()
 		"How rude. Leave this instance, I do not have time to deal with someone like you.\n",
 		"0) I'll make you regret speaking to me like that. (fight the knight)\n1) Fine...\n",
 		{ 5, 4 },
-		NORMAL 
+		NORMAL
 	);
 
 	dialogueTree[4] = dialogueNode(
 		"Alright then.\n",
 		"",
 		{},
-		NORMAL 
+		NORMAL
 	);
 
 	dialogueTree[5] = dialogueNode(
-		"You will never beat me!\n", 
+		"You will never beat me!\n",
 		"",
 		{},
 		START_BATTLE
 	);
 }
 
-KnightEnemy::KnightEnemy() 
+KnightEnemy::KnightEnemy()
 	: enemy(50, 30, 30) {
 
 	name = "Knight";

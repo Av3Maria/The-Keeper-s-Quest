@@ -58,11 +58,10 @@ public:
 	void setName(string newName);
 	string getClassType() const;
 	void setClassType(string newClassType);
-
 	vector<HealOption>& getHealingOptions();
 	vector<attackMoves>& getcurrentAttacks();
 	void showInventory();
-	void useHealingOption(int index);
+	void useHealingOption(int index, bool inBattle);
 	void updateHealingCooldown();
 	void syncWeapons(player& plyr, Setup& setup);
 	void syncPotion(player& plyr, Setup& setup, int itemID);
@@ -70,10 +69,18 @@ public:
 	void equipWeapon(int inventoryIndex);
 	void showHeallingOpt();
 
+	void giveAmulet(int id);
+
+
 	int getOwnedGold() const;
 	void setGold(int amt);
 	void modifyGold(int amount);
-	
-	
+
+
+	bool hasItem(int id) const;
+
+	int getStrength() const;
+	int getDefense() const;
 
 };
+

@@ -9,13 +9,22 @@ using namespace std;
 int monsterBug::getAssignedNum() {
     return assignedNum;
 }
+string monsterBug::getAmuletMessage() const {
+    return "Bugs of different sizes and shapes come grab the body of the thing you just fought and drag its remains into the thick brush, leaving behind something green and shiny. As you grab onto it you feel a wave of nausea run over your body. You obtained the Amulet shard of poison. ";
+}
 // Constructor: initializes health, strength, defense
-monsterBug::monsterBug() : enemy(65, 12, 10) {
+monsterBug::monsterBug(bool bossMode) : enemy(65, 12, 10), isBoss(bossMode) {
+
+    if (isBoss) {
+        health = 110;
+        strength = 20;
+        defense = 14;
+    }
     attacks = {
-        { "Swarm Bite", 10, { "The bug calls upon others like him. Spiders, ants, and other forest-floor critters surround you on all sides! They attack, biting at your ankles and crawling up you, leaving more damage in their wake." } },
-        { "Claw Strike", 8, { "The bug, as small as it may be, still packs a surprising amount of strength. Without time to dodge, you get hit by too many limbs to count." } },
-        { "Venom Masticate", 15, { "Enraged, the bug tries to take a bite out of your arm. Although it fails to rip anything off, the sting it leaves behind still hurts." } },
-        { "Flying Swipe", 10, { "The bug flies straight at you and grabs onto your arms, lifting you into the air. As it tries to fly even higher, you slip out of its grasp and hit the ground hard." } }
+        { "Swarm Bite", isBoss ? 15 : 10, { "The bug calls upon others like him. Spiders, ants, and other forest floor critters surround you on all sides! They attack, biting at your ankles and crawling up you, leaving more damage in their wake." } },
+        { "Claw Strike", isBoss ? 12 : 8, { "The bug, as small as it may be, still packs a surprising amount of strength. Without time to dodge, you get hit by too many limbs to count." } },
+        { "Venom Masticate", isBoss ? 22 : 15, { "Enraged, the bug tries to take a bite out of your arm. Although it fails to rip anything off, the sting it leaves behind still hurts." }, "Poision", -5, 3 },
+        { "Flying Swipe", isBoss ? 14 : 10, { "The bug flies straight at you and grabs onto your arms, lifting you into the air. As it tries to fly even higher, you slip out of its grasp and hit the ground hard." } }
     };
 
     runLines = {
@@ -42,4 +51,7 @@ monsterBug::monsterBug() : enemy(65, 12, 10) {
 //function that returns enemy name---------
 string monsterBug::getName() {
     return "Monster Bug";
+}
+enemy* monsterBug::clone() const {
+    return new monsterBug(*this);
 }

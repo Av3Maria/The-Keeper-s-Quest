@@ -2,7 +2,9 @@
 #include "Inventory.h"
 #include "player.h"
 #include <iostream>
+#include <iomanip>
 #include <string>
+#include <limits>
 #include <vector>
 #include <unordered_map>
 #include <thread>
@@ -11,20 +13,20 @@
 using namespace std;
 
 //main function
-void manageInventory(Setup& setup) { 
+void manageInventory(Setup& setup) {
 	refreshInv();
 	printInventoryMenu(setup); //call inventory menu
 }
 
 //prints inventory
 void printInventoryMenu(Setup& setup) {
-	bool isRunning = true; //boolean to control while loop, set to false when user wants to exit inventory
+	bool isRunning = true;
 
 	while (isRunning) {
 
-		auto& inv = setup.mainPlayer.inventory; //for easier access to player inventory
+		auto& inv = setup.mainPlayer.inventory;
 
-		if (inv.empty()) { //if player's inventory is empty
+		if (inv.empty()) {
 			cout << "\n (your inventory is empty)" << endl;
 			refreshInv();
 			return;
@@ -32,25 +34,23 @@ void printInventoryMenu(Setup& setup) {
 
 		vector<int> itemIDs; //stores what is actually in the player's inventory
 		int index = 1;
-
-		refreshInv(); 
-
+		refreshInv();
 		cout << "\n Your Inventory:\n" << endl;
-	
-		for (const auto& pair : inv) { //gets player's inventory
 
-			auto it = setup.itemDatabase.find(pair.first); //finds the item in the item database
+		for (const auto& pair : inv) {
 
-			if (it == setup.itemDatabase.end()) { //if item is not found in database, print error and skip to next item
+			//const Item& item = setup.itemDatabase[pair.first];
+
+			auto it = setup.itemDatabase.find(pair.first);
+			if (it == setup.itemDatabase.end()) {
 				cout << "\n\t[error: item not found in database]" << endl;
 				continue;
 			}
 
-			const Item& item = it->second; //gets the item object from the database
+			const Item& item = it->second;
+			cout << " " << index << ". " << item.name << " x" << pair.second << endl;
 
-			cout << " " << index << ". " << item.name << " x" << pair.second << endl; //prints name/quantity of each item
-
-			itemIDs.push_back(pair.first); //stores the itemID of the item in the same order as it is printed, so we can reference it later when the user selects an item to manage
+			itemIDs.push_back(pair.first);
 			index++;
 		}
 
@@ -59,7 +59,7 @@ void printInventoryMenu(Setup& setup) {
 
 		int userItemChoice;
 		cin >> userItemChoice; //gets the user's choice for which item to manage
-		
+
 		if (userItemChoice == 0) { //for when the user wants to exit the inventory
 			isRunning = false;
 			refreshInv();
@@ -72,38 +72,61 @@ void printInventoryMenu(Setup& setup) {
 		}
 
 		int selectedItemID = itemIDs[userItemChoice - 1]; //gets the itemID of the item the user selected
-
+		//const Item& selectedItem = itemDatabase[selectedItemID]; //gets the inventoryItem object of the item the user selected
 		refreshInv();
 		cout << "\n" << setup.itemDatabase[selectedItemID].name << "\n"; //prints the name of the item the user selected and a small menu afterwards
-		cout << " 1. Equip Item" << endl;
-		cout << " 2. Remove Item" << endl;
-		cout << " 3. Back to Inventory" << endl;
+		cout << " 1. Use Item" << endl;
+		cout << " 2. Equip Item" << endl;
+		cout << " 3. Remove Item" << endl;
+		cout << " 4. Back to Inventory" << endl;
 
 		cout << "\n Select an action: ";
 
 		int userAction;
 		cin >> userAction; //gets the user's choice for what to do with the item they selected
 
-		switch (userAction) { //switch to call the function corresponding to userAction
-		case 1:
+		switch (userAction) {
+
+		case 1: // USE ITEM
+		{
+			player& p = setup.mainPlayer;
+
+			auto it = p.inventory.find(selectedItemID);
+			if (it == p.inventory.end() || it->second <= 0) {
+				cout << "\nYou don't have that item!\n";
+				break;
+			}
+
+			const Item& item = setup.itemDatabase[selectedItemID];
+
+			if (item.type == POTION) {
+				p.useHealingOption(index, false);
+			}
+			else {
+				cout << "\nThis item cannot be used.\n";
+			}
+
+			break;
+		}
+
+		case 2: // EQUIP ITEM
 			equipItem(setup, selectedItemID);
-			//refreshInv();
 			break;
-		case 2:
+
+		case 3: // REMOVE ITEM
 			removeFromInventory(setup, selectedItemID);
-			//refreshInv();
 			break;
-		case 3:
-			//refreshInv();
+
+		case 4:
 			break;
+
 		default:
-			cout << "\n\t(not a valid option)" << endl;
-			refreshInv();
+			cout << "\n(not a valid option)\n";
 		}
 	}
 }
 
-//adds to inventory, used when buying/receiving items
+//adds to inventory
 void addToInventory(Setup& setup, int itemID) {
 	setup.mainPlayer.inventory[itemID]++;
 }
@@ -121,21 +144,23 @@ void removeFromInventory(Setup& setup, int itemID) {
 		}
 	}
 
-	cout << "\n\tYou removed: " << setup.itemDatabase[itemID].name << endl; //tells player they removed the item
+	cout << "\n\tYou removed: " << setup.itemDatabase[itemID].name << endl;
 }
 
 
 //equips item
 void equipItem(Setup& setup, int itemID) {
-	player& mP = setup.mainPlayer; //for easier access to player
-	const Item& item = setup.itemDatabase[itemID]; //for easier access to item information
+	player& mP = setup.mainPlayer;
+	const Item& item = setup.itemDatabase[itemID];
 
-	if (!item.equippable) { //if item can't be equipped
+	if (!item.equippable) {
 		cout << "\n\tthis item cannot be equipped\n";
 		return;
 	}
-	if (item.type == WEAPON) { //if item is weapon (can be equipped)
-		
+	if (item.type == WEAPON) {
+		//mP.equipWeapon(setup, itemID);
+		//cout << "\n\tYou equipped: " << item.name << endl;
+
 		mP.syncWeapons(mP, setup);
 
 		// auto-equip correct weapon index
@@ -145,10 +170,9 @@ void equipItem(Setup& setup, int itemID) {
 				break;
 			}
 		}
-
-		cout << "\n\tYou equipped: " << item.name << endl; //tells player they equipped the item
+		cout << "\n\tYou equipped: " << item.name << endl;
 	}
-	else if (item.type == MAGIC_ITEM) { //if item is magic item (can be equipped)
+	else if (item.type == MAGIC_ITEM) {
 		if (itemID == 17) { //amulet of defense
 			mP.defense += 20;
 			cout << "\n\tYou equipped: " << item.name << endl;
@@ -176,5 +200,6 @@ void equipItem(Setup& setup, int itemID) {
 
 void refreshInv() { //function to refresh the screen
 	this_thread::sleep_for(chrono::milliseconds(500));
-	system("cls");
+
+	system("cls"); //clears the screen
 }

@@ -1,5 +1,8 @@
 #pragma once
 #include "Setup.h"
+#include "Map.h"
+#include <iostream>
+#include <unordered_map>
 
 //header file for shop functions
 

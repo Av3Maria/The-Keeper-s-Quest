@@ -338,7 +338,7 @@ int Map::returnToOverworld(Setup& setup) {
         cout << option++ << ". View Map\n";
 
         exitOption = option;
-        cout << option++ << ". Exit to Menu\n";
+        cout << option++ << ". Exit to Save Menu\n";
 
         int choice;
         cin >> choice;

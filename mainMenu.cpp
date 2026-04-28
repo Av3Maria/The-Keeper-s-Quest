@@ -11,6 +11,19 @@
 #include "SaveGame.h"
 #include "Map.h"
 
+/*notes to do:
+* 
+* change boss names (if isBoss = "", else " (regular name) ")
+* end of game code
+* play through game and stress test everything
+* make sure menu prompts make sense and are correctly named
+* finalize game name
+* look through dialogue and edit spelling
+* make sure everything is formatted correctly and looks good
+* make sure refreshing works correctly and doesn't cause any issues
+*/
+
+
 using namespace std;
 
 bool gameRunning = true; //for the menu loop, set to false when user wants to quit the game
@@ -32,7 +45,7 @@ int main() {
     bool inGame = false;
     bool inWorld = false;
 
-    cout << "\n\tWelcome to our game!\n";
+    cout << "\n\tThe Keeper's Quest\n";
 
     while (gameRunning) {
 
@@ -85,24 +98,16 @@ int main() {
                 break;
 
             case 2:
-                if (!currentSaveFile.empty())
-                    saveGame(s, currentSaveFile);
-                else
-                    cout << "\nNo save file selected.\n";
-                refresh();
-                break;
-
-            case 3:
                 currentSaveFile = getFileName("Enter save file name: ");
                 saveGame(s, currentSaveFile);
                 refresh();
                 break;
 
-            case 4:
+            case 3:
                 quitGame(s);
                 break;
 
-            case 5:
+            case 4:
                 if (!currentSaveFile.empty())
                     QuickSaveGame(s, currentSaveFile);
                 else
@@ -130,17 +135,12 @@ int printMenu() { //function to print the menu
     system("cls");
 
     cout << "\nWhat would you like to do...\n";
-    cout << "\n 1. Enter Overworld" << endl;
+    cout << "\n 1. Enter Game\n" << endl;
     cout << " 2. Save Game" << endl;
-    cout << " 3. Save Game As" << endl;
-    cout << " 4. Quit Game" << endl;
-    cout << " 5. Quick Save Game" << endl;
+    cout << " 3. Quit Game" << endl;
+    cout << " 4. Quick Save Game" << endl;
     return 0;
 }
-int returnToOverworld() { //??
-    cout << "\n\t you return to the overworld" << endl;
-    return 0;
-};
 void Intro() {
 
     system("cls");

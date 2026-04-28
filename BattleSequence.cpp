@@ -568,4 +568,7 @@ void wizardVictoryEnding(Setup& setup, Map& map)
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	cin.get();
 	system("cls");
+
+	//add "your journey is at an end... do you want to save and exit of continue exploring?"
+	//if yes, save and exit, if not quickSave and return to game (still stay at castle, last location)
 }

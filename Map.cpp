@@ -565,3 +565,20 @@ void Map::displayMap()
     cin.ignore();
     cin.get();
 }
+
+Tile* Map::getTile(int x, int y) {
+	vector<Tile*> all = {
+		town, lake, woods1, woods2, woods3, woods4,
+		woods6, woods5, woods7, woods8,
+		shop1, shop2, shop3,
+		bridge, castle, dragonsDen
+	};
+	for (auto* t : all)
+	{
+		if (t->x == x && t->y == y)
+		{
+			return t;
+		}
+	}
+	return startTile;
+}

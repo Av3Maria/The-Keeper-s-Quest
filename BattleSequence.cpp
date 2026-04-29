@@ -2,17 +2,13 @@
 #include <iostream>
 #include <iomanip>
 #include "BattleSequence.h"
-#include "dragon.h"
-#include "archer.h"
+#include "SaveGame.h"
 #include "character.h"
 #include "enemy.h"
-#include "monsterBug.h"
 #include "player.h"
-#include "wizard.h"
 #include "Map.h"
 #include <random>
 #include <vector>
-#include "Inventory.h"
 using namespace std;
 
 //Check Player health before battle-----------------------------------------------------------------
@@ -123,17 +119,17 @@ int enterBattle(Setup& setup, Map& map, enemy* Enemy, Tile* tile) {
 					cout << "\n" << msg << "\n";
 				}
 
-				if (tile->fixedEnemy->getName() == "Dragon")
+				if (tile->fixedEnemy->getName() == "Ancient Dragon")
 					setup.mainPlayer.giveAmulet(20);
 
-				else if (tile->fixedEnemy->getName() == "Wizard") {
+				else if (tile->fixedEnemy->getName() == "High Wizard") {
 					setup.mainPlayer.giveAmulet(21);
 					wizardVictoryEnding(setup, map);
 				}
-				else if (tile->fixedEnemy->getName() == "Toad")
+				else if (tile->fixedEnemy->getName() == "Giant Toad")
 					setup.mainPlayer.giveAmulet(18);
 
-				else if (tile->fixedEnemy->getName() == "MonsterBug")
+				else if (tile->fixedEnemy->getName() == "Giant Monster Bug")
 					setup.mainPlayer.giveAmulet(19);
 			}
 			cout << "\n(Press ENTER to continue...)";
@@ -233,7 +229,7 @@ int print_battlemenu(player& plyr) {
 		int healthChoice;
 		cin >> healthChoice;
 		if (healthChoice > 0 && healthChoice <= validIndices.size()) {
-			return 200 + validIndices[healthChoice - 1];
+			return 2000 + validIndices[healthChoice - 1];
 		}
 		else {
 			return -1;
@@ -488,8 +484,9 @@ void bossIntro(enemy& Enemy) {
 	}
 }
 
-void wizardVictoryEnding(Setup& setup, Map& map)
-{
+void wizardVictoryEnding(Setup& setup, Map& map) {
+	finalBossDefeated = true;
+
 	system("cls");
 	cout << "The castle trembles around you as the final battle comes to an end." << endl;
 	cout << "Cracked stone falls from the ceiling, and the once-grand halls echo with silence." << endl;
@@ -569,6 +566,25 @@ void wizardVictoryEnding(Setup& setup, Map& map)
 	cin.get();
 	system("cls");
 
-	//add "your journey is at an end... do you want to save and exit of continue exploring?"
-	//if yes, save and exit, if not quickSave and return to game (still stay at castle, last location)
+	QuickSaveGame(setup, map, currentSaveFile);
+
+	cout << "Your journey is at an end..." << endl;
+	cout << "Do you wish to retire, or continue exploring?" << endl;
+	cout << "1. Retire and settle down in the town. (quit game)" << endl;
+	cout << "2. Continue exploring." << endl;
+
+	int endOrCont;
+	cin >> endOrCont;
+
+	if (endOrCont == 1)
+	{
+		cout << "You decide to retire from adventuring and settle down in the town." << endl;
+		cout << "The townsfolk welcome you back as a hero, and you live out your days in peace.\n" << endl;
+		quitGame(setup, map);
+	}
+	else
+	{
+		cout << "You choose to continue exploring the world, seeking new adventures beyond the castle." << endl;
+		cout << "With the amulet's power restored, you set out once more, ready for whatever challenges lie ahead.\n" << endl;
+	}
 }

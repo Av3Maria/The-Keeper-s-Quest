@@ -1,6 +1,8 @@
 #include "Setup.h"
 #include "player.h"
 #include "SaveGame.h"
+#include "BattleSequence.h"
+#include "Map.h"
 #include <iostream>
 #include <fstream>
 #include <filesystem>
@@ -12,7 +14,7 @@ using namespace std;
 namespace fs = std::filesystem; //for file handling
 
 //main functions for saving and loading game, as well as helper functions to get file name and list save files in directory
-void saveGame(Setup& s, string fileName) {
+void saveGame(Setup& s, Map& map, string fileName) {
 
 	bool fileExists = fs::exists(fileName); //checks if file already exists to prevent accidental overwriting of save files
 	
@@ -50,7 +52,7 @@ void saveGame(Setup& s, string fileName) {
 		file << pair.first << " " << pair.second << endl;
 	}
 
-	//add location save
+	file << map.currentTile->x << " " << map.currentTile->y << endl; //saves player location on map
 
 	file.close(); //closes file after writing
 	cout << "\n\t[game saved as " << fileName << "]" << endl; //tells player what the name of the file is
@@ -58,7 +60,7 @@ void saveGame(Setup& s, string fileName) {
 }
 
 //function to quick save game without asking for file name, used for file already created
-void QuickSaveGame(Setup& s, string fileName) {
+void QuickSaveGame(Setup& s, Map& map, string fileName) {
 
 	ofstream file(fileName); //opens file for writing
 
@@ -82,7 +84,7 @@ void QuickSaveGame(Setup& s, string fileName) {
 		file << pair.first << " " << pair.second << endl;
 	}
 
-	//add location save
+	file << map.currentTile->x << " " << map.currentTile->y << endl; //saves player location on map
 
 	file.close(); //closes file after writing
 	cout << "\n\t[game saved as " << fileName << "]" << endl; //tells player what the name of the file is
@@ -90,7 +92,7 @@ void QuickSaveGame(Setup& s, string fileName) {
 }
 
 //function to load game from previously saved file
-void loadGame(Setup& s, string fileName) {
+void loadGame(Setup& s, Map& map, string fileName) {
 	ifstream file(fileName); //opens file for reading
 
 	if (!file) { //if file can't be opened, print error and return (no save file)
@@ -125,7 +127,9 @@ void loadGame(Setup& s, string fileName) {
 		s.mainPlayer.inventory[itemID] = itemQuantity;
 	}
 
-	//add location load
+	int x, y;
+	file >> x >> y;
+	map.currentTile = map.getTile(x, y);
 
 	file.close(); //closes file after reading
 
@@ -198,11 +202,11 @@ void startNewGame(Setup& s) {
 	cout << "\n\t Enter your name! : ";
 	getline(cin >> ws, playerName); //gets user input for player name, using getline to allow for spaces in name
 
-	cout << "Choose your class: "; //class menu
-	cout << "\n1.Warrior (high defense)";
-	cout << "\n2.Rogue (high health)";
-	cout << "\n3.Hunter (high strength)";
-	cout << "\n4.Sorcerer (high strength)" << endl;
+	cout << "\nChoose your class: \n"; //class menu
+	cout << "\n 1.Warrior (high defense)";
+	cout << "\n 2.Rogue (high health)";
+	cout << "\n 3.Hunter (high strength)";
+	cout << "\n 4.Sorcerer (high strength)" << endl;
 
 	int classChoice;
 	cin >> classChoice; //gets player choice for class type
@@ -230,3 +234,34 @@ void startNewGame(Setup& s) {
 	player customPlayer(playerName, classType); //sets player's name and class
 	s.mainPlayer = customPlayer;
 }
+
+//function to quit the game
+int quitGame(Setup& s, Map& map) { 
+
+	if (finalBossDefeated == true) { //already should have quickSaved game so no need to resave game
+		gameRunning == false;
+		return 0;
+	}
+
+	cout << "save game before you leave? (y/n): "; //to make sure player doesn't accidentally quit before saving
+
+	char saveChoice;
+	cin >> saveChoice; //gets user choice for saving game before quitting
+
+	if (saveChoice == 'y' || saveChoice == 'Y') { //if player does want to save
+
+		if (currentSaveFile == "") { //if there isn't a save file already
+			string fileName = getFileName(" Enter a name for your save file: ");
+			currentSaveFile = fileName;
+		}
+
+		saveGame(s, map, currentSaveFile);
+	}
+	else { //if player chooses not to save
+		cout << "\n\t [game not saved]" << endl;
+	}
+	cout << "\n\t you exit the game" << endl;
+
+	gameRunning = false;
+	return 0;
+};

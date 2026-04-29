@@ -43,7 +43,12 @@ wizard::wizard(bool bossMode) : enemy(100, 18, 10), isBoss(bossMode) {
 }
 //function that returns enemy name---------
 string wizard::getName() {
-    return "Wizard";
+    if (isBoss == true) {
+        return "High Wizard";
+    }
+    else {
+        return "Wizard";
+    }
 }
 enemy* wizard::clone() const {
     return new wizard(*this);

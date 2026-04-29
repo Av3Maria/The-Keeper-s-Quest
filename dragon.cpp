@@ -49,7 +49,12 @@ dragon::dragon(bool bossMode) : enemy(120, 25, 10), isBoss(bossMode) {
 }
 //function that returns enemy name---------
 string dragon::getName() {
-    return "Dragon";
+	if (isBoss == true) {
+		return "Ancient Dragon";
+	}
+    else {
+        return "Dragon";
+    }
 }
 enemy* dragon::clone() const {
     return new dragon(*this);

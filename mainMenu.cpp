@@ -26,14 +26,13 @@
 
 using namespace std;
 
-bool gameRunning = true; //for the menu loop, set to false when user wants to quit the game
-string currentSaveFile = ""; //to keep track of current save file
+//bool gameRunning = true; //for the menu loop, set to false when user wants to quit the game
+//string currentSaveFile = ""; //to keep track of current save file
 
 //function prototypes
 int printMenu();
 void refresh();
 void Intro();
-int quitGame(Setup& s);
 
 int main() {
 
@@ -45,13 +44,16 @@ int main() {
     bool inGame = false;
     bool inWorld = false;
 
-    cout << "\n\tThe Keeper's Quest\n";
+    cout << "-------------------------------------------------------------------------------------------\n";
+    cout << "                                 THE KEEPER'S QUEST      \n";
+    cout << "-------------------------------------------------------------------------------------------\n";
+
 
     while (gameRunning) {
 
         if (!inGame) {
 
-            cout << "\n1. New Game\n2. Load Game\n";
+            cout << "\n 1. New Game\n 2. Load Game\n";
 
             int input;
             cin >> input;
@@ -71,7 +73,7 @@ int main() {
                 string fileName = chooseSaveFile(s);
 
                 if (!fileName.empty()) {
-                    loadGame(s, fileName);
+                    loadGame(s, map, fileName);
                     currentSaveFile = fileName;
                     inGame = true;
                 }
@@ -99,17 +101,17 @@ int main() {
 
             case 2:
                 currentSaveFile = getFileName("Enter save file name: ");
-                saveGame(s, currentSaveFile);
+                saveGame(s, map, currentSaveFile);
                 refresh();
                 break;
 
             case 3:
-                quitGame(s);
+                quitGame(s, map);
                 break;
 
             case 4:
                 if (!currentSaveFile.empty())
-                    QuickSaveGame(s, currentSaveFile);
+                    QuickSaveGame(s, map, currentSaveFile);
                 else
                     cout << "\nNo save file selected.\n";
                 refresh();
@@ -190,29 +192,6 @@ void Intro() {
     system("cls");
 
 }
-int quitGame(Setup& s) { //function to quit the game
-    cout << "save game before you leave? (y/n): "; //to make sure player doesn't accidentally quit before saving
-
-    char saveChoice;
-    cin >> saveChoice; //gets user choice for saving game before quitting
-
-    if (saveChoice == 'y' || saveChoice == 'Y') { //if player does want to save
-
-        if (currentSaveFile == "") { //if there isn't a save file already
-            string fileName = getFileName(" Enter a name for your save file: ");
-            currentSaveFile = fileName;
-        }
-
-		saveGame(s, currentSaveFile);
-    }
-    else { //if player chooses not to save
-        cout << "\n\t [game not saved]" << endl;
-    }
-    cout << "\n\t you exit the game" << endl;
-
-    gameRunning = false;
-    return 0;
-};
 void refresh() { //function to refresh the screen
 	this_thread::sleep_for(chrono::milliseconds(500));
 	system("cls");

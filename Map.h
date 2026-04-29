@@ -58,6 +58,7 @@ public:
     Tile* startTile;
     Tile* currentTile;
     Tile* previousTile;
+	Tile* getTile(int x, int y); //for saving the game
     void assignCharacters();
     int returnToOverworld(Setup& setup);
     void enterShop(Setup& setup, Tile* tile);

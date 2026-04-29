@@ -50,7 +50,12 @@ monsterBug::monsterBug(bool bossMode) : enemy(65, 12, 10), isBoss(bossMode) {
 }
 //function that returns enemy name---------
 string monsterBug::getName() {
-    return "Monster Bug";
+    if (isBoss == true) {
+        return "Giant Monster Bug";
+    }
+    else {
+        return "Monster Bug";
+    }
 }
 enemy* monsterBug::clone() const {
     return new monsterBug(*this);

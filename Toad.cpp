@@ -55,7 +55,12 @@ toad::toad(bool bossMode) : enemy(70, 20, 8), isBoss(bossMode) {
 }
 
 string toad::getName() {
-    return "Toad";
+    if (isBoss == true) {
+		return "Giant Toad";
+    }
+    else {
+        return "Toad";
+    }
 }
 
 enemy* toad::clone() const {

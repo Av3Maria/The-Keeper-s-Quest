@@ -11,6 +11,9 @@
 #include "SaveGame.h"
 #include "Map.h"
 
+using namespace std;
+
+
 /*notes to do:
 * 
 * change boss names (if isBoss = "", else " (regular name) ")
@@ -23,12 +26,6 @@
 * make sure refreshing works correctly and doesn't cause any issues
 */
 
-
-using namespace std;
-
-//bool gameRunning = true; //for the menu loop, set to false when user wants to quit the game
-//string currentSaveFile = ""; //to keep track of current save file
-
 //function prototypes
 int printMenu();
 void refresh();
@@ -38,6 +35,7 @@ int main() {
 
     Map map;
     Setup s;
+    //initialize items for player and assign enemies/npcs to map tiles
     s.initializeItems();
     map.assignCharacters();
 
@@ -48,9 +46,9 @@ int main() {
     cout << "                                 THE KEEPER'S QUEST      \n";
     cout << "-------------------------------------------------------------------------------------------\n";
 
-
+    //run the entire game
     while (gameRunning) {
-
+        //starting menu
         if (!inGame) {
 
             cout << "\n 1. New Game\n 2. Load Game\n";
@@ -61,15 +59,16 @@ int main() {
             switch (input) {
 
             case 1:
-
+                //start new game and open intro
                 startNewGame(s);
                 Intro();
-
+                //start player at starting location (town)
                 map.currentTile = map.startTile;
                 inGame = true;
                 break;
 
             case 2: {
+                //load saved game file
                 string fileName = chooseSaveFile(s);
 
                 if (!fileName.empty()) {
@@ -85,7 +84,7 @@ int main() {
                 break;
             }
         }
-
+        //main menu for saving and entering game
         else if (!inWorld) {
 
             printMenu();
@@ -96,20 +95,24 @@ int main() {
             switch (input) {
 
             case 1:
+                //enter game
                 inWorld = true;
                 break;
 
             case 2:
+                //save game to a file
                 currentSaveFile = getFileName("Enter save file name: ");
                 saveGame(s, map, currentSaveFile);
                 refresh();
                 break;
 
             case 3:
+                //quite out of game
                 quitGame(s, map);
                 break;
 
             case 4:
+                //quick save if file exists
                 if (!currentSaveFile.empty())
                     QuickSaveGame(s, map, currentSaveFile);
                 else
@@ -124,15 +127,14 @@ int main() {
         }
 
         else {
+            //go through moving, encounters, any interactions, game logic
             inWorld = map.returnToOverworld(s);
         }
     }
 
     return 0;
 }
-
-//function code
-
+//menu display for main
 int printMenu() { //function to print the menu
     system("cls");
 
@@ -143,6 +145,7 @@ int printMenu() { //function to print the menu
     cout << " 4. Quick Save Game" << endl;
     return 0;
 }
+//function for the introduction story
 void Intro() {
 
     system("cls");
@@ -192,7 +195,8 @@ void Intro() {
     system("cls");
 
 }
-void refresh() { //function to refresh the screen
+//function to refresh the screen
+void refresh() { 
 	this_thread::sleep_for(chrono::milliseconds(500));
 	system("cls");
 }

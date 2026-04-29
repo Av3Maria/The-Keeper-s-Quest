@@ -6,7 +6,7 @@
 void Setup::initializeItems() {
 	//ID, name, price/value, equippable
 
-	// Initialize the item database with some items
+	//Initialize the item database with some items
 	mainPlayer.setGold(100);
 	mainPlayer.inventory[1] = 1;
 	mainPlayer.inventory[7] = 1;
@@ -46,7 +46,7 @@ void Setup::initializeItems() {
 	itemDatabase[22] = { 22, "Feather Pen", 10, MAGIC_ITEM, false };
 	itemDatabase[23] = { 23, "Dragon Tooth", 100, MAGIC_ITEM, false };
 	itemDatabase[24] = { 24, "Bottle of Light", 50, MAGIC_ITEM, false };
-	// Initialize the shop inventory with item IDs and their quantities
+	//Initialize the shop inventory with item IDs and their quantities
 
 	shopInventory[1] = 10; //wooden sword
 	shopInventory[2] = 5;  //iron sword
@@ -55,53 +55,47 @@ void Setup::initializeItems() {
 	shopInventory[6] = 4; //fire dagger
 	shopInventory[7] = 10; //wooden bow
 	shopInventory[8] = 5; //hunter bow
-	//shopInventory[10] = 15; //basic staff
 	shopInventory[14] = 20; //small health potion
 	shopInventory[15] = 10; //large health potion
 	shopInventory[22] = 10; //feather pen
 	shopInventory[23] = 2; //dragon tooth
 	shopInventory[24] = 5; //bottle of light
-	//shopInventory[17] = 1; //amulet of defense
-	//shopInventory[18] = 10; //amulet of strength
 
-
-	//mainPlayer.setGold(500);
+	mainPlayer.syncWeapons(mainPlayer, *this);
 }
-
-// Setup.cpp
-
+//create weapons from templates
 Weapon createWeapon(const weaponTemp& temp, const string& weaponName, const vector<int>& damages) {
 	Weapon w;
 	w.name = weaponName;
 	for (int i = 0; i < temp.attackNames.size(); i++) {
 		attackMoves a;
 		a.name = temp.attackNames[i];
-		a.damagedone = damages[i];    // damage specific to this weapon
-		a.dialogue = temp.dialogue;   // shared dialogue for weapon type
+		a.damagedone = damages[i];    //damage specific to this weapon
+		a.dialogue = temp.dialogue;   //shared dialogue for weapon type
 		w.currentAttacks.push_back(a);
 	}
 	return w;
 }
-
+//templates for weapons
 Setup::Setup() {
-	// sword template
+	//sword template
 	swordTemp = {
 		"Sword",
 		{"You attack the enemy with great force, your blade striking its body.",
 		 "With surprising agility, you strike the enemy with your blade. Landing a hit on its side, you quickly follow up with another as it is distracted."},
-		{0, 0}, // placeholder, actual damage per weapon in weaponDamage
+		{0, 0}, //placeholder, actual damage per weapon in weaponDamage
 		{"Sword Strike", "Double Slash"}
 	};
 
-	// bow template
+	//bow template
 	bowTemp = {
 		"Bow",
 		{"Choosing to attack with your bow, you draw the string close to your ear, aim carefully, and release an arrow that hits directly in the target's chest.",
 		 "With your bow, you hit the enemy's limb. With a cry, it is left hobbling and disoriented."},
-		{0, 0}, // placeholder
+		{0, 0}, //placeholder
 		{"Piercing Shot","Glancing Arrow"}
 	};
-
+	//poison/burn weapon
 	lastingEffectTemp = {
 		"Lasting Damage",
 		{"As your weapon hits the enemy, you see the effects instantly. Damage starts racking the monsters body, and you know it will last longer than the other cuts.",
@@ -109,6 +103,7 @@ Setup::Setup() {
 		{0,0},
 		{"Splintering Strike", "Everlasting Fracture"}
 	};
+	//magic type
 	featherPenTemp = {
 	"Magic Feather Pen",
 	{
@@ -118,7 +113,7 @@ Setup::Setup() {
 	{0, 0},
 	{"Mind Spark", "Ink Burst"}
 	};
-
+	//magic type
 	dragonToothTemp = {
 		"Dragon Tooth",
 		{
@@ -128,7 +123,7 @@ Setup::Setup() {
 		{0, 0},
 		{"Draconic Bite", "Infernal Snap"}
 	};
-
+	//magiv type
 	bottleLightTemp = {
 		"Bottle of Light",
 		{
@@ -138,6 +133,7 @@ Setup::Setup() {
 		{0, 0},
 		{"Radiant Pulse", "Light Surge"}
 	};
+	//staff type
 	basicStaffTemp = {
 	"Magic Staff",
 	{
@@ -147,7 +143,7 @@ Setup::Setup() {
 	{0, 0},
 	{"Arcane Bolt", "Magic Burst"}
 	};
-	// map itemIDs to templates
+	//map itemIDs to templates
 	itemTemplates = {
 	{1, swordTemp}, {2, swordTemp}, {3, swordTemp}, {4, swordTemp},
 	{5, lastingEffectTemp}, {6, lastingEffectTemp},
@@ -158,29 +154,29 @@ Setup::Setup() {
 	{24, bottleLightTemp}
 	};
 
-	// assign weapon-specific damage
+	//assign weapon-specific damage
 	weaponDamage = {
-		{1, {12, 20}}, // Wooden Sword
-		{2, {15, 25}}, // Iron Sword
-		{3, {25, 40}}, // Unbreakable Sword
-		{4, {8, 12}},  // Basic Dagger
-		{5, {10, 18}}, // Poison Dagger
-		{6, {12, 22}}, // Fire Dagger
-		{7, {13, 12}}, // Wooden Bow
-		{8, {18, 15}}, // Hunter Bow
-		{9, {25, 22}},  // Elven Bow
-		{10, {10, 18}}, // Basic Staff
-		{11, {12, 20}}, // Poison Staff
-		{12, {15, 25}}, // Fire Staff
-		{13, {20, 35}}  // Lightning Staff
+		{1, {12, 20}}, //Wooden Sword
+		{2, {15, 25}}, //Iron Sword
+		{3, {25, 40}}, //Unbreakable Sword
+		{4, {8, 12}},  //Basic Dagger
+		{5, {10, 18}}, //Poison Dagger
+		{6, {12, 22}}, //Fire Dagger
+		{7, {13, 12}}, //Wooden Bow
+		{8, {18, 15}}, //Hunter Bow
+		{9, {25, 22}},  //Elven Bow
+		{10, {10, 18}}, //Basic Staff
+		{11, {12, 20}}, //Poison Staff
+		{12, {15, 25}}, //Fire Staff
+		{13, {20, 35}}  //Lightning Staff
 	};
 }
-
+//handle loot drops after battle
 void Setup::lootDrops() {
 
 	int roll = rand() % 100;
 
-	// ================= GOLD DROP =================
+	//gold
 	if (roll < 60) {
 		int gold = (rand() % 20) + 5;
 		mainPlayer.modifyGold(gold);
@@ -189,7 +185,7 @@ void Setup::lootDrops() {
 		return;
 	}
 
-	// ================= COMMON ITEM DROP =================
+	//common item
 	else if (roll < 90) {
 
 		vector<int> possibleItems = {
@@ -204,12 +200,12 @@ void Setup::lootDrops() {
 		return;
 	}
 
-	// ================= RARE ITEM DROP =================
+	//rare item
 	else {
 
 		int rareItems[] = { 3, 9, 11, 12, 13, 16 };
 
-		int itemID = rareItems[rand() % 6]; // FIXED
+		int itemID = rareItems[rand() % 6];
 
 		mainPlayer.inventory[itemID]++;
 

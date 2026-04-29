@@ -15,8 +15,9 @@ player::player()
     setGold(0);
 
     inventory[14] = 2;
+    equippedIndex = -1;
 }
-// Initializes player's health, strength, and defense
+//Initializes player's health, strength, and defense
 player::player(string charName, string charType)
     : character(charName, 100, 0, 0) {
 
@@ -24,7 +25,7 @@ player::player(string charName, string charType)
     classType = charType;
     equippedIndex = 0;
 
-    // ===== CLASS SETUP =====
+    //player types
     if (charType == "Warrior") {
         health = 100;
         strength = 18;
@@ -68,8 +69,9 @@ player::player(string charName, string charType)
     };
 
     healingOptions = {//{"name", type, cooldown time, turns left, base healing, health points per turn, how long it lasts}
-         { 14, "Small Potion", Potion, 2, 0, 0, 4, 3, 2, {"Tired from the attacks thrown at you, you reach into your pouch and take out a red potion, hoping it will give you the energy to keep going."}},
-         { 15, "Large Potion", Potion, 3, 0, 0, 6, 3, 1, {"You drink a healing potion, and your body slowly begins to recover, stitching wounds and easing pain."}}
+         { 14, "Small Potion", Potion, 2, 0, 40, 4, 3, 0, {"Tired from the attacks thrown at you, you reach into your pouch and take out a red potion, hoping it will give you the energy to keep going."}},
+         { 15, "Large Potion", Potion, 3, 0, 80, 8, 3, 0, {"You drink a healing potion, and your body slowly begins to recover, stitching wounds and easing pain."}},
+         { 16, "Large Potion", Potion, 3, 0, 100, 15, 4, 0, {"You drink a healing potion, this one larger than the others. The effects start immediatly with the wounds on your bodying stitching back together."}}
 
     };
 
@@ -80,25 +82,9 @@ player::player(string charName, string charType)
         "You are struck down by the enemy's last attack. Helpless, you watch them walk away without remorse."
     };
 
-    //probably have to change this part
-    /*Weapon WoodenSword;
-    WoodenSword.name = "Wooden Sword";
-    WoodenSword.currentAttacks = {
-        { "Sword Strike", 12, { "You attack the enemy with great force, your blade striking its body." } },
-        { "Double Slash", 20, { "With surprising agility, you strike the enemy with your blade. Landing a hit on its side, you quickly follow up with another as it is distracted." } }
-    };
-    Weapon WoodenBow;
-    WoodenBow.name = "Wooden Bow";
-    WoodenBow.currentAttacks = {
-        { "Piercing Shot", 13, { "Choosing to attack with your bow, you draw the string close to your ear, aim carefully, and release an arrow that hits directly in the target's chest." } },
-        { "Glancing Arrow", 12, { "With your bow, you hit the enemy's limb. With a cry, it is left hobbling and disoriented." } }
-    };
-    inventoryW.push_back(WoodenSword);
-    inventoryW.push_back(WoodenBow);
-    equippedIndex = 0;*/
-
 }
 
+//item logic
 void player::showInventory() {
     cout << endl << "Inventory Options: " << endl;
     for (int i = 0; i < inventoryW.size(); i++) {
@@ -110,6 +96,7 @@ void player::showInventory() {
     }
 }
 
+//player gold
 void player::setGold(int amt) {
     ownedGold = amt;
 }
@@ -122,14 +109,8 @@ void player::modifyGold(int amount) {
         ownedGold = 0;
     }
 }
-/*
-void player::addToInventory(Setup& setup, int itemID) {
-    inventory[itemID]++;
 
-    const Item& item = setup.itemDatabase[itemID];
-
-    cout << endl << "You added: " << item.name << " to your inventory." << endl;
-}*/
+//player weapons logic
 void player::equipWeapon(int inventoryIndex) {
 
     if (inventoryW.empty()) {
@@ -143,7 +124,7 @@ void player::equipWeapon(int inventoryIndex) {
     }
 
     cout << "\nUnequipping " << inventoryW[equippedIndex].name << endl;
-    equippedIndex = inventoryIndex; // set new equipped weapon
+    equippedIndex = inventoryIndex; //set new equipped weapon
     cout << "\nEquipped Weapon: " << inventoryW[equippedIndex].name << endl;
 }
 
@@ -158,7 +139,7 @@ vector<attackMoves>& player::getcurrentAttacks() {
     }
 }
 
-//funciton to get players name----------
+//funciton to get players name and type
 string player::getName() {
     return name;
 }
@@ -172,19 +153,18 @@ void player::setClassType(string newClassType) {
     classType = newClassType;
 }
 
+//healing logic
 void player::useHealingOption(int index, bool inBattle) {
     if (index < 0 || index >= healingOptions.size()) return;
 
     HealOption& potion = healingOptions[index];
 
-    // ALWAYS apply instant healing
     gainHealth(potion.baseHeal);
 
     cout << "You used " << potion.name
         << "! You restored " << potion.baseHeal
         << " HP. Current HP: " << getHealth() << ".\n";
 
-    // ONLY apply slow/over-time effect in battle
     if (inBattle && potion.healAmountPerTurn > 0) {
         slowTurnEffect_Logic(
             potion.name,
@@ -193,7 +173,6 @@ void player::useHealingOption(int index, bool inBattle) {
         );
     }
 
-    // cooldown always applies
     potion.turnRemaining = potion.optionCooldown;
 }
 
@@ -221,8 +200,9 @@ void player::showHeallingOpt() {
     cout << endl;
 }
 
+//sync wepaons by matching invenotry outside battle to insdie battle
 void player::syncWeapons(player& plyr, Setup& setup) {
-    // save what was equipped BEFORE clearing
+
     string previouslyEquippedName = "";
     if (plyr.equippedIndex >= 0 && plyr.equippedIndex < plyr.inventoryW.size()) {
         previouslyEquippedName = plyr.inventoryW[plyr.equippedIndex].name;
@@ -259,7 +239,6 @@ void player::syncWeapons(player& plyr, Setup& setup) {
         plyr.inventoryW.push_back(w);
     }
 
-    // restore equipped weapon if possible
     plyr.equippedIndex = -1;
 
     for (int i = 0; i < plyr.inventoryW.size(); i++) {
@@ -269,15 +248,23 @@ void player::syncWeapons(player& plyr, Setup& setup) {
         }
     }
 
-    // fallback if weapon no longer exists
     if (plyr.equippedIndex == -1 && !plyr.inventoryW.empty()) {
         plyr.equippedIndex = 0;
     }
+    if (inventoryW.empty()) {
+        equippedIndex = -1;
+        return;
+    }
+
+    if (equippedIndex < 0 || equippedIndex >= inventoryW.size()) {
+        equippedIndex = 0;
+    }
 }
 
+//potion logic (slow turn)
 HealOption& player::getPotionFromItemID(int itemID) {
     for (HealOption& heal : healingOptions) {
-        if (heal.itemID == itemID) {  // we need to add `itemID` field to HealOption
+        if (heal.itemID == itemID) { 
             return heal;
         }
     }
@@ -294,7 +281,7 @@ void player::syncPotion(player& plyr, Setup& setup, int itemID) {
 
             plyr.useHealingOption(i, false);
 
-            // remove from inventory
+  
             plyr.inventory[itemID]--;
             if (plyr.inventory[itemID] == 0)
                 plyr.inventory.erase(itemID);
@@ -305,13 +292,27 @@ void player::syncPotion(player& plyr, Setup& setup, int itemID) {
     cout << "Potion not found.\n";
 }
 
+//stats to reset defense
+void player::resetStatsAfterBattle()
+{
+    if (classType == "Warrior")
+        defense = 30;
+    else if (classType == "Rogue")
+        defense = 10;
+    else if (classType == "Hunter")
+        defense = 8;
+    else if (classType == "Sorcerer")
+        defense = 5;
+}
+
+//amulet logic
 void player::giveAmulet(int id)
 {
     if (id < 17 || id > 21) {
         return;
     }
 
-    inventory[id] = 1; // mark as owned
+    inventory[id] = 1;
 
     cout << "You obtained an AMULET!\n";
 
@@ -321,7 +322,6 @@ void player::giveAmulet(int id)
     if (id == 20)
         cout << "You feel heat building in your hands...\n";
 }
-
 bool player::hasItem(int id) const
 {
     auto it = inventory.find(id);
@@ -331,8 +331,8 @@ int player::getStrength() const
 {
     int bonus = 0;
 
-    if (hasItem(18)) // Amulet of Strength
-        bonus += 10;
+    if (hasItem(18)) 
+        bonus += 50;
 
     return strength + bonus;
 }
@@ -340,8 +340,18 @@ int player::getDefense() const
 {
     int bonus = 0;
 
-    if (hasItem(17)) // Amulet of Defense
-        bonus += 10;
+    if (hasItem(17))
+        bonus += 40;
 
     return defense + bonus;
+}
+
+int player::getMaxHealth() const
+{
+    int bonus = 0;
+
+    if (hasItem(21))
+        bonus += 100;
+
+    return health + bonus;
 }

@@ -63,7 +63,7 @@ int displayShopMenu(Setup& setup, ShopKeeper& npc, Map& map)
 		}
 	}
 
-	// return to NPC dialogue after shop
+	//return to NPC dialogue after shop
 	//npc.printLines(5, setup, map);
 
 	return -1;
@@ -123,7 +123,7 @@ void displayType(Setup& setup, ItemType type) {
 	}
 	if (userChoice == 0) {
 		refreshShop();
-		//npc.printLines(2, setup);
+	
 	}
 }
 

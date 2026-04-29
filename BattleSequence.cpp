@@ -11,7 +11,7 @@
 #include <vector>
 using namespace std;
 
-//Check Player health before battle-----------------------------------------------------------------
+//Check Player health before battle
 bool HealthCheck(player& plyr) {
 	int healthcurr = plyr.getHealth();
 
@@ -35,7 +35,7 @@ bool HealthCheck(player& plyr) {
 	if (cin.fail()) {
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		return true; // default = continue battle, NOT exit
+		return true; //default = continue battle
 	}
 
 	return (choice == 1);
@@ -65,9 +65,7 @@ int enterBattle(Setup& setup, Map& map, enemy* Enemy, Tile* tile) {
 
 	system("cls");
 
-	//enemy* Enemy = nullptr;
-
-	// ================= ENEMY SELECTION =================
+	//enemy selection
 	if (Enemy == nullptr)
 	{
 		if (tile != nullptr && tile->hasFixedBoss && tile->fixedEnemy != nullptr)
@@ -94,7 +92,7 @@ int enterBattle(Setup& setup, Map& map, enemy* Enemy, Tile* tile) {
 		}
 	}
 
-	// ================= BATTLE LOOP =================
+	//battle loop
 	while (plyr.isAlive() && Enemy->isAlive())
 	{
 		print_stats(plyr, *Enemy);
@@ -107,10 +105,10 @@ int enterBattle(Setup& setup, Map& map, enemy* Enemy, Tile* tile) {
 		{
 			Enemy->dieDialogue();
 
-			// always drops
+			//always drops
 			setup.lootDrops();
 
-			// boss reward only
+			//boss reward only
 			if (tile && tile->hasFixedBoss) {
 
 				string msg = Enemy->getAmuletMessage();
@@ -164,31 +162,11 @@ int enterBattle(Setup& setup, Map& map, enemy* Enemy, Tile* tile) {
 	{
 		delete Enemy;
 	}
+	plyr.resetStatsAfterBattle();
 	return 0;
 }
 
-
-/*//function that uses the random function to choose an enemy for battle-------------
-enemy* choose_enemy() {
-	int choose = randomNum(0, 3);
-	switch (choose) {
-	case 0:
-		return new dragon();
-		break;
-	case 1:
-		return new monsterBug();
-		break;
-	case 2:
-		return new wizard();
-		break;
-	case 3:
-		return new archer();
-		break;
-	}
-	return nullptr;
-}*/
-
-//function to print menu for player choices-------------
+//function to print menu for player choices
 int print_battlemenu(player& plyr) {
 	cout << "\n\n\n What would you like to do?" << endl;
 	cout << " \n\n 1. Attack" << endl;
@@ -238,7 +216,7 @@ int print_battlemenu(player& plyr) {
 	return choice;
 }
 
-//function to print out the stats of both the enemy and the player-------------
+//function to print out the stats of both the enemy and the player
 int print_stats(player& plyr, enemy& enmy) {
 	cout << " ----------------------------------------" << endl;
 	cout << "|                                        |" << endl;
@@ -254,17 +232,17 @@ int print_stats(player& plyr, enemy& enmy) {
 	return 0;
 }
 
-//function to take the player choice and run through it / execute it-------------
+//function to take the player choice and run through it / execute it
 BattleResults battle_choices(Setup& setup, int user_choice, player& plyr, enemy& Enemy) {
 	int damage;
 
 	//player chooses to attack
-	if (user_choice >= 200) {
+	if (user_choice >= 2000) {
 		system("cls");
-		int healIndex = user_choice - 200;
+		int healIndex = user_choice - 2000;
 		vector<HealOption>& heals = plyr.getHealingOptions();
 
-		// Check index validity
+		//Check index validity
 		if (healIndex >= 0 && healIndex < heals.size()) {
 			HealOption& chosenPotion = heals[healIndex];
 
@@ -273,9 +251,9 @@ BattleResults battle_choices(Setup& setup, int user_choice, player& plyr, enemy&
 			}
 			else {
 				plyr.useHealingOption(healIndex, true);
-				// Reduce inventory count
+				//Reduce inventory count
 				plyr.inventory[chosenPotion.itemID]--;
-				// remove if it hits 0
+				//remove if it hits 0
 				if (plyr.inventory[chosenPotion.itemID] == 0) {
 					plyr.inventory.erase(chosenPotion.itemID);
 				}
@@ -289,7 +267,8 @@ BattleResults battle_choices(Setup& setup, int user_choice, player& plyr, enemy&
 	if (user_choice >= 100) {
 		system("cls");
 		int attackIndex = user_choice - 100;
-		vector<attackMoves>& playerAttacks = plyr.getAttacks();
+
+		vector<attackMoves>& playerAttacks = plyr.getcurrentAttacks();
 		if (attackIndex >= 0 && attackIndex < playerAttacks.size()) {
 			attackMoves& chosenAttack = playerAttacks[attackIndex];
 			cout << endl << "You chose " << chosenAttack.name << " to attack the enemy with" << endl;
@@ -309,20 +288,19 @@ BattleResults battle_choices(Setup& setup, int user_choice, player& plyr, enemy&
 
 			plyr.attackDialogue(chosenAttack.dialogue);
 			cout << endl << "The " << Enemy.getName() << " only takes " << damage << " damage. There defense is now reduced to " << Enemy.getDefense() << "\n\n" << endl;
-			// FIRE AMULET (20)
+			//FIRE AMULET (20)
 			if (plyr.hasItem(20)) {
 				cout << "Flames surge through your attack!\n";
-				Enemy.loseHealth(5); // or scale if you want: plyr.getStrength()/4
+				Enemy.loseHealth(5); 
 			}
 
-			// POISON AMULET (19)
+			//POISON AMULET (19)
 			if (plyr.hasItem(19)) {
 				cout << "A toxic burn spreads through the enemy!\n";
 				Enemy.slowTurnEffect_Logic("Poison", 2, 3);
 			}
 
 		}
-		//return plyr.isAlive() && Enemy.isAlive();
 		return continueTurn;
 	}
 	else {
@@ -339,7 +317,7 @@ BattleResults battle_choices(Setup& setup, int user_choice, player& plyr, enemy&
 			cout << "\nYour current weapons: " << endl;
 			for (int i = 0; i < plyr.inventoryW.size(); i++) {
 				cout << i + 1 << ". " << plyr.inventoryW[i].name;
-				if (i == plyr.equippedIndex) {   // <-- use index, not pointer
+				if (i == plyr.equippedIndex) { 
 					cout << " Equipped";
 				}
 				cout << endl;
@@ -347,11 +325,11 @@ BattleResults battle_choices(Setup& setup, int user_choice, player& plyr, enemy&
 			cout << "\nSelect a weapon to equip: ";
 			int choice;
 			cin >> choice;
-			choice -= 1; // convert to 0-based index
+			choice -= 1; //convert to 0-based index
 
 			if (choice >= 0 && choice < plyr.inventoryW.size()) {
-				int previousIndex = plyr.equippedIndex;  // save old weapon
-				plyr.equippedIndex = choice;             // equip new weapon
+				int previousIndex = plyr.equippedIndex;  //ave old weapon
+				plyr.equippedIndex = choice;             //equip new weapon
 
 				if (previousIndex >= 0 && previousIndex < plyr.inventoryW.size()) {
 					cout << "\nUnequipping " << plyr.inventoryW[previousIndex].name << endl;
@@ -366,10 +344,9 @@ BattleResults battle_choices(Setup& setup, int user_choice, player& plyr, enemy&
 		}
 	}
 	return continueTurn;
-	// return plyr.isAlive() && Enemy.isAlive();
 }
 
-//function for enemy actions-------------
+//function for enemy actions
 int enemyAction(enemy& enemy, player& plyr) {
 	int takesaction = 2;//automatically gets set to attack
 	bool action = false;//makes sure that only one action is executed

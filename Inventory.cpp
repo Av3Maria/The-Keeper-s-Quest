@@ -21,11 +21,12 @@ void manageInventory(Setup& setup) {
 //prints inventory
 void printInventoryMenu(Setup& setup) {
 	bool isRunning = true;
-
+	//sync weapons in both inventories
+	setup.mainPlayer.syncWeapons(setup.mainPlayer, setup);
 	while (isRunning) {
 
 		auto& inv = setup.mainPlayer.inventory;
-
+		//if players inventory is empty
 		if (inv.empty()) {
 			cout << "\n (your inventory is empty)" << endl;
 			refreshInv();
@@ -35,13 +36,37 @@ void printInventoryMenu(Setup& setup) {
 		vector<int> itemIDs; //stores what is actually in the player's inventory
 		int index = 1;
 		refreshInv();
-		cout << "\n Your Inventory:\n" << endl;
+		player& p = setup.mainPlayer;
 
+		//prints out the stats of the player
+		cout << "=====================================\n";
+		cout << "         PLAYER STATUS\n";
+		cout << "=====================================\n";
+		cout << "Name: " << p.getName() << endl;
+		cout << "Class: " << p.getClassType() << endl;
+		cout << "HP: " << p.getHealth() << endl;
+		cout << "Strength: " << p.getStrength() << endl;
+		cout << "Defense: " << p.getDefense() << endl;
+		cout << "Gold: " << p.getOwnedGold() << endl;
+		//equiped wepaon
+		if (!p.inventoryW.empty() &&
+			p.equippedIndex >= 0 &&
+			p.equippedIndex < p.inventoryW.size())
+		{
+			cout << "Weapon: " << p.inventoryW[p.equippedIndex].name << endl;
+		}
+		else
+		{
+			cout << "Weapon: None" << endl;
+		}
+		cout << "=====================================\n";
+		cout << "\n Your Inventory:\n" << endl;
+		//inventory items
 		for (const auto& pair : inv) {
 
-			//const Item& item = setup.itemDatabase[pair.first];
-
+			if (pair.second <= 0) continue;
 			auto it = setup.itemDatabase.find(pair.first);
+			
 			if (it == setup.itemDatabase.end()) {
 				cout << "\n\t[error: item not found in database]" << endl;
 				continue;
@@ -86,8 +111,8 @@ void printInventoryMenu(Setup& setup) {
 		cin >> userAction; //gets the user's choice for what to do with the item they selected
 
 		switch (userAction) {
-
-		case 1: // USE ITEM
+			//using item
+		case 1:
 		{
 			player& p = setup.mainPlayer;
 
@@ -100,7 +125,7 @@ void printInventoryMenu(Setup& setup) {
 			const Item& item = setup.itemDatabase[selectedItemID];
 
 			if (item.type == POTION) {
-				p.useHealingOption(index, false);
+				p.syncPotion(p, setup, selectedItemID);
 			}
 			else {
 				cout << "\nThis item cannot be used.\n";
@@ -108,12 +133,12 @@ void printInventoryMenu(Setup& setup) {
 
 			break;
 		}
-
-		case 2: // EQUIP ITEM
+		//euiping item
+		case 2: 
 			equipItem(setup, selectedItemID);
 			break;
-
-		case 3: // REMOVE ITEM
+		//removing item
+		case 3:
 			removeFromInventory(setup, selectedItemID);
 			break;
 
@@ -158,12 +183,10 @@ void equipItem(Setup& setup, int itemID) {
 		return;
 	}
 	if (item.type == WEAPON) {
-		//mP.equipWeapon(setup, itemID);
-		//cout << "\n\tYou equipped: " << item.name << endl;
 
 		mP.syncWeapons(mP, setup);
 
-		// auto-equip correct weapon index
+		//euip weapon intialy
 		for (int i = 0; i < mP.inventoryW.size(); i++) {
 			if (mP.inventoryW[i].name == item.name) {
 				mP.equipWeapon(i);
@@ -171,31 +194,14 @@ void equipItem(Setup& setup, int itemID) {
 			}
 		}
 		cout << "\n\tYou equipped: " << item.name << endl;
+		mP.syncWeapons(mP, setup);
 	}
-	else if (item.type == MAGIC_ITEM) {
-		if (itemID == 17) { //amulet of defense
-			mP.defense += 20;
-			cout << "\n\tYou equipped: " << item.name << endl;
-		}
-		else if (itemID == 18) { //amulet of strength
-			mP.strength += 20;
-			cout << "\n\tYou equipped: " << item.name << endl;
-		}
-		else if (itemID == 19) { //amulet of poison
-			mP.strength += 10;
-			mP.defense -= 10;
-			cout << "\n\tYou equipped: " << item.name << endl;
-		}
-		else if (itemID == 20) { //amulet of fire
-			mP.strength += 10;
-			mP.defense -= 10;
-			cout << "\n\tYou equipped: " << item.name << endl;
-		}
-		else if (itemID == 21) { //amulet of enduring
-			mP.health += 50;
-			cout << "\n\tYou equipped: " << item.name << endl;
-		}
+	else if (item.type == MAGIC_ITEM)
+	{
+		cout << "\nThe power of " << item.name
+			<< " is already active while carried.\n";
 	}
+	
 }
 
 void refreshInv() { //function to refresh the screen

@@ -13,14 +13,14 @@
 #include <vector>
 #include <string>
 using namespace std;
-
+//pointers for each tile
 void connect(Tile* t, Tile* up, Tile* down, Tile* left, Tile* right) {
     t->up_tile = up;
     t->down_tile = down;
     t->left_tile = left;
     t->right_tile = right;
 }
-
+//tile data
 Tile::Tile(Tile* right, Tile* left, Tile* up, Tile* down,
     string name, string description)
 {
@@ -36,14 +36,16 @@ Tile::Tile(Tile* right, Tile* left, Tile* up, Tile* down,
     this->hasShard = false;
     this->shardID = -1;
     this->shardCollected = false;
+    this->shardHintShown = false;
+
     this->allowRandomEncounters = true;
     this->hasFixedBoss = false;
     this->fixedEnemy = nullptr;
-    this->shardHintShown = false;
+
 }
-
+//map and each name,description, has shard
 Map::Map() {
-
+    //tiles and their names
     town = new Tile(nullptr, nullptr, nullptr, nullptr, "Town", "The starting point of your adventure.");
     lake = new Tile(nullptr, nullptr, nullptr, nullptr, "Lake", "A calm lake glistening in the sun.");
     woods1 = new Tile(nullptr, nullptr, nullptr, nullptr, "Woods", "A dark forest full of mysteries.");
@@ -60,7 +62,7 @@ Map::Map() {
     shop1 = new Tile(nullptr, nullptr, nullptr, nullptr, "Shop", "A small merchant's shop.");
     shop2 = new Tile(nullptr, nullptr, nullptr, nullptr, "Shop", "Another shop with rare items.");
     shop3 = new Tile(nullptr, nullptr, nullptr, nullptr, "Shop", "Another shop. You were hoping to find one of these.");
-
+    //where each tile leads
     connect(woods1, dragonsDen, lake, nullptr, woods3); // tile, up, down, left, right
     connect(woods2, woods3, nullptr, lake, bridge);
     connect(woods3, shop1, woods2, woods1, woods5);
@@ -81,13 +83,14 @@ Map::Map() {
     currentTile = startTile;
     previousTile = nullptr;
 
+    //check if tile has shop option
     town->hasShop = true;
     shop1->hasShop = true;
     shop2->hasShop = true;
     shop3->hasShop = true;
-
+    //check if tile is bridge
     bridge->isBridge = true;
-
+    //check if tile has an amulet shard
     town->shardType = DIALOGUE;
     town->hasShard = true;
     town->shardID = 1;
@@ -100,16 +103,17 @@ Map::Map() {
     dragonsDen->shardType = COMBAT;
     dragonsDen->shardID = 4;
 
+    //for map placment, coordinates of each
     shop1->x = 1; shop1->y = 1;
-    shop2->x = 3; shop2->y = 1;
+    shop2->x = 3; shop2->y = 2;
     shop3->x = 3; shop3->y = 4;
 
     woods1->x = 0; woods1->y = 2;
     woods2->x = 1; woods2->y = 3;
     woods3->x = 1; woods3->y = 2;
-    woods4->x = 1; woods4->y = 0;//not showing
+    woods4->x = 1; woods4->y = 0;
     woods5->x = 2; woods5->y = 2;
-    woods6->x = 2; woods6->y = 1;//not showing
+    woods6->x = 2; woods6->y = 1;
     woods7->x = 2; woods7->y = 4;
     woods8->x = 4; woods8->y = 4;
 
@@ -120,6 +124,7 @@ Map::Map() {
     bridge->x = 2; bridge->y = 3;
 
 }
+//add npcs and enemies
 void Map::assignCharacters() {
     ShopKeeper* shopKeeper = new ShopKeeper();
     Blacksmith* blacksmith = new Blacksmith();
@@ -136,45 +141,58 @@ void Map::assignCharacters() {
     town->addNPC(townsfolk);
     town->addNPC(knight);
     town->addNPC(farmer);
+
     woods1->addNPC(townsfolk);
     woods1->addNPC(knight);
     woods1->addNPC(farmer);
+
     woods2->addNPC(townsfolk);
     woods2->addNPC(knight);
     woods2->addNPC(farmer);
+
     woods3->addNPC(townsfolk);
     woods3->addNPC(knight);
     woods3->addNPC(farmer);
+
     woods4->addNPC(townsfolk);
     woods4->addNPC(knight);
     woods4->addNPC(farmer);
+
     woods5->addNPC(townsfolk);
     woods5->addNPC(knight);
     woods5->addNPC(farmer);
+
     woods6->addNPC(townsfolk);
     woods6->addNPC(knight);
     woods6->addNPC(farmer);
+
     woods7->addNPC(townsfolk);
     woods7->addNPC(knight);
     woods7->addNPC(farmer);
+
     woods8->addNPC(townsfolk);
     woods8->addNPC(knight);
     woods8->addNPC(farmer);
+
     shop1->addNPC(shopKeeper);
     shop1->addNPC(banker);
+
     shop2->addNPC(shopKeeper);
     shop2->addNPC(blacksmith);
+
     shop3->addNPC(shopKeeper);
     shop3->addNPC(beggar);
+
     lake->addNPC(townsfolk);
     lake->addNPC(knight);
     lake->addNPC(farmer);
+
     bridge->addNPC(townsfolk);
     bridge->addNPC(knight);
     bridge->addNPC(banker);
 
     shop2->isShop2 = true;
-    // WOODS ZONE ENEMIES (random encounters)
+
     woods1->addEnemy(new dragon(false));
     woods1->addEnemy(new monsterBug(false));
     woods1->addEnemy(new archer());
@@ -199,25 +217,27 @@ void Map::assignCharacters() {
     woods8->addEnemy(new archer());
     lake->addEnemy(new toad(false));
 
+    //add boss enemies
     dragonsDen->hasFixedBoss = true;
     dragonsDen->fixedEnemy = new dragon(true);
     dragonsDen->hasBossBattleOption = false;
+
     castle->hasBossBattleOption = false;
     castle->hasFixedBoss = true;
     castle->fixedEnemy = new wizard(true);
+
     woods6->hasBossBattleOption = false;
     woods6->hasFixedBoss = true;
     woods6->fixedEnemy = new monsterBug(true);
+
     lake->hasBossBattleOption = false;
     lake->hasFixedBoss = true;
     lake->fixedEnemy = new toad(true);
 }
-
+//player moves
 void Tile::execLocation(Setup& setup, Map& map) {
-    // cout << name << endl;
-     //cout << description << endl;
-    // ================= BRIDGE WARNING =================
-    if (isBridge)   // <-- you need this flag in Tile
+
+    if (isBridge) 
     {
         int amulets = 0;
 
@@ -226,7 +246,7 @@ void Tile::execLocation(Setup& setup, Map& map) {
             amulets += setup.mainPlayer.inventory[id];
         }
 
-        if (amulets < 5)
+        if (amulets < 4)
         {
             cout << "\nYou step onto the bridge...\n";
             cout << "It groans under your weight.\n\n";
@@ -248,13 +268,13 @@ void Tile::execLocation(Setup& setup, Map& map) {
                 if (map.previousTile != nullptr)
                     map.currentTile = map.previousTile;
 
-                return; // STOP tile execution
+                return;
             }
         }
     }
-    //SPECIAL: boss tiles
-    if (hasFixedBoss && fixedEnemy != nullptr) {
 
+    if (hasFixedBoss && fixedEnemy != nullptr) {
+        //warn player of boss battle
         cout << "\nYou feel a powerful presence here...\n";
         cout << "Do you want to proceed?\n";
         cout << "1. Yes\n";
@@ -266,26 +286,22 @@ void Tile::execLocation(Setup& setup, Map& map) {
         if (choice == 2) {
             cout << "You decide to step away...\n";
 
-            // go back to previous tile
             if (map.previousTile != nullptr)
                 map.currentTile = map.previousTile;
 
             return;
         }
 
-        // Player chose to fight
         cout << "\nThe battle begins!\n";
 
-        // later:
         enterBattle(setup, map, nullptr, this);
 
         return;
     }
 
-    // NORMAL TILE behavior
     cout << "\nThe area seems calm... but danger could be nearby.\n";
 }
-
+//game logic
 int Map::returnToOverworld(Setup& setup) {
 
     bool inWorld = true;
@@ -303,7 +319,7 @@ int Map::returnToOverworld(Setup& setup) {
         int option = 1;
 
         cout << "\nWhat would you like to do?\n";
-
+        //ask player and give menu that chnages based on what tile has
         cout << " " << option++ << ". Move\n";
 
         bool canTalk = !currentTile->npcs.empty();
@@ -313,30 +329,30 @@ int Map::returnToOverworld(Setup& setup) {
         int shopOption = -1;
         int inventoryOption = -1;
         int exitOption = -1;
-
+        //if npcs exist
         if (canTalk) {
             talkOption = option;
             cout << " " << option++ << ". Talk\n";
         }
-
+        //if shop exists
         if (canShop) {
             shopOption = option;
             cout << " " << option++ << ". Shop\n";
         }
-
+        //access inventory
         inventoryOption = option;
         cout << " " << option++ << ". Inventory\n";
-
+        //if battle is an option
         bool canBattle = currentTile->hasBattleOption;
         int battleOption = -1;
         if (canBattle) {
             battleOption = option;
             cout << " " << option++ << ". Battle\n";
         }
-
+        //open map
         int mapOption = option;
         cout << " " << option++ << ". View Map\n";
-
+        //exit game
         exitOption = option;
         cout << " " << option++ << ". Exit to Save Menu\n";
 
@@ -377,7 +393,7 @@ int Map::returnToOverworld(Setup& setup) {
             tryBattle(setup, currentTile);
 
         }
-
+        //npc tlaking
         else if (choice == talkOption) {
 
             Tile* t = currentTile;
@@ -403,7 +419,7 @@ int Map::returnToOverworld(Setup& setup) {
                 }
             }
         }
-
+        //shop options
         else if (choice == shopOption) {
             if (currentTile->hasShop) {
                 enterShop(setup, currentTile);
@@ -431,14 +447,13 @@ int Map::returnToOverworld(Setup& setup) {
 
     return 0;
 }
-
+//when player chooses to enter shop
 void Map::enterShop(Setup& setup, Tile* tile)
 {
     if (tile->name != "Shop" && tile->name != "Town") {
         cout << "There is no shop here.\n";
         return;
     }
-
 
     if (tile == shop2)
     {
@@ -452,11 +467,9 @@ void Map::enterShop(Setup& setup, Tile* tile)
                 setup.shopInventory[17] = 1;
             }
         }
-
     }
     ShopKeeper* sk = nullptr;
 
-    // find a shopkeeper in tile
     for (auto* npc : tile->npcs) {
         sk = dynamic_cast<ShopKeeper*>(npc);
         if (sk) break;
@@ -465,9 +478,8 @@ void Map::enterShop(Setup& setup, Tile* tile)
     if (sk) {
         displayShopMenu(setup, *sk, *this);
     }
-    //shopkeeperNPC.printLines(0, setup);
 }
-
+//random enemies can appear
 enemy* Tile::getRandomEnemy()
 {
     if (enemies.empty()) return nullptr;
@@ -484,7 +496,7 @@ enemy* Tile::getRandomEnemy()
 
     return chosen;
 }
-
+//if battle is chosen/radom enemy
 void Map::tryBattle(Setup& setup, Tile* tile)
 {
     if (!tile->allowRandomEncounters) return;
@@ -497,14 +509,31 @@ void Map::tryBattle(Setup& setup, Tile* tile)
         enterBattle(setup, *this, nullptr, tile);
     }
 }
-
+//get tile for map
+Tile* Map::getTile(int x, int y) {
+    vector<Tile*> all = {
+        town, lake, woods1, woods2, woods3, woods4,
+        woods6, woods5, woods7, woods8,
+        shop1, shop2, shop3,
+        bridge, castle, dragonsDen
+    };
+    for (auto* t : all)
+    {
+        if (t->x == x && t->y == y)
+        {
+            return t;
+        }
+    }
+    return startTile;
+}
+//display map
 string Map::formatTile(Tile* tile, int width)
 {
     string tileName;
 
     if (tile == nullptr)
     {
-        tileName = "";   // EMPTY SPACE, not text
+        tileName = ""; 
     }
     else
     {
@@ -514,7 +543,7 @@ string Map::formatTile(Tile* tile, int width)
             tileName = "***" + tileName + "***";
     }
 
-    // pad to fixed width
+
     while (tileName.length() < width)
         tileName += " ";
 
@@ -566,19 +595,3 @@ void Map::displayMap()
     cin.get();
 }
 
-Tile* Map::getTile(int x, int y) {
-	vector<Tile*> all = {
-		town, lake, woods1, woods2, woods3, woods4,
-		woods6, woods5, woods7, woods8,
-		shop1, shop2, shop3,
-		bridge, castle, dragonsDen
-	};
-	for (auto* t : all)
-	{
-		if (t->x == x && t->y == y)
-		{
-			return t;
-		}
-	}
-	return startTile;
-}

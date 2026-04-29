@@ -56,7 +56,7 @@ void talkingNPC::printLines(int currentLine, Setup& setup, Map& map) {
 			displayShopMenu(setup, *sk, map);
 		}
 		return;
-		return; // IMPORTANT: stop recursion here
+		return; 
 	}
 	if (node.type == BEGGAR_DROP) {
 

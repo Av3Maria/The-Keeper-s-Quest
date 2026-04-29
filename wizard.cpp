@@ -11,19 +11,19 @@ int wizard::getAssignedNum() {
 string wizard::getAmuletMessage() const {
     return " "; //--------------------------------------------------------------------------------------
 }
-// Constructor: initializes health, strength, defense
+//Constructor: initializes health, strength, defense
 wizard::wizard(bool bossMode) : enemy(100, 18, 10), isBoss(bossMode) {
 
     if (isBoss) {
-        health = 160;
-        strength = 28;
-        defense = 15;
+        health = 300;
+        strength = 38;
+        defense = 25;
     }
     attacks = {
-        { "Cascading Fire", isBoss ? 18 : 12, { "The Wizard snaps their fingers, calling forth a spell that sends fire crawling up from the ground beneath you. The heat radiating from the flames burns through your clothing, leaving painful marks." } },
-        { "WhirlWind", isBoss ? 14 : 8, { "You see the Wizard whispering a foreign chant. Fear grips you as you try to run, but you are caught. Frozen mid-stride, the Wizard blasts you with an enormous gust of wind, throwing you to the ground." } },
-        { "Lightning Clash", isBoss ? 28 : 20, { "Thunder cracks above your fight. A blinding white light erupts from the clouds, temporarily stunning you. At this moment of weakness, the Wizard attacks, shooting smaller bolts of lightning at you, causing further damage." } },
-        { "Sparking Cloud", isBoss ? 22 : 15, { "The air around you thickens, making it hard to breathe. Smoke fills your vision, and although you cannot see, the Wizard snaps his fingers, igniting the cloud in fire." } }
+        { "Cascading Fire", isBoss ? 22 : 12, { "The Wizard snaps their fingers, calling forth a spell that sends fire crawling up from the ground beneath you. The heat radiating from the flames burns through your clothing, leaving painful marks." } },
+        { "WhirlWind", isBoss ? 16 : 8, { "You see the Wizard whispering a foreign chant. Fear grips you as you try to run, but you are caught. Frozen mid-stride, the Wizard blasts you with an enormous gust of wind, throwing you to the ground." } },
+        { "Lightning Clash", isBoss ? 34 : 20, { "Thunder cracks above your fight. A blinding white light erupts from the clouds, temporarily stunning you. At this moment of weakness, the Wizard attacks, shooting smaller bolts of lightning at you, causing further damage." } },
+        { "Sparking Cloud", isBoss ? 28 : 15, { "The air around you thickens, making it hard to breathe. Smoke fills your vision, and although you cannot see, the Wizard snaps his fingers, igniting the cloud in fire." } }
     };
 
     runLines = {
@@ -41,7 +41,7 @@ wizard::wizard(bool bossMode) : enemy(100, 18, 10), isBoss(bossMode) {
         " "//--------------------------------------------------------------------------------------
     };
 }
-//function that returns enemy name---------
+//function that returns enemy name
 string wizard::getName() {
     if (isBoss == true) {
         return "High Wizard";

@@ -55,7 +55,7 @@ void Setup::initializeItems() {
 	shopInventory[6] = 4; //fire dagger
 	shopInventory[7] = 10; //wooden bow
 	shopInventory[8] = 5; //hunter bow
-	shopInventory[10] = 15; //basic staff
+	//shopInventory[10] = 15; //basic staff
 	shopInventory[14] = 20; //small health potion
 	shopInventory[15] = 10; //large health potion
 	shopInventory[22] = 10; //feather pen

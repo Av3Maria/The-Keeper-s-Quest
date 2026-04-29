@@ -65,6 +65,7 @@ int displayShopMenu(Setup& setup, ShopKeeper& npc, Map& map)
 
 	// return to NPC dialogue after shop
 	//npc.printLines(5, setup, map);
+
 	return -1;
 }
 void showInventoryPreview(Setup& setup)
@@ -108,11 +109,11 @@ void displayType(Setup& setup, ItemType type) {
 		const Item& item = setup.itemDatabase[itemID];
 
 		if (item.type == type) {
-			cout << itemID << ". " << item.name << " - " << item.value << " gold" << " (in-stock: " << quantity << ")\n";
+			cout << " " << itemID << ". " << item.name << " - " << item.value << " gold" << " (in-stock: " << quantity << ")\n";
 		}
 	}
 
-	cout << "0. Back\n\n";
+	cout << " 0. Back\n\n";
 
 	int userChoice;
 	cin >> userChoice;
@@ -121,6 +122,7 @@ void displayType(Setup& setup, ItemType type) {
 		purchaseItem(setup, userChoice);
 	}
 	if (userChoice == 0) {
+		refreshShop();
 		//npc.printLines(2, setup);
 	}
 }

@@ -304,7 +304,7 @@ int Map::returnToOverworld(Setup& setup) {
 
         cout << "\nWhat would you like to do?\n";
 
-        cout << option++ << ". Move\n";
+        cout << " " << option++ << ". Move\n";
 
         bool canTalk = !currentTile->npcs.empty();
         bool canShop = currentTile->hasShop;
@@ -316,29 +316,29 @@ int Map::returnToOverworld(Setup& setup) {
 
         if (canTalk) {
             talkOption = option;
-            cout << option++ << ". Talk\n";
+            cout << " " << option++ << ". Talk\n";
         }
 
         if (canShop) {
             shopOption = option;
-            cout << option++ << ". Shop\n";
+            cout << " " << option++ << ". Shop\n";
         }
 
         inventoryOption = option;
-        cout << option++ << ". Inventory\n";
+        cout << " " << option++ << ". Inventory\n";
 
         bool canBattle = currentTile->hasBattleOption;
         int battleOption = -1;
         if (canBattle) {
             battleOption = option;
-            cout << option++ << ". Battle\n";
+            cout << " " << option++ << ". Battle\n";
         }
 
         int mapOption = option;
-        cout << option++ << ". View Map\n";
+        cout << " " << option++ << ". View Map\n";
 
         exitOption = option;
-        cout << option++ << ". Exit to Save Menu\n";
+        cout << " " << option++ << ". Exit to Save Menu\n";
 
         int choice;
         cin >> choice;
@@ -347,10 +347,10 @@ int Map::returnToOverworld(Setup& setup) {
         if (choice == 1) {
             cout << "\nWhere do you want to go?\n";
 
-            if (t->up_tile) cout << "1. Up\n";
-            if (t->down_tile) cout << "2. Down\n";
-            if (t->left_tile) cout << "3. Left\n";
-            if (t->right_tile) cout << "4. Right\n";
+            if (t->up_tile) cout << " 1. Up\n";
+            if (t->down_tile) cout << " 2. Down\n";
+            if (t->left_tile) cout << " 3. Left\n";
+            if (t->right_tile) cout << " 4. Right\n";
 
             int move;
             cin >> move;

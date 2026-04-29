@@ -203,10 +203,10 @@ void startNewGame(Setup& s) {
 	getline(cin >> ws, playerName); //gets user input for player name, using getline to allow for spaces in name
 
 	cout << "\nChoose your class: \n"; //class menu
-	cout << "\n 1.Warrior (high defense)";
-	cout << "\n 2.Rogue (high health)";
-	cout << "\n 3.Hunter (high strength)";
-	cout << "\n 4.Sorcerer (high strength)" << endl;
+	cout << "\n 1. Warrior - (high defense)";
+	cout << "\n 2. Rogue - (high health)";
+	cout << "\n 3. Hunter - (high strength)";
+	cout << "\n 4. Sorcerer - (high strength)" << endl;
 
 	int classChoice;
 	cin >> classChoice; //gets player choice for class type
@@ -237,12 +237,6 @@ void startNewGame(Setup& s) {
 
 //function to quit the game
 int quitGame(Setup& s, Map& map) { 
-
-	if (finalBossDefeated == true) { //already should have quickSaved game so no need to resave game
-		gameRunning == false;
-		return 0;
-	}
-
 	cout << "save game before you leave? (y/n): "; //to make sure player doesn't accidentally quit before saving
 
 	char saveChoice;

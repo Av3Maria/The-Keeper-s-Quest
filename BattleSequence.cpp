@@ -119,7 +119,7 @@ int enterBattle(Setup& setup, Map& map, enemy* Enemy, Tile* tile) {
 					cout << "\n" << msg << "\n";
 				}
 
-				if (tile->fixedEnemy->getName() == "Ancient Dragon")
+				if (tile->fixedEnemy->getName() == "Red Dragon")
 					setup.mainPlayer.giveAmulet(20);
 
 				else if (tile->fixedEnemy->getName() == "High Wizard") {
@@ -129,7 +129,7 @@ int enterBattle(Setup& setup, Map& map, enemy* Enemy, Tile* tile) {
 				else if (tile->fixedEnemy->getName() == "Giant Toad")
 					setup.mainPlayer.giveAmulet(18);
 
-				else if (tile->fixedEnemy->getName() == "Giant Monster Bug")
+				else if (tile->fixedEnemy->getName() == "Giant Bug")
 					setup.mainPlayer.giveAmulet(19);
 			}
 			cout << "\n(Press ENTER to continue...)";
@@ -416,7 +416,7 @@ void clearInput() {
 void bossIntro(enemy& Enemy) {
 	string name = Enemy.getName();
 
-	if (name == "Dragon")
+	if (name == "Red Dragon")
 	{
 		cout << "You push forward into a rocky clearing near the base of the mountain." << endl;
 		cout << "Loose gravel crunches beneath your feet as smoke rolls through the air." << endl;
@@ -429,7 +429,7 @@ void bossIntro(enemy& Enemy) {
 		cout << "The Dragon slams its claws into the earth and lowers its head." << endl;
 		cout << "You grip your weapon tightly and prepare for battle.\n" << endl;
 	}
-	else if (name == "Wizard")
+	else if (name == "High Wizard")
 	{
 		cout << "You step into the ruined throne room at the top of the dark castle." << endl;
 		cout << "Broken stone litters the floor, and torn banners hang from the walls." << endl;
@@ -443,7 +443,7 @@ void bossIntro(enemy& Enemy) {
 		cout << "Dark magic gathers around him as he raises his staff." << endl;
 		cout << "You take your stance as the final battle begins.\n" << endl;
 	}
-	else if (name == "MonsterBug")
+	else if (name == "Giant Bug")
 	{
 		cout << "You travel deeper into the forest, where the trees grow taller and the sunlight barely reaches the ground." << endl;
 		cout << "The path becomes narrow and twisted, covered in roots and fallen branches." << endl;
@@ -459,7 +459,7 @@ void bossIntro(enemy& Enemy) {
 
 		cout << "You tighten your grip and prepare for battle.\n" << endl;
 	}
-	else if (name == "Toad")
+	else if (name == "Giant Toad")
 	{
 		cout << "You leave the safety of the town behind and begin your journey down an old dirt path." << endl;
 		cout << "Rolling fields soon give way to damp ground and tall reeds swaying in the wind." << endl;
@@ -566,8 +566,6 @@ void wizardVictoryEnding(Setup& setup, Map& map) {
 	cin.get();
 	system("cls");
 
-	QuickSaveGame(setup, map, currentSaveFile);
-
 	cout << "Your journey is at an end..." << endl;
 	cout << "Do you wish to retire, or continue exploring?" << endl;
 	cout << "1. Retire and settle down in the town. (quit game)" << endl;
@@ -586,5 +584,6 @@ void wizardVictoryEnding(Setup& setup, Map& map) {
 	{
 		cout << "You choose to continue exploring the world, seeking new adventures beyond the castle." << endl;
 		cout << "With the amulet's power restored, you set out once more, ready for whatever challenges lie ahead.\n" << endl;
+		QuickSaveGame(setup, map, currentSaveFile);
 	}
 }

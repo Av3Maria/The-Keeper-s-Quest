@@ -162,6 +162,7 @@ void purchaseItem(Setup& setup, int itemID) {
 	cout << "\nGold remaining: " << mP.getOwnedGold() << "\n"; //tells player their remaining gold
 
 	this_thread::sleep_for(chrono::seconds(2)); //waits a bit so player can read confirmation
+	refreshShop();
 
 	//shopkeeperNPC.printLines(4, setup); //prints npc lines
 }

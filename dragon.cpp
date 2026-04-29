@@ -50,7 +50,7 @@ dragon::dragon(bool bossMode) : enemy(120, 25, 10), isBoss(bossMode) {
 //function that returns enemy name---------
 string dragon::getName() {
 	if (isBoss == true) {
-		return "Ancient Dragon";
+		return "Red Dragon";
 	}
     else {
         return "Dragon";

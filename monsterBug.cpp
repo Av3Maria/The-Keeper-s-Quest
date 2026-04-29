@@ -51,7 +51,7 @@ monsterBug::monsterBug(bool bossMode) : enemy(65, 12, 10), isBoss(bossMode) {
 //function that returns enemy name---------
 string monsterBug::getName() {
     if (isBoss == true) {
-        return "Giant Monster Bug";
+        return "Giant Bug";
     }
     else {
         return "Monster Bug";

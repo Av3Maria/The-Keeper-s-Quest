@@ -32,7 +32,7 @@ player::player(string charName, string charType)
         inventory[1] = 1;
     }
     else if (charType == "Rogue") {
-        health = 120;
+        health = 120; 
         strength = 15;
         defense = 10;
         inventory[4] = 1;
@@ -307,8 +307,9 @@ void player::syncPotion(player& plyr, Setup& setup, int itemID) {
 
 void player::giveAmulet(int id)
 {
-    if (id < 17 || id > 21)
+    if (id < 17 || id > 21) {
         return;
+    }
 
     inventory[id] = 1; // mark as owned
 

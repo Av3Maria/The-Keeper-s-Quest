@@ -18,7 +18,6 @@ A text-based RPG set in a medieval world. Choose one of four classes, build your
 ## Requirements
 
 - Visual Studio 2022 (or later) with the **Desktop development with C++** workload
-- C++ [standard — check in Visual Studio: right-click project → Properties → C/C++ → Language → C++ Language Standard]
 
 ## To Play
 
@@ -26,11 +25,11 @@ Written in C++ using Visual Studio.
 
 1. Clone the repository:
    ```bash
-   git clone [repo-url]
+   git clone https://github.com/Av3Maria/Data-Structures-RPG.git
    ```
-2. Open `[ProjectName].sln` in Visual Studio
+2. Open `The Keeper's Quest.sln` in Visual Studio
 3. Build the solution (`Ctrl+Shift+B`)
-4. Run without debugging (`Ctrl+F5`)
+4. Run without debugging (`Ctrl+F5` or `Fn+Ctrl+F5` )
 5. Choose **New Game**
 6. Enter your name and class choice
 7. Choose **Save Game** and enter the name of your save file to save your new character

@@ -25,7 +25,7 @@ Written in C++ using Visual Studio.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Av3Maria/Data-Structures-RPG.git
+   git clone https://github.com/Av3Maria/The-Keeper-s-Quest.git
    ```
 2. Open `The Keeper's Quest.sln` in Visual Studio
 3. Build the solution (`Ctrl+Shift+B`)

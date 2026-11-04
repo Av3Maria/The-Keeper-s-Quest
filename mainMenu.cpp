@@ -13,19 +13,6 @@
 
 using namespace std;
 
-
-/*notes to do:
-* 
-* change boss names (if isBoss = "", else " (regular name) ")
-* end of game code
-* play through game and stress test everything
-* make sure menu prompts make sense and are correctly named
-* finalize game name
-* look through dialogue and edit spelling
-* make sure everything is formatted correctly and looks good
-* make sure refreshing works correctly and doesn't cause any issues
-*/
-
 //function prototypes
 int printMenu();
 void refresh();

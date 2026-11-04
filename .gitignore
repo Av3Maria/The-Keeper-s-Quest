@@ -1,31 +1,21 @@
-<<<<<<< HEAD
 # Visual Studio
 .vs/
+*.user
+*.suo
+*.sln.docstates
+
+# Build output — never commit these
 Debug/
 Release/
 x64/
-
-#Ignore build folders anywhere
-**/Debug/
-**/Release/
-**/x64/
-
-# Build files
+x86/
+*.exe
 *.obj
 *.pdb
 *.ilk
 *.tlog
+*.lastbuildstate
 *.idb
-*.log
-*.exe
-*.recipe
 
-# User-specific files
-*.vcxproj.user
-
-# SQLite
-*.sqlite
-=======
-.vs/
->>>>>>> 0cebf16040bd6a3f1e3a92b49ea6cade5d131d4f
-
+# Keep your save files out too (optional — delete these two lines if you want saves in the repo)
+saves/
